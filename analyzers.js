@@ -749,7 +749,7 @@
 
       // JavaScript 링크
       if (this.data.stats.javascriptLinks > 0) {
-        this.addIssue('warning', `${this.data.stats.javascriptLinks}개 링크가 javascript:를 사용합니다`, {
+        this.addIssue('critical', `${this.data.stats.javascriptLinks}개 링크가 javascript:를 사용합니다`, {
           impact: '검색엔진이 따라갈 수 없습니다',
           suggestion: '실제 URL을 사용하고 JavaScript는 이벤트 핸들러로 처리하세요'
         });
