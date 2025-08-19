@@ -667,6 +667,11 @@
         return this.renderImageCategory(category);
       }
 
+      // 링크 카테고리도 특별 처리
+      if (categoryKey === 'link') {
+        return this.renderLinkCategory(category);
+      }
+
       return `
         <div class="category-detail">
           <div class="category-header">
@@ -1025,6 +1030,237 @@
       `;
     }
     
+    renderLinkCategory(category) {
+      const linkData = this.results.categories?.link?.data || {};
+      const stats = linkData.stats || {};
+      const links = linkData.links || [];
+      const total = linkData.total || 0;
+      const domainGroups = linkData.domainGroups || new Map();
+      
+      // 문제 링크 수집
+      const problemLinks = this.collectProblemLinks(links);
+      
+      // 도메인 그룹을 배열로 변환하고 정렬
+      const topDomains = Array.from(domainGroups.entries())
+        .sort((a, b) => b[1].length - a[1].length)
+        .slice(0, 5);
+      
+      return `
+        <div class="category-detail">
+          <div class="category-header">
+            <div class="cat-title">
+              <span class="cat-icon-large">${category.icon}</span>
+              <div>
+                <h2>${category.name} <span class="item-count">${category.items.length}개 항목 체크</span></h2>
+              </div>
+            </div>
+            <div class="cat-score">
+              <div class="score-bar">
+                <div class="score-fill" style="width: ${category.score}%; background: ${this.getScoreColor(category.score)}"></div>
+              </div>
+              <span class="score-label">${category.score}/100</span>
+            </div>
+          </div>
+
+          <!-- 링크 통계 섹션 -->
+          <div class="link-stats">
+            <h3 class="section-title">📊 링크 분석 결과</h3>
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-label">총 링크 수</div>
+                <div class="stat-value">${total}개</div>
+              </div>
+              <div class="stat-card ${stats.internal > stats.external ? 'good' : 'info'}">
+                <div class="stat-label">내부 링크</div>
+                <div class="stat-value">${stats.internal}개</div>
+              </div>
+              <div class="stat-card ${stats.external > 30 ? 'warning' : 'info'}">
+                <div class="stat-label">외부 링크</div>
+                <div class="stat-value">${stats.external}개</div>
+              </div>
+              <div class="stat-card ${stats.nofollow > 0 ? 'good' : 'info'}">
+                <div class="stat-label">Nofollow</div>
+                <div class="stat-value">${stats.nofollow}개</div>
+              </div>
+              <div class="stat-card ${stats.targetBlank > 0 ? 'info' : 'good'}">
+                <div class="stat-label">새 탭 링크</div>
+                <div class="stat-value">${stats.targetBlank}개</div>
+              </div>
+              <div class="stat-card ${stats.emptyAnchors > 0 ? 'error' : 'good'}">
+                <div class="stat-label">앵커 없음</div>
+                <div class="stat-value">${stats.emptyAnchors}개</div>
+              </div>
+              <div class="stat-card ${stats.protocols.http > 0 ? 'warning' : 'good'}">
+                <div class="stat-label">HTTP 링크</div>
+                <div class="stat-value">${stats.protocols.http}개</div>
+              </div>
+              <div class="stat-card ${stats.javascriptLinks > 0 ? 'warning' : 'good'}">
+                <div class="stat-label">JS 링크</div>
+                <div class="stat-value">${stats.javascriptLinks}개</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 외부 도메인 분석 -->
+          ${topDomains.length > 0 ? `
+            <div class="domain-analysis">
+              <h3 class="section-title">🌐 외부 도메인 TOP 5</h3>
+              <div class="domain-list">
+                ${topDomains.map(([domain, links]) => `
+                  <div class="domain-item">
+                    <span class="domain-name">${this.escapeHtml(domain)}</span>
+                    <span class="domain-count">${links.length}개 링크</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          <!-- 문제 링크 통합 리스트 -->
+          ${problemLinks.length > 0 ? `
+            <div class="problem-links">
+              <h3 class="section-title">📋 문제 링크 목록</h3>
+              ${this.renderProblemLinkList(problemLinks)}
+            </div>
+          ` : ''}
+
+          <!-- 기존 체크 리스트 -->
+          <div class="check-list category-checks">
+            ${category.items.map(item => `
+              <div class="check-item ${item.status}">
+                <div class="check-indicator">
+                  ${item.status === 'success' ? '✓' : item.status === 'warning' ? '!' : item.status === 'info' ? 'ℹ' : '×'}
+                </div>
+                <div class="check-content">
+                  <div class="check-title">${item.title}</div>
+                  ${item.current ? `
+                    <div class="check-current">
+                      <span class="label">현재:</span>
+                      <code>${this.escapeHtml(item.current)}</code>
+                    </div>
+                  ` : ''}
+                  ${item.suggestion && item.status !== 'success' ? `
+                    <div class="check-suggestion">${item.suggestion}</div>
+                  ` : ''}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    collectProblemLinks(links) {
+      const problemMap = new Map();
+      
+      links.forEach(link => {
+        const problems = [];
+        
+        // 각 링크의 문제점 수집
+        if (link.isEmptyAnchor) {
+          problems.push({ type: 'no-anchor', label: '앵커 없음' });
+        }
+        
+        if (link.isGenericAnchor) {
+          problems.push({ type: 'generic', label: '일반적 텍스트' });
+        }
+        
+        if (link.protocol === 'http') {
+          problems.push({ type: 'http', label: 'HTTP' });
+        }
+        
+        if (link.isJavascript) {
+          problems.push({ type: 'javascript', label: 'JavaScript' });
+        }
+        
+        if (link.isTargetBlank && !link.isNoopener) {
+          problems.push({ type: 'security', label: '보안 취약' });
+        }
+        
+        // 문제가 있는 링크만 Map에 추가
+        if (problems.length > 0) {
+          const key = link.text || link.href;
+          if (!problemMap.has(key)) {
+            problemMap.set(key, {
+              text: link.text || '(텍스트 없음)',
+              href: link.href,
+              domain: link.domain,
+              problems: problems
+            });
+          }
+        }
+      });
+      
+      return Array.from(problemMap.values());
+    }
+    
+    renderProblemLinkList(problemLinks) {
+      if (problemLinks.length === 0) return '';
+      
+      const listId = `problem-links-${Date.now()}`;
+      const firstLink = problemLinks[0];
+      const remainingCount = problemLinks.length - 1;
+      
+      return `
+        <div class="problem-link-wrapper">
+          <!-- 첫 번째 링크와 요약 -->
+          <div class="problem-summary">
+            <div class="problem-item-compact">
+              <span class="link-text">${this.escapeHtml(firstLink.text)}</span>
+              <div class="problem-tags">
+                ${firstLink.problems.map(p => 
+                  `<span class="problem-tag ${p.type}">${p.label}</span>`
+                ).join('')}
+              </div>
+            </div>
+            ${remainingCount > 0 ? `
+              <button class="link-toggle-btn" onclick="window.ZuppUI.toggleProblemLinks('${listId}')">
+                <span class="toggle-text">외 ${remainingCount}개</span>
+                <span class="toggle-icon">▼</span>
+              </button>
+            ` : ''}
+          </div>
+          
+          <!-- 토글 가능한 전체 리스트 -->
+          ${remainingCount > 0 ? `
+            <div class="problem-list-expanded" id="${listId}" style="display: none;">
+              <div class="link-list-container">
+                <ul class="link-problem-list">
+                  ${problemLinks.slice(1).map(link => `
+                    <li class="problem-item-full">
+                      <span class="link-text">${this.escapeHtml(link.text)}</span>
+                      <div class="problem-tags">
+                        ${link.problems.map(p => 
+                          `<span class="problem-tag ${p.type}">${p.label}</span>`
+                        ).join('')}
+                      </div>
+                    </li>
+                  `).join('')}
+                </ul>
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+    
+    toggleProblemLinks(listId) {
+      const expandedList = document.getElementById(listId);
+      const button = event.target.closest('.link-toggle-btn');
+      
+      if (expandedList) {
+        const isVisible = expandedList.style.display !== 'none';
+        expandedList.style.display = isVisible ? 'none' : 'block';
+        
+        if (button) {
+          const icon = button.querySelector('.toggle-icon');
+          if (icon) {
+            icon.textContent = isVisible ? '▼' : '▲';
+          }
+        }
+      }
+    }
+
     toggleProblemImages(listId) {
       const expandedList = document.getElementById(listId);
       const button = event.target.closest('.image-toggle-btn');

@@ -545,6 +545,7 @@
       
       this.data.total = links.length;
       this.data.links = [];
+      this.data.domainGroups = new Map(); // 도메인별 링크 그룹화
       this.data.stats = {
         internal: 0,
         external: 0,
@@ -556,6 +557,7 @@
         selfLinks: 0,
         hashLinks: 0,
         javascriptLinks: 0,
+        brokenLinks: 0,  // 404 또는 문제 링크
         protocols: {
           http: 0,
           https: 0,
@@ -599,10 +601,29 @@
           text.toLowerCase() === pattern.toLowerCase()
         );
 
+        // 도메인 추출
+        let domain = '';
+        try {
+          if (href.startsWith('http://') || href.startsWith('https://')) {
+            const url = new URL(href);
+            domain = url.hostname;
+          } else if (href.startsWith('//')) {
+            const url = new URL('https:' + href);
+            domain = url.hostname;
+          } else if (!href.startsWith('#') && !href.startsWith('javascript:') && 
+                     !href.startsWith('mailto:') && !href.startsWith('tel:')) {
+            // 상대 경로는 현재 도메인으로 처리
+            domain = window.location.hostname;
+          }
+        } catch (e) {
+          // URL 파싱 실패시 무시
+        }
+
         const linkData = {
           index,
           href: href.substring(0, 100),
           text: text.substring(0, 50),
+          domain,
           isExternal,
           isNofollow,
           isNoopener,
@@ -616,6 +637,14 @@
         };
 
         this.data.links.push(linkData);
+        
+        // 도메인별 그룹화
+        if (domain && isExternal) {
+          if (!this.data.domainGroups.has(domain)) {
+            this.data.domainGroups.set(domain, []);
+          }
+          this.data.domainGroups.get(domain).push(linkData);
+        }
 
         // 통계 업데이트
         if (isExternal) this.data.stats.external++;

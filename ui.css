@@ -1701,6 +1701,145 @@
   padding: 0;
 }
 
+/* ============================
+   링크 분석 스타일
+   ============================ */
+.link-stats {
+  margin: 20px 0;
+  padding: 15px;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+/* 도메인 분석 섹션 */
+.domain-analysis {
+  margin: 20px 0;
+  padding: 15px;
+  background: #f0f9ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+}
+
+.domain-list {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 12px;
+  margin-top: 12px;
+}
+
+.domain-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 13px;
+}
+
+.domain-item:last-child {
+  border-bottom: none;
+}
+
+.domain-name {
+  font-family: 'Courier New', monospace;
+  color: #2563eb;
+  font-weight: 500;
+}
+
+.domain-count {
+  background: #eff6ff;
+  color: #1e40af;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* 문제 링크 스타일 */
+.problem-links {
+  margin: 15px 0;
+  padding: 10px;
+  background: #fef9f3;
+  border: 1px solid #fed7aa;
+  border-radius: 6px;
+}
+
+.problem-link-wrapper {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  padding: 8px;
+}
+
+.link-text {
+  font-size: 12px;
+  color: #374151;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+.link-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  color: #374151;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.link-toggle-btn:hover {
+  background: #e5e7eb;
+  border-color: #9ca3af;
+}
+
+.link-list-container {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.link-problem-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* 문제 태그 추가 스타일 */
+.problem-tag.no-anchor {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.problem-tag.generic {
+  background: #fed7aa;
+  color: #92400e;
+}
+
+.problem-tag.http {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.problem-tag.javascript {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.problem-tag.security {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
 /* 모바일 반응형 - 이미지 분석 */
 @media (max-width: 768px) {
   .stats-grid {
