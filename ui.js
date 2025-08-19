@@ -972,7 +972,8 @@
           problemMap.set(img.filename, {
             filename: img.filename,
             problems: problems,
-            src: img.src
+            src: img.src,
+            htmlCode: img.htmlCode || ''
           });
         }
       });
@@ -992,7 +993,8 @@
           <!-- 첫 번째 이미지와 요약 -->
           <div class="problem-summary">
             <div class="problem-item-compact">
-              <span class="image-name">${this.escapeHtml(firstImage.filename)}</span>
+              <span class="image-name">[Image #1]</span>
+              ${firstImage.htmlCode ? `<code class="html-code">${this.escapeHtml(firstImage.htmlCode)}</code>` : ''}
               <div class="problem-tags">
                 ${firstImage.problems.map(p => 
                   `<span class="problem-tag ${p.type}">${p.label}</span>`
@@ -1012,9 +1014,10 @@
             <div class="problem-list-expanded" id="${listId}" style="display: none;">
               <div class="image-list-container">
                 <ul class="image-problem-list">
-                  ${problemImages.slice(1).map(img => `
+                  ${problemImages.slice(1).map((img, idx) => `
                     <li class="problem-item-full">
-                      <span class="image-name">${this.escapeHtml(img.filename)}</span>
+                      <span class="image-name">[Image #${idx + 2}]</span>
+                      ${img.htmlCode ? `<code class="html-code">${this.escapeHtml(img.htmlCode)}</code>` : ''}
                       <div class="problem-tags">
                         ${img.problems.map(p => 
                           `<span class="problem-tag ${p.type}">${p.label}</span>`
@@ -1184,6 +1187,7 @@
             problemMap.set(key, {
               text: link.text || '(텍스트 없음)',
               href: link.href,
+              htmlCode: link.htmlCode || '',
               domain: link.domain,
               problems: problems
             });
@@ -1206,7 +1210,8 @@
           <!-- 첫 번째 링크와 요약 -->
           <div class="problem-summary">
             <div class="problem-item-compact">
-              <span class="link-text">${this.escapeHtml(firstLink.text)}</span>
+              <span class="link-text">[Link #1]</span>
+              ${firstLink.htmlCode ? `<code class="html-code">${this.escapeHtml(firstLink.htmlCode)}</code>` : ''}
               <div class="problem-tags">
                 ${firstLink.problems.map(p => 
                   `<span class="problem-tag ${p.type}">${p.label}</span>`
@@ -1226,9 +1231,10 @@
             <div class="problem-list-expanded" id="${listId}" style="display: none;">
               <div class="link-list-container">
                 <ul class="link-problem-list">
-                  ${problemLinks.slice(1).map(link => `
+                  ${problemLinks.slice(1).map((link, idx) => `
                     <li class="problem-item-full">
-                      <span class="link-text">${this.escapeHtml(link.text)}</span>
+                      <span class="link-text">[Link #${idx + 2}]</span>
+                      ${link.htmlCode ? `<code class="html-code">${this.escapeHtml(link.htmlCode)}</code>` : ''}
                       <div class="problem-tags">
                         ${link.problems.map(p => 
                           `<span class="problem-tag ${p.type}">${p.label}</span>`

@@ -400,10 +400,19 @@
         const fileSize = imageSizes.get(src) || 0;
         const fileSizeKB = Math.round(fileSize / 1024);
         
+        // HTML 코드 생성 (간략화)
+        const srcShort = src.substring(0, 50) + (src.length > 50 ? '...' : '');
+        const htmlCode = `<img src="${srcShort}"${
+          alt !== null ? ` alt="${alt}"` : ''}${
+          width ? ` width="${width}"` : ''}${
+          height ? ` height="${height}"` : ''}${
+          loading ? ` loading="${loading}"` : ''}>`;
+        
         const imageData = {
           index,
           src: src.substring(0, 100), // URL 일부만 저장
           alt: alt,
+          htmlCode,
           hasAlt: alt !== null && alt !== '',  // alt 속성이 있고 비어있지 않은 경우만 true
           isEmptyAlt: alt !== null && alt === '',  // alt 속성이 존재하지만 빈 경우
           hasTitle: !!title,
@@ -619,10 +628,16 @@
           // URL 파싱 실패시 무시
         }
 
+        // HTML 코드 생성 (간략화)
+        const htmlCode = `<a href="${href.substring(0, 50)}${href.length > 50 ? '...' : ''}"${
+          target ? ` target="${target}"` : ''}${
+          rel ? ` rel="${rel}"` : ''}>${text.substring(0, 30)}${text.length > 30 ? '...' : ''}</a>`;
+        
         const linkData = {
           index,
           href: href.substring(0, 100),
           text: text.substring(0, 50),
+          htmlCode,
           domain,
           isExternal,
           isNofollow,
