@@ -657,14 +657,18 @@
         return this.renderMetaCategory(category);
       }
 
+      // 헤딩 구조 카테고리도 특별 처리
+      if (categoryKey === 'heading') {
+        return this.renderHeadingCategory(category);
+      }
+
       return `
         <div class="category-detail">
           <div class="category-header">
             <div class="cat-title">
               <span class="cat-icon-large">${category.icon}</span>
               <div>
-                <h2>${category.name}</h2>
-                <p class="cat-summary">${category.items.length}개 항목 체크</p>
+                <h2>${category.name} <span class="item-count">${category.items.length}개 항목 체크</span></h2>
               </div>
             </div>
             <div class="cat-score">
@@ -675,11 +679,11 @@
             </div>
           </div>
 
-          <div class="check-list">
+          <div class="check-list category-checks">
             ${category.items.map(item => `
               <div class="check-item ${item.status}">
                 <div class="check-indicator">
-                  ${item.status === 'success' ? '✓' : item.status === 'warning' ? '!' : '×'}
+                  ${item.status === 'success' ? '✓' : item.status === 'warning' ? '!' : item.status === 'info' ? 'ℹ' : '×'}
                 </div>
                 <div class="check-content">
                   <div class="check-title">${item.title}</div>
@@ -693,9 +697,6 @@
                     <div class="check-suggestion">${item.suggestion}</div>
                   ` : ''}
                 </div>
-                ${item.status !== 'success' ? `
-                  <button class="fix-btn">Fix</button>
-                ` : ''}
               </div>
             `).join('')}
           </div>
@@ -712,8 +713,7 @@
             <div class="cat-title">
               <span class="cat-icon-large">${category.icon}</span>
               <div>
-                <h2>${category.name}</h2>
-                <p class="cat-summary">${category.items.length}개 항목 체크</p>
+                <h2>${category.name} <span class="item-count">${category.items.length}개 항목 체크</span></h2>
               </div>
             </div>
             <div class="cat-score">
@@ -727,12 +727,103 @@
           <div class="check-list meta-check-list">
             ${this.renderMetaItem('Title 태그', metaData.title)}
             ${this.renderMetaItem('Meta Description', metaData.description)}
-            ${this.renderMetaItem('Meta Keywords', metaData.keywords)}
             ${this.renderMetaItem('Robots 태그', metaData.robots)}
             ${this.renderMetaItem('Viewport', metaData.viewport)}
             ${this.renderMetaItem('Charset', metaData.charset)}
             ${this.renderMetaItem('Canonical URL', metaData.canonical)}
-            ${this.renderMetaItem('Author', metaData.author)}
+            ${this.renderMetaItem('Language', { exists: !!metaData.language, content: metaData.language || '' })}
+          </div>
+        </div>
+      `;
+    }
+
+    renderHeadingCategory(category) {
+      const headingData = this.results.categories?.heading?.data || {};
+      const counts = headingData.counts || {};
+      const structure = headingData.structure || [];
+      
+      return `
+        <div class="category-detail">
+          <div class="category-header">
+            <div class="cat-title">
+              <span class="cat-icon-large">${category.icon}</span>
+              <div>
+                <h2>${category.name} <span class="item-count">${category.items.length}개 항목 체크</span></h2>
+              </div>
+            </div>
+            <div class="cat-score">
+              <div class="score-bar">
+                <div class="score-fill" style="width: ${category.score}%; background: ${this.getScoreColor(category.score)}"></div>
+              </div>
+              <span class="score-label">${category.score}/100</span>
+            </div>
+          </div>
+
+          <!-- 헤딩 개수 표시 섹션 -->
+          <div class="heading-counts">
+            <h3 class="section-title">📊 헤딩 태그 사용 현황</h3>
+            <div class="heading-cards">
+              ${['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].map(tag => {
+                const count = counts[tag] || 0;
+                const isOptimal = (tag === 'h1' && count === 1) || 
+                                (tag === 'h2' && count > 0 && count <= 10) ||
+                                (tag === 'h3' && count >= 0) ||
+                                (['h4', 'h5', 'h6'].includes(tag));
+                const cardClass = count === 0 ? 'empty' : (isOptimal ? 'good' : 'warning');
+                
+                return `
+                  <div class="heading-card ${cardClass}">
+                    <div class="heading-tag">${tag.toUpperCase()}</div>
+                    <div class="heading-count">${count}</div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- 헤딩 구조 트리 섹션 -->
+          ${structure.length > 0 ? `
+            <div class="heading-tree">
+              <h3 class="section-title">🌳 문서 구조</h3>
+              <div class="tree-container">
+                ${structure.map((item, index) => {
+                  const indent = (item.level - 1) * 20;
+                  const prevLevel = index > 0 ? structure[index - 1].level : 0;
+                  const hasGap = prevLevel > 0 && item.level > prevLevel + 1;
+                  
+                  return `
+                    <div class="tree-item level-${item.level} ${hasGap ? 'has-gap' : ''}" style="padding-left: ${indent}px">
+                      <span class="tree-tag">&lt;${item.tag}&gt;</span>
+                      <span class="tree-text">${this.escapeHtml(item.text || '(빈 헤딩)')}</span>
+                      ${hasGap ? '<span class="gap-warning" title="헤딩 레벨을 건너뛰었습니다">⚠️</span>' : ''}
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          <!-- 기존 체크 리스트 -->
+          <div class="check-list category-checks">
+            ${category.items.map(item => `
+              <div class="check-item ${item.status}">
+                <div class="check-indicator">
+                  ${item.status === 'success' ? '✓' : item.status === 'warning' ? '!' : item.status === 'info' ? 'ℹ' : '×'}
+                </div>
+                <div class="check-content">
+                  <div class="check-title">${item.title}</div>
+                  ${item.current ? `
+                    <div class="check-current">
+                      <span class="label">현재:</span>
+                      <code>${this.escapeHtml(item.current)}</code>
+                    </div>
+                  ` : ''}
+                  ${item.suggestion && item.status !== 'success' ? `
+                    <div class="check-suggestion">${item.suggestion}</div>
+                  ` : ''}
+                </div>
+              </div>
+            `).join('')}
           </div>
         </div>
       `;
