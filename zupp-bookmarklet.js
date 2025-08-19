@@ -32,7 +32,6 @@ javascript:(function(){
       // 모든 스크립트 로드 완료
       setTimeout(() => {
         if (window.ZuppSEO && window.ZuppSEO.run) {
-          console.log('🚀 Running ZuppSEO...');
           window.ZuppSEO.run();
         } else {
           console.error('❌ ZuppSEO not found');
@@ -46,7 +45,6 @@ javascript:(function(){
     script.src = BASE_URL + src;
     
     script.onload = () => {
-      console.log('✅ ' + src + ' loaded (' + (index + 1) + '/' + scripts.length + ')');
       index++;
       loadNextScript(); // 다음 스크립트 로드
     };
@@ -58,6 +56,5 @@ javascript:(function(){
     document.head.appendChild(script);
   }
   
-  console.log('📍 Loading from:', BASE_URL);
   loadNextScript(); // 첫 번째 스크립트부터 시작
 })();

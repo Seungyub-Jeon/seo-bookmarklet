@@ -12,7 +12,6 @@
     
     function check() {
       if (window.ZuppSEO && window.ZuppSEO.BaseAnalyzer && window.ZuppSEO.ready) {
-        console.log('✅ ZuppSEO 준비 완료, analyzers.js 실행');
         callback();
         return;
       }
@@ -22,7 +21,6 @@
         setTimeout(check, 10); // 10ms 후 재시도
       } else {
         console.error('❌ ZuppSEO 로딩 타임아웃 - analyzers.js');
-        console.log('현재 window.ZuppSEO 상태:', window.ZuppSEO);
       }
     }
     
@@ -33,8 +31,6 @@
   waitForZuppSEO(function() {
 
   const { BaseAnalyzer, utils, optimizer, config } = window.ZuppSEO;
-  
-  console.log('✅ BaseAnalyzer 클래스 확인됨:', BaseAnalyzer);
 
   // ============================
   // 1. 메타데이터 분석기
@@ -50,7 +46,8 @@
       this.data.title = {
         exists: !!titleElement,
         text: titleElement?.textContent?.trim() || '',
-        length: titleElement?.textContent?.trim().length || 0
+        length: titleElement?.textContent?.trim().length || 0,
+        htmlCode: titleElement ? titleElement.outerHTML : null
       };
 
       // Meta Description
@@ -58,7 +55,8 @@
       this.data.description = {
         exists: !!descElement,
         content: descElement?.content?.trim() || '',
-        length: descElement?.content?.trim().length || 0
+        length: descElement?.content?.trim().length || 0,
+        htmlCode: descElement ? descElement.outerHTML : null
       };
 
       // Meta Keywords (구식이지만 체크)
@@ -66,21 +64,25 @@
       this.data.keywords = {
         exists: !!keywordsElement,
         content: keywordsElement?.content || '',
-        count: keywordsElement?.content?.split(',').length || 0
+        count: keywordsElement?.content?.split(',').length || 0,
+        htmlCode: keywordsElement ? keywordsElement.outerHTML : null
       };
 
       // Robots
       const robotsElement = optimizer.querySelector('meta[name="robots"]');
       this.data.robots = {
         exists: !!robotsElement,
-        content: robotsElement?.content || 'index,follow'
+        content: robotsElement?.content || '',
+        defaultValue: !robotsElement ? 'index,follow' : null,
+        htmlCode: robotsElement ? robotsElement.outerHTML : null
       };
 
       // Viewport (모바일)
       const viewportElement = optimizer.querySelector('meta[name="viewport"]');
       this.data.viewport = {
         exists: !!viewportElement,
-        content: viewportElement?.content || ''
+        content: viewportElement?.content || '',
+        htmlCode: viewportElement ? viewportElement.outerHTML : null
       };
 
       // Charset
@@ -89,21 +91,24 @@
       this.data.charset = {
         exists: !!charsetElement,
         value: charsetElement?.getAttribute('charset') || 
-               charsetElement?.content?.match(/charset=([^;]+)/)?.[1] || ''
+               charsetElement?.content?.match(/charset=([^;]+)/)?.[1] || '',
+        htmlCode: charsetElement ? charsetElement.outerHTML : null
       };
 
       // Canonical URL
       const canonicalElement = optimizer.querySelector('link[rel="canonical"]');
       this.data.canonical = {
         exists: !!canonicalElement,
-        href: canonicalElement?.href || ''
+        href: canonicalElement?.href || '',
+        htmlCode: canonicalElement ? canonicalElement.outerHTML : null
       };
 
       // Author
       const authorElement = optimizer.querySelector('meta[name="author"]');
       this.data.author = {
         exists: !!authorElement,
-        content: authorElement?.content || ''
+        content: authorElement?.content || '',
+        htmlCode: authorElement ? authorElement.outerHTML : null
       };
 
       // Language
@@ -688,10 +693,6 @@
     ImageAnalyzer,
     LinkAnalyzer
   });
-  
-  console.log('🔧 Sprint 1 분석기 등록 완료:', Object.keys(window.ZuppSEO.analyzers));
-
-  console.log('zupp 분석기 모듈 로드 완료');
   
   }); // waitForZuppSEO callback 닫기
 

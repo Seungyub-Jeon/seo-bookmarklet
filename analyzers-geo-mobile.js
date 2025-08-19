@@ -12,7 +12,6 @@
     
     function check() {
       if (window.ZuppSEO && window.ZuppSEO.BaseAnalyzer && window.ZuppSEO.ready) {
-        console.log('✅ ZuppSEO 준비 완료, analyzers-geo-mobile.js 실행');
         callback();
         return;
       }
@@ -22,7 +21,6 @@
         setTimeout(check, 10);
       } else {
         console.error('❌ ZuppSEO 로딩 타임아웃 - analyzers-geo-mobile.js');
-        console.log('현재 window.ZuppSEO 상태:', window.ZuppSEO);
       }
     }
     
@@ -33,8 +31,6 @@
   waitForZuppSEO(function() {
 
   const { BaseAnalyzer, utils, optimizer, config } = window.ZuppSEO;
-  
-  console.log('✅ BaseAnalyzer 클래스 확인됨 (geo-mobile):', BaseAnalyzer);
 
   // ============================
   // 1. GEO (Generative Engine Optimization) 분석기
@@ -923,10 +919,6 @@
     GEOAnalyzer,
     MobileUXAnalyzer
   });
-  
-  console.log('🔧 Sprint 4 분석기 등록 완료:', Object.keys(window.ZuppSEO.analyzers));
-
-  console.log('zupp GEO & 모바일 분석기 모듈 로드 완료 (Sprint 4)');
   
   }); // waitForZuppSEO callback 닫기
 

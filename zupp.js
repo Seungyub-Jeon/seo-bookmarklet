@@ -10,11 +10,8 @@
 
   // 전역 네임스페이스 충돌 방지 - 하지만 BaseAnalyzer가 없으면 초기화 필요
   if (window.ZuppSEO && window.ZuppSEO.BaseAnalyzer && window.ZuppSEO.ready) {
-    if (window.ZuppSEO?.config?.debug) console.log('🔄 zupp.js 이미 초기화됨, 재실행 방지');
     return;
   }
-  
-  if (window.ZuppSEO?.config?.debug) console.log('🚀 zupp.js 초기화 시작...');
 
   // ============================
   // 1. 설정 및 상수
@@ -476,7 +473,6 @@
   // ============================
   // 8. 메인 실행 준비
   // ============================
-  console.log('🔧 BaseAnalyzer 클래스 정의 중...', BaseAnalyzer);
   
   // 기존 ZuppSEO 객체를 확장하거나 새로 생성
   window.ZuppSEO = Object.assign(window.ZuppSEO || {}, {
@@ -529,14 +525,6 @@
     }
   });
 
-  // 디버깅: ZuppSEO 객체 확인
-  if (CONFIG.debug) {
-    console.log('🚀 window.ZuppSEO 생성 완료:', {
-      BaseAnalyzer: window.ZuppSEO.BaseAnalyzer,
-      utils: window.ZuppSEO.utils,
-      version: window.ZuppSEO.version
-    });
-  }
   
   // 로딩 완료 플래그 설정 - 다른 스크립트들이 이를 확인할 수 있음
   window.ZuppSEO.ready = true;
@@ -548,8 +536,6 @@
       detail: { ready: true, timestamp: window.ZuppSEO.loadedAt }
     }));
   }
-  
-  if (CONFIG.debug) console.log('✅ zupp.js 초기화 완료 - BaseAnalyzer 사용 가능');
   
   // 자동 실행 비활성화 (테스트 환경)
   // 수동으로 window.ZuppSEO.run() 호출하여 실행

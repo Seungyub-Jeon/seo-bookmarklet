@@ -153,7 +153,8 @@
       const description = document.querySelector('meta[name="description"]')?.content || '';
       const h1 = document.querySelector('h1')?.textContent?.trim() || '';
       const canonical = document.querySelector('link[rel="canonical"]')?.href || '';
-      const robotsTag = document.querySelector('meta[name="robots"]')?.content || 'index,follow';
+      const robotsElement = document.querySelector('meta[name="robots"]');
+      const robotsTag = robotsElement?.content || '';
       const lang = document.documentElement.lang || document.querySelector('html')?.getAttribute('lang') || '';
       const author = document.querySelector('meta[name="author"]')?.content || '';
       const publisher = document.querySelector('meta[name="publisher"]')?.content || 
@@ -184,9 +185,10 @@
         },
         settings: {
           robots: {
-            content: robotsTag,
-            isIndexable: !robotsTag.includes('noindex'),
-            isFollowable: !robotsTag.includes('nofollow')
+            content: robotsTag || 'index,follow (기본값)',
+            exists: !!robotsElement,
+            isIndexable: !robotsTag ? true : !robotsTag.includes('noindex'),
+            isFollowable: !robotsTag ? true : !robotsTag.includes('nofollow')
           },
           lang: {
             content: lang,
@@ -650,6 +652,11 @@
       const category = this.categories[categoryKey];
       if (!category) return '';
 
+      // 메타 데이터 카테고리는 특별 처리
+      if (categoryKey === 'meta') {
+        return this.renderMetaCategory(category);
+      }
+
       return `
         <div class="category-detail">
           <div class="category-header">
@@ -694,6 +701,107 @@
           </div>
         </div>
       `;
+    }
+
+    renderMetaCategory(category) {
+      const metaData = this.results.categories?.meta?.data || {};
+      
+      return `
+        <div class="category-detail">
+          <div class="category-header">
+            <div class="cat-title">
+              <span class="cat-icon-large">${category.icon}</span>
+              <div>
+                <h2>${category.name}</h2>
+                <p class="cat-summary">${category.items.length}개 항목 체크</p>
+              </div>
+            </div>
+            <div class="cat-score">
+              <div class="score-bar">
+                <div class="score-fill" style="width: ${category.score}%; background: ${this.getScoreColor(category.score)}"></div>
+              </div>
+              <span class="score-label">${category.score}/100</span>
+            </div>
+          </div>
+
+          <div class="check-list meta-check-list">
+            ${this.renderMetaItem('Title 태그', metaData.title)}
+            ${this.renderMetaItem('Meta Description', metaData.description)}
+            ${this.renderMetaItem('Meta Keywords', metaData.keywords)}
+            ${this.renderMetaItem('Robots 태그', metaData.robots)}
+            ${this.renderMetaItem('Viewport', metaData.viewport)}
+            ${this.renderMetaItem('Charset', metaData.charset)}
+            ${this.renderMetaItem('Canonical URL', metaData.canonical)}
+            ${this.renderMetaItem('Author', metaData.author)}
+          </div>
+        </div>
+      `;
+    }
+
+    renderMetaItem(title, data) {
+      if (!data) return '';
+      
+      const hasHtmlCode = data.htmlCode !== null && data.htmlCode !== undefined;
+      const content = data.text || data.content || data.href || data.value || '';
+      const length = data.length;
+      const isRobots = title.includes('Robots');
+      
+      // 상태 결정
+      let status = 'success';
+      if (!data.exists && !isRobots) {
+        status = 'error';
+      } else if (!data.exists && isRobots) {
+        status = 'info'; // Robots 태그는 없어도 기본값이 있으므로 info로 표시
+      } else if (length !== undefined) {
+        if (title.includes('Title') && (length < 30 || length > 60)) status = 'warning';
+        if (title.includes('Description') && (length < 120 || length > 160)) status = 'warning';
+      }
+      
+      // Robots 태그 특별 처리
+      const displayContent = isRobots && !data.exists ? 
+        'index,follow (기본값)' : 
+        content;
+      
+      return `
+        <div class="check-item ${status}">
+          <div class="check-indicator">
+            ${status === 'success' ? '✓' : status === 'warning' ? '!' : status === 'info' ? 'ℹ' : '×'}
+          </div>
+          <div class="check-content">
+            <div class="check-title">${title}</div>
+            ${displayContent || data.defaultValue ? `
+              <div class="check-current">
+                <span class="label">내용:</span>
+                <code>${this.escapeHtml(displayContent || data.defaultValue)}</code>
+                ${length !== undefined ? `<span class="meta-length">(${length}자)</span>` : ''}
+                ${data.defaultValue ? `<span class="meta-info">(기본값 적용)</span>` : ''}
+              </div>
+            ` : ''}
+            ${hasHtmlCode ? `
+              <div class="check-code">
+                <span class="label">코드:</span>
+                <button class="code-copy-btn" onclick="window.ZuppUI.copyCode('${this.escapeHtml(data.htmlCode).replace(/'/g, "\\'")}')">
+                  📋 복사
+                </button>
+                <pre class="html-code">${this.escapeHtml(data.htmlCode)}</pre>
+              </div>
+            ` : !data.exists ? `
+              <div class="check-current">
+                <span class="${isRobots ? 'status-info' : 'status-missing'}">
+                  ${isRobots ? '명시적 설정 없음 (기본값: index,follow 적용)' : '설정되지 않음'}
+                </span>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    copyCode(code) {
+      const decodedCode = code.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&');
+      navigator.clipboard.writeText(decodedCode).then(() => {
+        alert('코드가 클립보드에 복사되었습니다!');
+      });
     }
 
     getScoreColor(score) {
@@ -744,623 +852,6 @@
       link.href = baseUrl + 'ui.css';
       
       document.head.appendChild(link);
-    }
-
-    /* CSS 코드 제거됨 - ui.css 파일 사용 */
-
-    attachEventListeners() {
-      // 카테고리 네비게이션을 위한 임시 스킵
-      if (false) { // 나머지 CSS 제거를 위한 임시 처리
-        const skipCSS = `#zupp-backdrop {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: rgba(0, 0, 0, 0.5);
-          backdrop-filter: blur(4px);
-          z-index: 999998;
-          animation: fadeIn 0.3s ease-out;
-        }
-        
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-        
-        @keyframes fadeOut {
-          from {
-            opacity: 1;
-          }
-          to {
-            opacity: 0;
-          }
-        }
-        
-        /* 메인 컨테이너 */
-        #zupp-modern-panel {
-          position: fixed;
-          right: 10px;
-          top: 10px;
-          width: 960px;
-          max-width: calc(100vw - 20px);
-          height: calc(100vh - 20px);
-          max-height: calc(100vh - 20px);
-          background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
-          border-radius: 20px;
-          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
-          z-index: 999999;
-          font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
-          overflow: hidden;
-          display: flex;
-          flex-direction: column;
-          animation: slideInRight 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        
-        @keyframes slideInRight {
-          from {
-            opacity: 0;
-            transform: translateX(100%) scale(0.95);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0) scale(1);
-          }
-        }
-        
-        @keyframes slideOutRight {
-          from {
-            opacity: 1;
-            transform: translateX(0) scale(1);
-          }
-          to {
-            opacity: 0;
-            transform: translateX(100%) scale(0.95);
-          }
-        }
-
-        .zupp-modern {
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-          background: #ffffff;
-        }
-
-        /* 헤더 */
-        .zupp-header {
-          padding: 24px 32px;
-          border-bottom: 1px solid #f3f4f6;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          background: #ffffff;
-        }
-
-        .header-left {
-          display: flex;
-          align-items: center;
-          gap: 16px;
-        }
-
-        .score-circle {
-          width: 48px;
-          height: 48px;
-        }
-
-        .circular-chart {
-          width: 48px;
-          height: 48px;
-          transform: rotate(-90deg);
-        }
-
-        .circle-bg {
-          fill: none;
-          stroke: #f3f4f6;
-          stroke-width: 3;
-        }
-
-        .circle {
-          fill: none;
-          stroke: #6366f1;
-          stroke-width: 3;
-          stroke-linecap: round;
-          animation: progress 1s ease-out forwards;
-        }
-
-        @keyframes progress {
-          0% { stroke-dasharray: 0 100; }
-        }
-
-        .score-text {
-          fill: #111827;
-          font-size: 14px;
-          font-weight: 600;
-          text-anchor: middle;
-          transform: rotate(90deg);
-          transform-origin: center;
-        }
-
-        .header-info h1 {
-          margin: 0;
-          font-size: 18px;
-          font-weight: 600;
-          color: #111827;
-        }
-
-        .header-info p {
-          margin: 2px 0 0;
-          font-size: 13px;
-          color: #6b7280;
-        }
-
-        .header-right {
-          display: flex;
-          gap: 8px;
-        }
-
-        .btn-icon {
-          width: 32px;
-          height: 32px;
-          border: none;
-          background: transparent;
-          color: #6b7280;
-          border-radius: 8px;
-          cursor: pointer;
-          font-size: 20px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          transition: all 0.2s;
-        }
-
-        .btn-icon:hover {
-          background: #f3f4f6;
-          color: #111827;
-        }
-
-        /* 카테고리 네비게이션 */
-        .category-nav {
-          padding: 16px 24px;
-          background: linear-gradient(to bottom, #fafbff, #f5f6fa);
-          border-bottom: 1px solid rgba(99, 102, 241, 0.1);
-          display: flex;
-          gap: 6px;
-          overflow-x: auto;
-          scrollbar-width: thin;
-          scrollbar-color: #e5e7eb #f9fafb;
-        }
-
-        .category-nav::-webkit-scrollbar {
-          display: none;
-        }
-
-        .cat-btn {
-          padding: 10px 14px;
-          border: 1px solid rgba(0, 0, 0, 0.06);
-          background: rgba(255, 255, 255, 0.8);
-          border-radius: 12px;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          font-size: 13px;
-          color: #6b7280;
-          white-space: nowrap;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          position: relative;
-          backdrop-filter: blur(10px);
-        }
-
-        .cat-btn:hover {
-          background: white;
-          border-color: rgba(99, 102, 241, 0.2);
-          color: #4f46e5;
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
-        }
-
-        .cat-btn.active {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          color: white;
-          border-color: transparent;
-          font-weight: 600;
-          box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-
-        .cat-icon {
-          font-size: 16px;
-        }
-
-        .cat-name {
-          font-size: 13px;
-        }
-
-        .issue-badge {
-          position: absolute;
-          top: 4px;
-          right: 4px;
-          background: #ef4444;
-          color: white;
-          font-size: 10px;
-          padding: 1px 4px;
-          border-radius: 10px;
-          font-weight: 600;
-          min-width: 16px;
-          text-align: center;
-        }
-
-        /* 콘텐츠 영역 */
-        .content-area {
-          flex: 1;
-          overflow-y: auto;
-          padding: 24px 32px;
-          background: #ffffff;
-        }
-
-        /* 전체 보기 그리드 */
-        .overview-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-          gap: 16px;
-        }
-
-        .overview-card {
-          background: linear-gradient(135deg, #ffffff 0%, #fafbff 100%);
-          border: 1px solid rgba(0, 0, 0, 0.06);
-          border-radius: 16px;
-          padding: 20px;
-          cursor: pointer;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          position: relative;
-          overflow: hidden;
-        }
-        
-        .overview-card::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          height: 3px;
-          background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
-          opacity: 0;
-          transition: opacity 0.3s;
-        }
-
-        .overview-card:hover {
-          border-color: rgba(99, 102, 241, 0.2);
-          box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.25);
-          transform: translateY(-4px) scale(1.02);
-        }
-        
-        .overview-card:hover::before {
-          opacity: 1;
-        }
-
-        .card-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 8px;
-        }
-
-        .card-icon {
-          font-size: 24px;
-        }
-
-        .card-score {
-          font-size: 20px;
-          font-weight: 600;
-        }
-
-        .overview-card h3 {
-          margin: 0 0 12px;
-          font-size: 13px;
-          font-weight: 500;
-          color: #374151;
-        }
-
-        .card-stats {
-          display: flex;
-          gap: 10px;
-          padding-top: 12px;
-          margin-top: 12px;
-          border-top: 1px solid rgba(0, 0, 0, 0.05);
-          font-size: 12px;
-          color: #6b7280;
-        }
-
-        .stat-item {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          font-weight: 500;
-        }
-
-        .dot {
-          width: 10px;
-          height: 10px;
-          border-radius: 50%;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .dot.error {
-          background: linear-gradient(135deg, #ef4444, #dc2626);
-        }
-
-        .dot.warning {
-          background: linear-gradient(135deg, #f59e0b, #d97706);
-        }
-
-        .dot.success {
-          background: linear-gradient(135deg, #10b981, #059669);
-        }
-
-        /* 카테고리 상세 */
-        .category-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding-bottom: 20px;
-          border-bottom: 1px solid #f3f4f6;
-          margin-bottom: 20px;
-        }
-
-        .cat-title {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-        }
-
-        .cat-icon-large {
-          font-size: 32px;
-        }
-
-        .cat-title h2 {
-          margin: 0;
-          font-size: 18px;
-          font-weight: 600;
-          color: #111827;
-        }
-
-        .cat-summary {
-          margin: 4px 0 0;
-          font-size: 13px;
-          color: #6b7280;
-        }
-
-        .cat-score {
-          text-align: right;
-        }
-
-        .score-bar {
-          width: 120px;
-          height: 8px;
-          background: #f3f4f6;
-          border-radius: 4px;
-          overflow: hidden;
-          margin-bottom: 4px;
-        }
-
-        .score-fill {
-          height: 100%;
-          border-radius: 4px;
-          transition: width 0.5s ease;
-        }
-
-        .score-label {
-          font-size: 13px;
-          color: #6b7280;
-          font-weight: 500;
-        }
-
-        /* 체크 리스트 */
-        .check-list {
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-        }
-
-        .check-item {
-          display: flex;
-          align-items: flex-start;
-          gap: 12px;
-          padding: 12px;
-          background: #ffffff;
-          border: 1px solid #e5e7eb;
-          border-radius: 10px;
-          transition: all 0.2s;
-        }
-
-        .check-item:hover {
-          box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-        }
-
-        .check-item.error {
-          border-color: #fee2e2;
-          background: #fef2f2;
-        }
-
-        .check-item.warning {
-          border-color: #fed7aa;
-          background: #fff7ed;
-        }
-
-        .check-item.success {
-          border-color: #d1fae5;
-          background: #f0fdf4;
-        }
-
-        .check-indicator {
-          width: 24px;
-          height: 24px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-weight: 600;
-          font-size: 14px;
-          flex-shrink: 0;
-        }
-
-        .check-item.error .check-indicator {
-          background: #ef4444;
-          color: white;
-        }
-
-        .check-item.warning .check-indicator {
-          background: #f59e0b;
-          color: white;
-        }
-
-        .check-item.success .check-indicator {
-          background: #10b981;
-          color: white;
-        }
-
-        .check-content {
-          flex: 1;
-        }
-
-        .check-title {
-          font-size: 14px;
-          font-weight: 500;
-          color: #111827;
-          margin-bottom: 4px;
-        }
-
-        .check-current {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          margin: 4px 0;
-          font-size: 12px;
-        }
-
-        .check-current .label {
-          color: #6b7280;
-        }
-
-        .check-current code {
-          background: #f3f4f6;
-          padding: 2px 6px;
-          border-radius: 4px;
-          font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
-          color: #374151;
-        }
-
-        .check-suggestion {
-          font-size: 12px;
-          color: #6b7280;
-          margin-top: 4px;
-        }
-
-        .fix-btn {
-          padding: 4px 12px;
-          background: #6366f1;
-          color: white;
-          border: none;
-          border-radius: 6px;
-          font-size: 12px;
-          font-weight: 500;
-          cursor: pointer;
-          transition: all 0.2s;
-        }
-
-        .fix-btn:hover {
-          background: #4f46e5;
-        }
-
-        /* 액션 바 */
-        .action-bar {
-          padding: 12px 20px;
-          border-top: 1px solid #f3f4f6;
-          display: flex;
-          gap: 8px;
-          background: #f9fafb;
-        }
-
-        .action-btn {
-          flex: 1;
-          padding: 8px;
-          background: #ffffff;
-          border: 1px solid #e5e7eb;
-          border-radius: 8px;
-          color: #374151;
-          font-size: 13px;
-          font-weight: 500;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 6px;
-          transition: all 0.2s;
-        }
-
-        .action-btn:hover {
-          background: #f3f4f6;
-          border-color: #d1d5db;
-        }
-
-        .action-btn svg {
-          stroke-width: 2;
-        }
-
-        /* 스크롤바 스타일 */
-        .content-area::-webkit-scrollbar {
-          width: 6px;
-        }
-
-        .content-area::-webkit-scrollbar-track {
-          background: transparent;
-        }
-
-        .content-area::-webkit-scrollbar-thumb {
-          background: #d1d5db;
-          border-radius: 3px;
-        }
-
-        .content-area::-webkit-scrollbar-thumb:hover {
-          background: #9ca3af;
-        }
-        
-        /* 반응형 디자인 */
-        @media (max-width: 1024px) {
-          #zupp-modern-panel {
-            width: 100vw;
-            max-width: 100vw;
-            border-radius: 0;
-          }
-          
-          .overview-grid {
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-          }
-        }
-        
-        @media (max-width: 768px) {
-          .zupp-header {
-            padding: 16px 20px;
-          }
-          
-          .content-area {
-            padding: 16px 20px;
-          }
-          
-          .category-nav {
-            padding: 12px 16px;
-          }
-          
-          .overview-grid {
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 12px;
-          }
-        }
-      `;
-      }
     }
 
     attachEventListeners() {
