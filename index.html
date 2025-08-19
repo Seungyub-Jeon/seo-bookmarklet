@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>zupp - 한 번의 클릭으로 완벽한 SEO 분석</title>
+    <meta name="description" content="zupp는 13개 전문 분석기로 65개 이상의 SEO 체크 항목을 실시간으로 분석하는 무료 북마클릿 도구입니다.">
+    <meta name="keywords" content="SEO, 검색엔진최적화, 북마클릿, 웹사이트 분석, SEO 도구">
+    <meta property="og:title" content="zupp - 한 번의 클릭으로 완벽한 SEO 분석">
+    <meta property="og:description" content="65개 이상의 SEO 체크 항목을 실시간으로 분석하는 무료 북마클릿">
+    <meta property="og:image" content="og-image.jpg">
+    <link rel="canonical" href="https://zupp.com">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #1a202c;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* 헤더 */
+        header {
+            padding: 30px 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            transition: all 0.3s;
+        }
+
+        header.scrolled {
+            padding: 15px 0;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        header.scrolled .logo {
+            color: #667eea;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        header.scrolled .nav-links a {
+            color: #4a5568;
+        }
+
+        /* 히어로 섹션 */
+        .hero {
+            padding: 180px 0 100px;
+            text-align: center;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .hero .subtitle {
+            font-size: 22px;
+            margin-bottom: 40px;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        /* 북마클릿 섹션 */
+        .bookmarklet-section {
+            background: white;
+            padding: 80px 0;
+            border-radius: 20px 20px 0 0;
+            margin-top: -20px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #2d3748;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 20px;
+            color: #718096;
+            margin-bottom: 60px;
+        }
+
+        .install-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .step {
+            text-align: center;
+            padding: 30px;
+            background: #f7fafc;
+            border-radius: 16px;
+            transition: all 0.3s;
+        }
+
+        .step:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+
+        .step h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: #2d3748;
+        }
+
+        .step p {
+            color: #718096;
+            line-height: 1.6;
+        }
+
+        .bookmarklet-button {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #f6f8fb 0%, #e9ecef 100%);
+            border-radius: 16px;
+            margin-bottom: 40px;
+        }
+
+        .bookmarklet-button h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #2d3748;
+        }
+
+        .bookmarklet-link {
+            display: inline-block;
+            padding: 20px 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 20px;
+            font-weight: 600;
+            transition: all 0.3s;
+            cursor: move;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .bookmarklet-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        .drag-hint {
+            margin-top: 20px;
+            color: #718096;
+            font-size: 14px;
+        }
+
+        /* 기능 섹션 */
+        .features-section {
+            background: #f7fafc;
+            padding: 80px 0;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            transition: all 0.3s;
+            border: 1px solid #e2e8f0;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #2d3748;
+        }
+
+        .feature-card p {
+            color: #718096;
+            line-height: 1.6;
+        }
+
+        .feature-list {
+            margin-top: 15px;
+            padding-left: 20px;
+        }
+
+        .feature-list li {
+            color: #718096;
+            margin-bottom: 8px;
+        }
+
+        /* 통계 섹션 */
+        .stats-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 80px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 20px;
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        /* 분석기 목록 */
+        .analyzers-section {
+            background: white;
+            padding: 80px 0;
+        }
+
+        .analyzers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .analyzer-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+
+        .analyzer-item:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateX(10px);
+        }
+
+        .analyzer-icon {
+            font-size: 32px;
+        }
+
+        .analyzer-info h4 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .analyzer-info p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        /* CTA 섹션 */
+        .cta-section {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            padding: 80px 0;
+            text-align: center;
+            color: white;
+        }
+
+        .cta-section h2 {
+            font-size: 42px;
+            margin-bottom: 20px;
+        }
+
+        .cta-section p {
+            font-size: 20px;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        /* 푸터 */
+        footer {
+            background: #1a202c;
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .footer-links a {
+            color: #cbd5e0;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .copyright {
+            color: #718096;
+            margin-top: 20px;
+        }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .hero .subtitle {
+                font-size: 18px;
+            }
+
+            .section-title {
+                font-size: 32px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .install-steps {
+                grid-template-columns: 1fr;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* 애니메이션 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* 데모 버튼 */
+        .demo-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .demo-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- 헤더 -->
+    <header id="header">
+        <nav class="container">
+            <a href="#" class="logo">
+                <span>🔍</span>
+                <span>zupp</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#features">기능</a></li>
+                <li><a href="#install">설치</a></li>
+                <li><a href="#analyzers">분석기</a></li>
+                <li><a href="https://github.com/yourusername/zupp" target="_blank">GitHub</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- 히어로 섹션 -->
+    <section class="hero">
+        <div class="container fade-in-up">
+            <h1>한 번의 클릭으로<br>완벽한 SEO 분석</h1>
+            <p class="subtitle">zupp는 65개 이상의 SEO 체크 항목을 실시간으로 분석하는<br>강력한 북마클릿 도구입니다</p>
+            <div class="hero-buttons">
+                <a href="#install" class="btn btn-primary">
+                    <span>⚡</span>
+                    <span>지금 설치하기</span>
+                </a>
+                <button onclick="runDemo()" class="btn btn-secondary">
+                    <span>🎯</span>
+                    <span>데모 실행</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 북마클릿 설치 섹션 -->
+    <section id="install" class="bookmarklet-section">
+        <div class="container">
+            <h2 class="section-title">🚀 30초 만에 설치 완료</h2>
+            <p class="section-subtitle">별도의 프로그램 설치 없이 북마크에 추가하기만 하면 됩니다</p>
+
+            <!-- 북마클릿 버튼 -->
+            <div class="bookmarklet-button">
+                <h3>👇 아래 버튼을 북마크 바로 드래그하세요</h3>
+                <a href="javascript:(function(){const BASE_URL='http://localhost:8000/';const cssLink=document.createElement('link');cssLink.rel='stylesheet';cssLink.type='text/css';cssLink.href=BASE_URL+'ui.css';document.head.appendChild(cssLink);window.ZuppSEO=window.ZuppSEO||{};window.ZuppSEO.baseUrl=BASE_URL;const scripts=['zupp.js','analyzers.js','analyzers-extended.js','analyzers-technical.js','analyzers-geo-mobile.js','ui.js'];let index=0;function loadNextScript(){if(index>=scripts.length){setTimeout(()=>{if(window.ZuppSEO&&window.ZuppSEO.run){console.log('🚀 Running ZuppSEO...');window.ZuppSEO.run();}else{console.error('❌ ZuppSEO not found');}},100);return;}const src=scripts[index];const script=document.createElement('script');script.src=BASE_URL+src;script.onload=()=>{console.log('✅ '+src+' loaded ('+(index+1)+'/'+scripts.length+')');index++;loadNextScript();};script.onerror=()=>{console.error('❌ Failed to load '+src+' from '+BASE_URL);};document.head.appendChild(script);}console.log('📍 Loading from:',BASE_URL);loadNextScript();})();" 
+                   class="bookmarklet-link" 
+                   onclick="alert('🔖 이 버튼을 북마크 바로 드래그하세요!'); return false;">
+                    🔍 zupp SEO 분석
+                </a>
+                <p class="drag-hint">💡 Tip: 버튼을 클릭하지 말고 드래그해서 북마크 바에 놓으세요</p>
+                <p class="drag-hint" style="color: #e53e3e; margin-top: 10px;">⚠️ 주의: 로컬 서버(localhost:8000)가 실행 중이어야 합니다!</p>
+            </div>
+
+            <!-- 설치 단계 -->
+            <div class="install-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>북마크 바 표시</h3>
+                    <p>브라우저 상단에 북마크 바가 보이지 않으면<br>
+                    <strong>Ctrl+Shift+B</strong> (Windows) 또는<br>
+                    <strong>Cmd+Shift+B</strong> (Mac)을 누르세요</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>버튼 드래그</h3>
+                    <p>위의 보라색 "🔍 zupp SEO 분석" 버튼을<br>
+                    마우스로 클릭한 채로<br>
+                    북마크 바로 드래그하세요</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>분석 시작!</h3>
+                    <p>분석하고 싶은 웹사이트에서<br>
+                    북마크에 추가된 "zupp SEO 분석"을<br>
+                    클릭하면 즉시 분석이 시작됩니다</p>
+                </div>
+            </div>
+
+            <!-- 대체 설치 방법 -->
+            <details style="margin-top: 40px; padding: 20px; background: #f7fafc; border-radius: 12px;">
+                <summary style="cursor: pointer; font-size: 18px; font-weight: 600; color: #2d3748;">
+                    📌 드래그가 안 되는 경우 (수동 설치)
+                </summary>
+                <ol style="margin-top: 20px; padding-left: 20px; line-height: 2;">
+                    <li>북마크 바에서 우클릭 → "페이지 추가" 또는 "북마크 추가" 선택</li>
+                    <li>이름: <code style="background: #e2e8f0; padding: 4px 8px; border-radius: 4px;">zupp SEO 분석</code></li>
+                    <li>URL: 아래 코드를 복사해서 붙여넣기
+                        <div style="margin-top: 10px; padding: 15px; background: #2d3748; color: #48bb78; border-radius: 8px; font-family: monospace; font-size: 12px; overflow-x: auto;">
+                            javascript:(function(){const BASE_URL='http://localhost:8000/';const cssLink=document.createElement('link');cssLink.rel='stylesheet';cssLink.type='text/css';cssLink.href=BASE_URL+'ui.css';document.head.appendChild(cssLink);window.ZuppSEO=window.ZuppSEO||{};window.ZuppSEO.baseUrl=BASE_URL;const scripts=['zupp.js','analyzers.js','analyzers-extended.js','analyzers-technical.js','analyzers-geo-mobile.js','ui.js'];let index=0;function loadNextScript(){if(index>=scripts.length){setTimeout(()=>{if(window.ZuppSEO&&window.ZuppSEO.run){window.ZuppSEO.run();}},100);return;}const src=scripts[index];const script=document.createElement('script');script.src=BASE_URL+src;script.onload=()=>{index++;loadNextScript();};document.head.appendChild(script);}loadNextScript();})();
+                        </div>
+                    </li>
+                    <li>저장 클릭 → 완료! 🎉</li>
+                </ol>
+            </details>
+        </div>
+    </section>
+
+    <!-- 기능 섹션 -->
+    <section id="features" class="features-section">
+        <div class="container">
+            <h2 class="section-title">✨ 강력한 기능</h2>
+            <p class="section-subtitle">zupp만의 차별화된 SEO 분석 기능을 경험하세요</p>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>실시간 분석</h3>
+                    <p>페이지 새로고침 없이 현재 보고 있는 페이지를 즉시 분석합니다. 2초 이내에 전체 분석이 완료됩니다.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>65+ 체크 항목</h3>
+                    <p>메타데이터, 헤딩, 이미지, 링크, 콘텐츠, 성능, 접근성 등 SEO의 모든 측면을 종합적으로 검사합니다.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>AI 검색 최적화</h3>
+                    <p>ChatGPT, Claude, Perplexity 등 AI 검색엔진을 위한 GEO(Generative Engine Optimization)를 지원합니다.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>모바일 최적화</h3>
+                    <p>반응형 디자인, 터치 타겟 크기, 폰트 크기 등 모바일 UX를 종합적으로 체크합니다.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🇰🇷</div>
+                    <h3>한국어 인터페이스</h3>
+                    <p>100% 한국어로 현지화된 UI와 메시지로 편리하게 사용할 수 있습니다.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🆓</div>
+                    <h3>완전 무료</h3>
+                    <p>오픈소스 프로젝트로 누구나 무료로 사용할 수 있으며, 기여도 환영합니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 통계 섹션 -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">13</div>
+                    <div class="stat-label">전문 분석기</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">65+</div>
+                    <div class="stat-label">체크 항목</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2초</div>
+                    <div class="stat-label">분석 시간</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">한국어 지원</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 분석기 목록 -->
+    <section id="analyzers" class="analyzers-section">
+        <div class="container">
+            <h2 class="section-title">🔍 13개 전문 분석기</h2>
+            <p class="section-subtitle">각 분야별 전문 분석기가 심층적으로 검사합니다</p>
+
+            <div class="analyzers-grid">
+                <div class="analyzer-item">
+                    <div class="analyzer-icon">🏷️</div>
+                    <div class="analyzer-info">
+                        <h4>메타데이터</h4>
+                        <p>Title, Description, OG 태그</p>
+                    </div>
+                </div>
+                <div class="analyzer-item">
+                    <div class="analyzer-icon">📝</div>
+                    <div class="analyzer-info">
+                        <h4>헤딩 구조</h4>
+                        <p>H1-H6 계층, 키워드 밀도</p>
+                    </div>
+                </div>
+                <div class="analyzer-item">
+                    <div class="analyzer-icon">🖼️</div>
+                    <div class="analyzer-info">
+                        <h4>이미지 최적화</h4>
+                        <p>Alt 텍스트, 파일 크기, 포맷</p>
+                    </div>
+                </div>
+                <div class="analyzer-item">
+                    <div class="analyzer-icon">🔗</div>
+                    <div class="analyzer-info">
+                        <h4>링크 구조</h4>
+                        <p>내외부 링크, 앵커 텍스트</p>
+                    </div>
+                </div>
+                <div class="analyzer-item">
+                    <div class="analyzer-icon">📱</div>
+                    <div class="analyzer-info">
+                        <h4>소셜 미디어</h4>
+                        <p>Open Graph, Twitter Card</p>
+                    </div>
+                </div>
+                <div class="analyzer-item">
+                    <div class="analyzer-icon">📄</div>
+                    <div class="analyzer-info">
+                        <h4>콘텐츠 품질</h4>
+                        <p>텍스트 길이, 가독성, 구조</p>
+                    </div>
+                </div>
+                <div class="analyzer-item">
+                    <div class="analyzer-icon">🏗️</div>
+                    <div class="analyzer-info">
+                        <h4>시맨틱 HTML</h4>
+                        <p>HTML5 태그, ARIA 속성</p>
+                    </div>
+                </div>
+                <div class="analyzer-item">
+                    <div class="analyzer-icon">♿</div>
+                    <div class="analyzer-info">
+                        <h4>접근성</h4>
+                        <p>WCAG 준수, 키보드 접근성</p>
+                    </div>
+                </div>
+                <div class="analyzer-item">
+                    <div class="analyzer-icon">📊</div>
+                    <div class="analyzer-info">
+                        <h4>구조화 데이터</h4>
+                        <p>Schema.org, JSON-LD</p>
+                    </div>
+                </div>
+                <div class="analyzer-item">
+                    <div class="analyzer-icon">⚙️</div>
+                    <div class="analyzer-info">
+                        <h4>기술적 SEO</h4>
+                        <p>Canonical, Robots, Sitemap</p>
+                    </div>
+                </div>
+                <div class="analyzer-item">
+                    <div class="analyzer-icon">⚡</div>
+                    <div class="analyzer-info">
+                        <h4>성능</h4>
+                        <p>로딩 속도, Core Web Vitals</p>
+                    </div>
+                </div>
+                <div class="analyzer-item">
+                    <div class="analyzer-icon">🤖</div>
+                    <div class="analyzer-info">
+                        <h4>AI 최적화</h4>
+                        <p>GEO, FAQ 스키마, 요약</p>
+                    </div>
+                </div>
+                <div class="analyzer-item">
+                    <div class="analyzer-icon">📱</div>
+                    <div class="analyzer-info">
+                        <h4>모바일 UX</h4>
+                        <p>반응형, 터치 타겟, 폰트</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA 섹션 -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>지금 바로 시작하세요</h2>
+            <p>설치는 30초, 분석은 2초. 무료로 사용하세요.</p>
+            <a href="#install" class="btn btn-primary">
+                <span>🚀</span>
+                <span>무료로 설치하기</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- 푸터 -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="logo" style="color: white;">
+                    <span>🔍</span>
+                    <span>zupp</span>
+                </div>
+                <ul class="footer-links">
+                    <li><a href="https://github.com/yourusername/zupp" target="_blank">GitHub</a></li>
+                    <li><a href="#features">기능</a></li>
+                    <li><a href="#install">설치</a></li>
+                    <li><a href="mailto:contact@zupp.com">문의</a></li>
+                </ul>
+            </div>
+            <p class="copyright">© 2024 zupp. All rights reserved. Made with ❤️ for SEO professionals</p>
+        </div>
+    </footer>
+
+    <!-- 데모 버튼 (플로팅) -->
+    <button onclick="runDemo()" class="demo-button">
+        💎 여기서 테스트
+    </button>
+
+    <script>
+        // 스크롤 이벤트
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // 부드러운 스크롤
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // 데모 실행
+        async function runDemo() {
+            console.log('💎 zupp SEO 분석 데모 시작...');
+            
+            // 스크립트 로드
+            const scripts = [
+                'zupp.js',
+                'analyzers.js',
+                'analyzers-extended.js',
+                'analyzers-technical.js',
+                'analyzers-geo-mobile.js',
+                'ui.js'
+            ];
+            
+            for (const scriptName of scripts) {
+                await loadScript(scriptName);
+            }
+            
+            // 분석 실행
+            setTimeout(() => {
+                if (window.ZuppSEO && window.ZuppSEO.run) {
+                    window.ZuppSEO.run();
+                } else {
+                    alert('데모 로드 중... 잠시만 기다려주세요.');
+                }
+            }, 500);
+        }
+        
+        // 스크립트 로드 헬퍼
+        function loadScript(src) {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        }
+
+        // 페이드인 애니메이션
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in-up');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.feature-card, .step, .analyzer-item').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

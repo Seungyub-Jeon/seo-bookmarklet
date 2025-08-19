@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>zupp 북마클릿 테스트</title>
+    <meta name="description" content="zupp SEO 북마클릿이 정상 작동하는지 테스트하는 페이지입니다.">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .bookmarklet-link {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            margin: 10px 0;
+            cursor: move;
+        }
+        .code-block {
+            background: #2d3748;
+            color: #48bb78;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .instructions {
+            background: #e8f5fe;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .instructions h3 {
+            color: #0277bd;
+            margin-bottom: 10px;
+        }
+        .instructions ol {
+            padding-left: 20px;
+            line-height: 1.8;
+        }
+        button {
+            padding: 10px 20px;
+            background: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 6px;
+            display: none;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 zupp 북마클릿 테스트</h1>
+        
+        <div class="test-section">
+            <h2>방법 1: 드래그 & 드롭</h2>
+            <p>아래 버튼을 북마크 바로 드래그하세요:</p>
+            
+            <a href="javascript:(function(){const baseUrl=window.location.origin+window.location.pathname.replace(/[^\/]*$/,'');const cssLink=document.createElement('link');cssLink.rel='stylesheet';cssLink.type='text/css';cssLink.href=baseUrl+'ui.css';document.head.appendChild(cssLink);window.ZuppSEO=window.ZuppSEO||{};window.ZuppSEO.baseUrl=baseUrl;const scripts=['zupp.js','analyzers.js','analyzers-extended.js','analyzers-technical.js','analyzers-geo-mobile.js','ui.js'];let index=0;function loadNextScript(){if(index>=scripts.length){setTimeout(()=>{if(window.ZuppSEO&&window.ZuppSEO.run){console.log('🚀 Running ZuppSEO...');window.ZuppSEO.run();}else{console.error('❌ ZuppSEO not found');}},100);return;}const src=scripts[index];const script=document.createElement('script');script.src=baseUrl+src;script.onload=()=>{console.log('✅ '+src+' loaded ('+(index+1)+'/'+scripts.length+')');index++;loadNextScript();};script.onerror=()=>{console.error('❌ Failed to load '+src);};document.head.appendChild(script);}console.log('📍 Loading from:',baseUrl);loadNextScript();})();" 
+               class="bookmarklet-link">
+                🔍 zupp SEO 분석
+            </a>
+        </div>
+
+        <div class="test-section">
+            <h2>방법 2: 수동 복사</h2>
+            <p>아래 코드를 복사하여 북마크 URL에 붙여넣으세요:</p>
+            
+            <div class="code-block" id="bookmarklet-code">javascript:(function(){const baseUrl=window.location.origin+window.location.pathname.replace(/[^\/]*$/,'');const cssLink=document.createElement('link');cssLink.rel='stylesheet';cssLink.type='text/css';cssLink.href=baseUrl+'ui.css';document.head.appendChild(cssLink);window.ZuppSEO=window.ZuppSEO||{};window.ZuppSEO.baseUrl=baseUrl;const scripts=['zupp.js','analyzers.js','analyzers-extended.js','analyzers-technical.js','analyzers-geo-mobile.js','ui.js'];let loaded=0;function loadScript(src){const script=document.createElement('script');script.src=baseUrl+src;script.onload=()=>{loaded++;if(loaded===scripts.length){setTimeout(()=>{if(window.ZuppSEO&&window.ZuppSEO.run){window.ZuppSEO.run();}},100);}};script.onerror=()=>{console.error('Failed to load '+src);};document.head.appendChild(script);}scripts.forEach(loadScript);})();</div>
+            
+            <button onclick="copyCode()">📋 코드 복사</button>
+        </div>
+
+        <div class="test-section">
+            <h2>방법 3: 즉시 테스트</h2>
+            <p>북마클릿을 설치하지 않고 바로 테스트해보세요:</p>
+            
+            <button onclick="runDirectly()">▶️ 직접 실행</button>
+            <button onclick="checkFiles()">📁 파일 확인</button>
+            
+            <div id="status" class="status"></div>
+        </div>
+
+        <div class="instructions">
+            <h3>📌 설치 방법</h3>
+            <ol>
+                <li><strong>북마크 바 표시</strong>: Ctrl+Shift+B (Windows) 또는 Cmd+Shift+B (Mac)</li>
+                <li><strong>드래그 방법</strong>: 위의 보라색 버튼을 북마크 바로 드래그</li>
+                <li><strong>수동 방법</strong>: 
+                    <ul>
+                        <li>북마크 바에서 우클릭 → "페이지 추가"</li>
+                        <li>이름: zupp SEO 분석</li>
+                        <li>URL: 위의 코드 복사 후 붙여넣기</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div class="instructions" style="background: #fff3cd; border-left: 4px solid #ffc107;">
+            <h3>⚠️ 문제 해결</h3>
+            <ul>
+                <li><strong>아무 일도 일어나지 않음</strong>: 개발자 콘솔(F12)을 열고 에러 메시지 확인</li>
+                <li><strong>파일을 찾을 수 없음</strong>: 모든 JS 파일이 같은 폴더에 있는지 확인</li>
+                <li><strong>권한 오류</strong>: 로컬 파일에서는 작동하지 않을 수 있음. HTTP 서버 필요</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // 코드 복사
+        function copyCode() {
+            const code = document.getElementById('bookmarklet-code').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                showStatus('✅ 코드가 복사되었습니다!', 'success');
+            }).catch(err => {
+                showStatus('❌ 복사 실패: ' + err, 'error');
+            });
+        }
+
+        // 직접 실행
+        function runDirectly() {
+            console.log('🚀 zupp 직접 실행 시작...');
+            showStatus('로딩 중...', 'success');
+            
+            // CSS 파일 먼저 로드
+            const cssLink = document.createElement('link');
+            cssLink.rel = 'stylesheet';
+            cssLink.type = 'text/css';
+            cssLink.href = 'ui.css';
+            document.head.appendChild(cssLink);
+            
+            // baseUrl 설정
+            window.ZuppSEO = window.ZuppSEO || {};
+            window.ZuppSEO.baseUrl = window.location.origin + window.location.pathname.replace(/[^\/]*$/, '');
+            
+            const scripts = [
+                'zupp.js',
+                'analyzers.js',
+                'analyzers-extended.js',
+                'analyzers-technical.js',
+                'analyzers-geo-mobile.js',
+                'ui.js'
+            ];
+            
+            let index = 0;
+            
+            function loadNextScript() {
+                if (index >= scripts.length) {
+                    setTimeout(() => {
+                        if (window.ZuppSEO && window.ZuppSEO.run) {
+                            console.log('🎯 ZuppSEO 실행!');
+                            window.ZuppSEO.run();
+                            showStatus('✅ zupp SEO 분석이 시작되었습니다!', 'success');
+                        } else {
+                            showStatus('❌ ZuppSEO를 찾을 수 없습니다.', 'error');
+                        }
+                    }, 100);
+                    return;
+                }
+                
+                const src = scripts[index];
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = () => {
+                    console.log(`✅ ${src} loaded (${index + 1}/${scripts.length})`);
+                    index++;
+                    loadNextScript();
+                };
+                script.onerror = () => {
+                    showStatus(`❌ ${src} 로드 실패`, 'error');
+                    console.error(`Failed to load ${src}`);
+                };
+                document.head.appendChild(script);
+            }
+            
+            loadNextScript();
+        }
+
+        // 파일 확인
+        function checkFiles() {
+            const files = [
+                'ui.css',
+                'zupp.js',
+                'analyzers.js',
+                'analyzers-extended.js',
+                'analyzers-technical.js',
+                'analyzers-geo-mobile.js',
+                'ui.js'
+            ];
+            
+            console.log('📁 파일 확인 중...');
+            let results = [];
+            let checked = 0;
+            
+            files.forEach(file => {
+                fetch(file)
+                    .then(response => {
+                        checked++;
+                        if (response.ok) {
+                            results.push(`✅ ${file} - OK`);
+                        } else {
+                            results.push(`❌ ${file} - ${response.status}`);
+                        }
+                        
+                        if (checked === files.length) {
+                            showStatus(results.join('\n'), results.every(r => r.includes('✅')) ? 'success' : 'error');
+                            console.log(results.join('\n'));
+                        }
+                    })
+                    .catch(err => {
+                        checked++;
+                        results.push(`❌ ${file} - Error: ${err.message}`);
+                        
+                        if (checked === files.length) {
+                            showStatus(results.join('\n'), 'error');
+                            console.log(results.join('\n'));
+                        }
+                    });
+            });
+        }
+
+        // 상태 표시
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    status.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        // 페이지 로드 완료
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('🎯 zupp 북마클릿 테스트 페이지 준비 완료');
+            console.log('📍 현재 경로:', window.location.pathname);
+        });
+    </script>
+</body>
+</html>
