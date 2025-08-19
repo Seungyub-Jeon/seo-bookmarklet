@@ -41,15 +41,26 @@
     }
 
     collect() {
-      // Open Graph 태그
+      // Open Graph 태그 요소들
+      const ogElements = {
+        title: optimizer.querySelector('meta[property="og:title"]'),
+        description: optimizer.querySelector('meta[property="og:description"]'),
+        image: optimizer.querySelector('meta[property="og:image"]'),
+        url: optimizer.querySelector('meta[property="og:url"]'),
+        type: optimizer.querySelector('meta[property="og:type"]'),
+        siteName: optimizer.querySelector('meta[property="og:site_name"]'),
+        locale: optimizer.querySelector('meta[property="og:locale"]')
+      };
+
+      // Open Graph 데이터 수집
       this.data.openGraph = {
-        title: optimizer.querySelector('meta[property="og:title"]')?.content || '',
-        description: optimizer.querySelector('meta[property="og:description"]')?.content || '',
-        image: optimizer.querySelector('meta[property="og:image"]')?.content || '',
-        url: optimizer.querySelector('meta[property="og:url"]')?.content || '',
-        type: optimizer.querySelector('meta[property="og:type"]')?.content || '',
-        siteName: optimizer.querySelector('meta[property="og:site_name"]')?.content || '',
-        locale: optimizer.querySelector('meta[property="og:locale"]')?.content || '',
+        title: ogElements.title?.content || '',
+        description: ogElements.description?.content || '',
+        image: ogElements.image?.content || '',
+        url: ogElements.url?.content || '',
+        type: ogElements.type?.content || '',
+        siteName: ogElements.siteName?.content || '',
+        locale: ogElements.locale?.content || '',
         article: {
           author: optimizer.querySelector('meta[property="article:author"]')?.content || '',
           publishedTime: optimizer.querySelector('meta[property="article:published_time"]')?.content || '',
@@ -57,21 +68,61 @@
         }
       };
 
-      // Twitter Card 태그
-      this.data.twitter = {
-        card: optimizer.querySelector('meta[name="twitter:card"]')?.content || '',
-        title: optimizer.querySelector('meta[name="twitter:title"]')?.content || '',
-        description: optimizer.querySelector('meta[name="twitter:description"]')?.content || '',
-        image: optimizer.querySelector('meta[name="twitter:image"]')?.content || '',
-        site: optimizer.querySelector('meta[name="twitter:site"]')?.content || '',
-        creator: optimizer.querySelector('meta[name="twitter:creator"]')?.content || ''
+      // Open Graph HTML 코드 저장
+      this.data.openGraphHtml = {};
+      Object.keys(ogElements).forEach(key => {
+        if (ogElements[key]) {
+          this.data.openGraphHtml[key] = ogElements[key].outerHTML;
+        }
+      });
+
+      // Twitter Card 태그 요소들
+      const twitterElements = {
+        card: optimizer.querySelector('meta[name="twitter:card"]'),
+        title: optimizer.querySelector('meta[name="twitter:title"]'),
+        description: optimizer.querySelector('meta[name="twitter:description"]'),
+        image: optimizer.querySelector('meta[name="twitter:image"]'),
+        site: optimizer.querySelector('meta[name="twitter:site"]'),
+        creator: optimizer.querySelector('meta[name="twitter:creator"]')
       };
 
-      // 추가 소셜 태그
-      this.data.facebook = {
-        appId: optimizer.querySelector('meta[property="fb:app_id"]')?.content || '',
-        pages: optimizer.querySelector('meta[property="fb:pages"]')?.content || ''
+      // Twitter Card 데이터 수집
+      this.data.twitter = {
+        card: twitterElements.card?.content || '',
+        title: twitterElements.title?.content || '',
+        description: twitterElements.description?.content || '',
+        image: twitterElements.image?.content || '',
+        site: twitterElements.site?.content || '',
+        creator: twitterElements.creator?.content || ''
       };
+
+      // Twitter HTML 코드 저장
+      this.data.twitterHtml = {};
+      Object.keys(twitterElements).forEach(key => {
+        if (twitterElements[key]) {
+          this.data.twitterHtml[key] = twitterElements[key].outerHTML;
+        }
+      });
+
+      // Facebook 태그 요소들
+      const fbElements = {
+        appId: optimizer.querySelector('meta[property="fb:app_id"]'),
+        pages: optimizer.querySelector('meta[property="fb:pages"]')
+      };
+
+      // Facebook 데이터 수집
+      this.data.facebook = {
+        appId: fbElements.appId?.content || '',
+        pages: fbElements.pages?.content || ''
+      };
+
+      // Facebook HTML 코드 저장
+      this.data.facebookHtml = {};
+      Object.keys(fbElements).forEach(key => {
+        if (fbElements[key]) {
+          this.data.facebookHtml[key] = fbElements[key].outerHTML;
+        }
+      });
     }
 
     validate() {

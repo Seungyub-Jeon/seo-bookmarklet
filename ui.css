@@ -1854,6 +1854,130 @@
   color: #991b1b;
 }
 
+/* ============================
+   소셜미디어 분석 스타일
+   ============================ */
+
+/* 소셜 섹션 */
+.social-section {
+  margin: 20px 0;
+  padding: 15px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.social-section:first-child {
+  margin-top: 0;
+}
+
+.social-section .section-title {
+  margin: 0 0 15px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 소셜 메타 리스트 */
+.social-meta-list {
+  background: white;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+/* 소셜 메타 아이템 */
+.social-meta-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border-bottom: 1px solid #f3f4f6;
+  gap: 12px;
+}
+
+.social-meta-item:last-child {
+  border-bottom: none;
+}
+
+.social-meta-item.has-value {
+  background: #f0fdf4;
+  border-left: 3px solid #22c55e;
+}
+
+.social-meta-item.missing-value {
+  background: #fef2f2;
+  border-left: 3px solid #ef4444;
+}
+
+/* 메타 태그 이름 */
+.meta-tag-name {
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151;
+  min-width: 120px;
+  white-space: nowrap;
+}
+
+/* 메타 태그 콘텐츠 */
+.meta-tag-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.meta-tag-code {
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  color: #4b5563;
+  background: #f3f4f6;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+  word-break: break-all;
+}
+
+.meta-tag-missing {
+  color: #dc2626;
+  font-style: italic;
+  font-size: 12px;
+}
+
+/* Open Graph 특별 스타일 */
+.social-section:has(.section-title:contains("Facebook")) {
+  border-left: 4px solid #1877f2;
+}
+
+/* Twitter 특별 스타일 */  
+.social-section:has(.section-title:contains("Twitter")) {
+  border-left: 4px solid #1da1f2;
+}
+
+/* 모바일 반응형 - 소셜미디어 */
+@media (max-width: 768px) {
+  .social-meta-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .meta-tag-name {
+    min-width: auto;
+    width: 100%;
+  }
+  
+  .meta-tag-code {
+    font-size: 10px;
+    padding: 3px 6px;
+  }
+}
+
 /* 모바일 반응형 - 이미지 분석 */
 @media (max-width: 768px) {
   .stats-grid {

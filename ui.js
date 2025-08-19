@@ -672,6 +672,11 @@
         return this.renderLinkCategory(category);
       }
 
+      // 소셜미디어 카테고리도 특별 처리
+      if (categoryKey === 'social') {
+        return this.renderSocialCategory(category);
+      }
+
       return `
         <div class="category-detail">
           <div class="category-header">
@@ -1250,6 +1255,111 @@
       `;
     }
     
+    renderSocialCategory(category) {
+      const socialData = this.results.categories?.social?.data || {};
+      const openGraph = socialData.openGraph || {};
+      const openGraphHtml = socialData.openGraphHtml || {};
+      const twitter = socialData.twitter || {};
+      const twitterHtml = socialData.twitterHtml || {};
+      const facebook = socialData.facebook || {};
+      const facebookHtml = socialData.facebookHtml || {};
+      
+      return `
+        <div class="category-detail">
+          <div class="category-header">
+            <div class="cat-title">
+              <span class="cat-icon-large">${category.icon}</span>
+              <div>
+                <h2>${category.name} <span class="item-count">${category.items.length}개 항목 체크</span></h2>
+              </div>
+            </div>
+            <div class="cat-score">
+              <div class="score-bar">
+                <div class="score-fill" style="width: ${category.score}%; background: ${this.getScoreColor(category.score)}"></div>
+              </div>
+              <span class="score-label">${category.score}/100</span>
+            </div>
+          </div>
+
+          <!-- Open Graph 섹션 -->
+          <div class="social-section">
+            <h3 class="section-title">📘 Facebook (Open Graph)</h3>
+            <div class="social-meta-list">
+              ${this.renderSocialMetaItem('og:title', openGraph.title, openGraphHtml.title)}
+              ${this.renderSocialMetaItem('og:description', openGraph.description, openGraphHtml.description)}
+              ${this.renderSocialMetaItem('og:image', openGraph.image, openGraphHtml.image)}
+              ${this.renderSocialMetaItem('og:url', openGraph.url, openGraphHtml.url)}
+              ${this.renderSocialMetaItem('og:type', openGraph.type, openGraphHtml.type)}
+              ${this.renderSocialMetaItem('og:site_name', openGraph.siteName, openGraphHtml.siteName)}
+              ${this.renderSocialMetaItem('og:locale', openGraph.locale, openGraphHtml.locale)}
+            </div>
+          </div>
+
+          <!-- Twitter Card 섹션 -->
+          <div class="social-section">
+            <h3 class="section-title">🐦 Twitter Card</h3>
+            <div class="social-meta-list">
+              ${this.renderSocialMetaItem('twitter:card', twitter.card, twitterHtml.card)}
+              ${this.renderSocialMetaItem('twitter:title', twitter.title, twitterHtml.title)}
+              ${this.renderSocialMetaItem('twitter:description', twitter.description, twitterHtml.description)}
+              ${this.renderSocialMetaItem('twitter:image', twitter.image, twitterHtml.image)}
+              ${this.renderSocialMetaItem('twitter:site', twitter.site, twitterHtml.site)}
+              ${this.renderSocialMetaItem('twitter:creator', twitter.creator, twitterHtml.creator)}
+            </div>
+          </div>
+
+          <!-- Facebook 추가 설정 -->
+          ${facebook.appId || facebook.pages ? `
+            <div class="social-section">
+              <h3 class="section-title">⚙️ Facebook 추가 설정</h3>
+              <div class="social-meta-list">
+                ${facebook.appId ? this.renderSocialMetaItem('fb:app_id', facebook.appId, facebookHtml.appId) : ''}
+                ${facebook.pages ? this.renderSocialMetaItem('fb:pages', facebook.pages, facebookHtml.pages) : ''}
+              </div>
+            </div>
+          ` : ''}
+
+          <!-- 기본 체크리스트 -->
+          <div class="social-section">
+            <h3 class="section-title">📋 검증 결과</h3>
+            <div class="check-list category-checks">
+              ${category.items.map(item => `
+                <div class="check-item ${item.status}">
+                  <div class="check-indicator">
+                    ${item.status === 'success' ? '✓' : item.status === 'warning' ? '!' : item.status === 'info' ? 'ℹ' : '×'}
+                  </div>
+                  <div class="check-content">
+                    <div class="check-title">${item.title}</div>
+                    ${item.suggestion && item.status !== 'success' ? `
+                      <div class="check-suggestion">${item.suggestion}</div>
+                    ` : ''}
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    renderSocialMetaItem(tagName, content, htmlCode) {
+      const hasContent = content && content.trim() !== '';
+      const statusClass = hasContent ? 'has-value' : 'missing-value';
+      
+      return `
+        <div class="social-meta-item ${statusClass}">
+          <div class="meta-tag-name">${tagName}</div>
+          <div class="meta-tag-content">
+            ${hasContent ? `
+              <code class="meta-tag-code">${this.escapeHtml(htmlCode || `<meta property="${tagName}" content="${content}">`)}</code>
+            ` : `
+              <span class="meta-tag-missing">설정 안됨</span>
+            `}
+          </div>
+        </div>
+      `;
+    }
+
     toggleProblemLinks(listId) {
       const expandedList = document.getElementById(listId);
       const button = event.target.closest('.link-toggle-btn');
