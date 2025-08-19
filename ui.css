@@ -1713,8 +1713,8 @@
 
 /* 도메인 분석 섹션 */
 .domain-analysis {
-  margin: 20px 0;
-  padding: 15px;
+  margin: 15px 0;
+  padding: 12px;
   background: #f0f9ff;
   border: 1px solid #bfdbfe;
   border-radius: 8px;
@@ -1724,15 +1724,15 @@
   background: white;
   border: 1px solid #e5e7eb;
   border-radius: 6px;
-  padding: 12px;
-  margin-top: 12px;
+  padding: 6px;
+  margin-top: 8px;
 }
 
 .domain-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px;
+  padding: 4px 8px;
   border-bottom: 1px solid #f3f4f6;
   font-size: 13px;
 }
