@@ -662,6 +662,11 @@
         return this.renderHeadingCategory(category);
       }
 
+      // 이미지 카테고리도 특별 처리
+      if (categoryKey === 'image') {
+        return this.renderImageCategory(category);
+      }
+
       return `
         <div class="category-detail">
           <div class="category-header">
@@ -827,6 +832,214 @@
           </div>
         </div>
       `;
+    }
+
+    renderImageCategory(category) {
+      const imageData = this.results.categories?.image?.data || {};
+      const stats = imageData.stats || {};
+      const images = imageData.images || [];
+      const total = imageData.total || 0;
+      
+      // 평균 크기 계산
+      const avgSizeKB = stats.totalSize > 0 ? Math.round(stats.totalSize / 1024 / Math.max(total, 1)) : 0;
+      
+      // 문제 이미지 통합 수집
+      const problemImages = this.collectProblemImages(images);
+      
+      return `
+        <div class="category-detail">
+          <div class="category-header">
+            <div class="cat-title">
+              <span class="cat-icon-large">${category.icon}</span>
+              <div>
+                <h2>${category.name} <span class="item-count">${category.items.length}개 항목 체크</span></h2>
+              </div>
+            </div>
+            <div class="cat-score">
+              <div class="score-bar">
+                <div class="score-fill" style="width: ${category.score}%; background: ${this.getScoreColor(category.score)}"></div>
+              </div>
+              <span class="score-label">${category.score}/100</span>
+            </div>
+          </div>
+
+          <!-- 이미지 통계 섹션 -->
+          <div class="image-stats">
+            <h3 class="section-title">📊 이미지 분석 결과</h3>
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-label">총 이미지 수</div>
+                <div class="stat-value">${total}개</div>
+              </div>
+              <div class="stat-card ${avgSizeKB > 150 ? 'warning' : avgSizeKB > 100 ? 'info' : 'good'}">
+                <div class="stat-label">평균 크기</div>
+                <div class="stat-value">${avgSizeKB}KB</div>
+              </div>
+              <div class="stat-card ${stats.largeImages > 0 ? 'warning' : 'good'}">
+                <div class="stat-label">큰 이미지 (>100KB)</div>
+                <div class="stat-value">${stats.largeImages}개</div>
+              </div>
+              <div class="stat-card ${stats.veryLargeImages > 0 ? 'error' : 'good'}">
+                <div class="stat-label">매우 큰 이미지 (>500KB)</div>
+                <div class="stat-value">${stats.veryLargeImages}개</div>
+              </div>
+              <div class="stat-card ${stats.missingAlt > 0 ? 'error' : 'good'}">
+                <div class="stat-label">Alt 텍스트 누락</div>
+                <div class="stat-value">${stats.missingAlt}개</div>
+              </div>
+              <div class="stat-card ${stats.lazyLoading > 0 ? 'good' : 'info'}">
+                <div class="stat-label">Lazy Loading</div>
+                <div class="stat-value">${stats.lazyLoading}개</div>
+              </div>
+              <div class="stat-card ${stats.webpFormat + stats.avifFormat > 0 ? 'good' : 'info'}">
+                <div class="stat-label">최신 포맷</div>
+                <div class="stat-value">${stats.webpFormat + stats.avifFormat}개</div>
+              </div>
+              <div class="stat-card ${stats.missingDimensions > 0 ? 'warning' : 'good'}">
+                <div class="stat-label">크기 미지정</div>
+                <div class="stat-value">${stats.missingDimensions}개</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 문제 이미지 통합 리스트 섹션 -->
+          ${problemImages.length > 0 ? `
+            <div class="problem-images">
+              <h3 class="section-title">📋 문제 이미지 목록</h3>
+              ${this.renderProblemImageList(problemImages)}
+            </div>
+          ` : ''}
+
+          <!-- 기존 체크 리스트 -->
+          <div class="check-list category-checks">
+            ${category.items.map(item => `
+              <div class="check-item ${item.status}">
+                <div class="check-indicator">
+                  ${item.status === 'success' ? '✓' : item.status === 'warning' ? '!' : item.status === 'info' ? 'ℹ' : '×'}
+                </div>
+                <div class="check-content">
+                  <div class="check-title">${item.title}</div>
+                  ${item.current ? `
+                    <div class="check-current">
+                      <span class="label">현재:</span>
+                      <code>${this.escapeHtml(item.current)}</code>
+                    </div>
+                  ` : ''}
+                  ${item.suggestion && item.status !== 'success' ? `
+                    <div class="check-suggestion">${item.suggestion}</div>
+                  ` : ''}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+
+    collectProblemImages(images) {
+      const problemMap = new Map();
+      
+      images.forEach(img => {
+        const problems = [];
+        
+        // 각 이미지의 문제점 수집
+        if (img.isVeryLarge) {
+          problems.push({ type: 'very-large', label: `매우 큰 파일 ${img.fileSizeKB}KB` });
+        } else if (img.isLarge) {
+          problems.push({ type: 'large', label: `큰 파일 ${img.fileSizeKB}KB` });
+        }
+        
+        if (!img.hasAlt) {
+          problems.push({ type: 'no-alt', label: 'Alt 누락' });
+        }
+        
+        if (!img.hasLazyLoading && img.index > 2) {
+          problems.push({ type: 'no-lazy', label: 'Lazy 미적용' });
+        }
+        
+        if (!img.hasWidth || !img.hasHeight) {
+          problems.push({ type: 'no-size', label: '크기 미지정' });
+        }
+        
+        // 문제가 있는 이미지만 Map에 추가
+        if (problems.length > 0) {
+          problemMap.set(img.filename, {
+            filename: img.filename,
+            problems: problems,
+            src: img.src
+          });
+        }
+      });
+      
+      return Array.from(problemMap.values());
+    }
+    
+    renderProblemImageList(problemImages) {
+      if (problemImages.length === 0) return '';
+      
+      const listId = `problem-images-${Date.now()}`;
+      const firstImage = problemImages[0];
+      const remainingCount = problemImages.length - 1;
+      
+      return `
+        <div class="problem-image-wrapper">
+          <!-- 첫 번째 이미지와 요약 -->
+          <div class="problem-summary">
+            <div class="problem-item-compact">
+              <span class="image-name">${this.escapeHtml(firstImage.filename)}</span>
+              <div class="problem-tags">
+                ${firstImage.problems.map(p => 
+                  `<span class="problem-tag ${p.type}">${p.label}</span>`
+                ).join('')}
+              </div>
+            </div>
+            ${remainingCount > 0 ? `
+              <button class="image-toggle-btn" onclick="window.ZuppUI.toggleProblemImages('${listId}')">
+                <span class="toggle-text">외 ${remainingCount}개</span>
+                <span class="toggle-icon">▼</span>
+              </button>
+            ` : ''}
+          </div>
+          
+          <!-- 토글 가능한 전체 리스트 -->
+          ${remainingCount > 0 ? `
+            <div class="problem-list-expanded" id="${listId}" style="display: none;">
+              <div class="image-list-container">
+                <ul class="image-problem-list">
+                  ${problemImages.slice(1).map(img => `
+                    <li class="problem-item-full">
+                      <span class="image-name">${this.escapeHtml(img.filename)}</span>
+                      <div class="problem-tags">
+                        ${img.problems.map(p => 
+                          `<span class="problem-tag ${p.type}">${p.label}</span>`
+                        ).join('')}
+                      </div>
+                    </li>
+                  `).join('')}
+                </ul>
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+    
+    toggleProblemImages(listId) {
+      const expandedList = document.getElementById(listId);
+      const button = event.target.closest('.image-toggle-btn');
+      
+      if (expandedList) {
+        const isVisible = expandedList.style.display !== 'none';
+        expandedList.style.display = isVisible ? 'none' : 'block';
+        
+        if (button) {
+          const icon = button.querySelector('.toggle-icon');
+          if (icon) {
+            icon.textContent = isVisible ? '▼' : '▲';
+          }
+        }
+      }
     }
 
     renderMetaItem(title, data) {

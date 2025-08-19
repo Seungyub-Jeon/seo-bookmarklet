@@ -367,8 +367,21 @@
         missingDimensions: 0,
         webpFormat: 0,
         avifFormat: 0,
-        meaningfulFilenames: 0
+        meaningfulFilenames: 0,
+        largeImages: 0,        // 100KB 이상
+        veryLargeImages: 0,    // 500KB 이상
+        totalSize: 0,          // 총 이미지 크기
+        avgSize: 0             // 평균 크기
       };
+      
+      // Performance API로 이미지 크기 가져오기
+      const resourceEntries = performance.getEntriesByType('resource');
+      const imageSizes = new Map();
+      resourceEntries.forEach(entry => {
+        if (entry.initiatorType === 'img' || entry.name.match(/\.(jpg|jpeg|png|gif|webp|avif|svg)/i)) {
+          imageSizes.set(entry.name, entry.transferSize || entry.encodedBodySize || 0);
+        }
+      });
 
       images.forEach((img, index) => {
         const src = img.src || img.dataset.src || '';
@@ -383,12 +396,16 @@
         const extension = filename.split('.').pop().toLowerCase();
         const isMeaningful = !/^(image|img|photo|pic)\d*\.(jpg|jpeg|png|gif|webp|avif)$/i.test(filename);
         
+        // 이미지 파일 크기 가져오기
+        const fileSize = imageSizes.get(src) || 0;
+        const fileSizeKB = Math.round(fileSize / 1024);
+        
         const imageData = {
           index,
           src: src.substring(0, 100), // URL 일부만 저장
           alt: alt,
-          hasAlt: alt !== null,
-          isEmptyAlt: alt === '',
+          hasAlt: alt !== null && alt !== '',  // alt 속성이 있고 비어있지 않은 경우만 true
+          isEmptyAlt: alt !== null && alt === '',  // alt 속성이 존재하지만 빈 경우
           hasTitle: !!title,
           loading,
           hasLazyLoading: loading === 'lazy',
@@ -396,21 +413,33 @@
           hasHeight: !!height,
           extension,
           filename,
-          isMeaningful
+          isMeaningful,
+          fileSize: fileSize,
+          fileSizeKB: fileSizeKB,
+          isLarge: fileSizeKB > 100,
+          isVeryLarge: fileSizeKB > 500
         };
 
         this.data.images.push(imageData);
 
         // 통계 업데이트
-        if (alt === null) this.data.stats.missingAlt++;
-        if (alt === '') this.data.stats.emptyAlt++;
+        if (alt === null || alt === '') this.data.stats.missingAlt++;  // alt가 없거나 빈 경우 모두 누락으로 처리
+        if (alt !== null && alt === '') this.data.stats.emptyAlt++;  // 빈 alt 속성 별도 카운트 (참고용)
         if (title) this.data.stats.withTitle++;
         if (loading === 'lazy') this.data.stats.lazyLoading++;
         if (!width || !height) this.data.stats.missingDimensions++;
         if (extension === 'webp') this.data.stats.webpFormat++;
         if (extension === 'avif') this.data.stats.avifFormat++;
         if (isMeaningful) this.data.stats.meaningfulFilenames++;
+        if (fileSizeKB > 100) this.data.stats.largeImages++;
+        if (fileSizeKB > 500) this.data.stats.veryLargeImages++;
+        this.data.stats.totalSize += fileSize;
       });
+      
+      // 평균 크기 계산
+      if (this.data.total > 0) {
+        this.data.stats.avgSize = Math.round(this.data.stats.totalSize / this.data.total);
+      }
     }
 
     validate() {
@@ -419,29 +448,14 @@
         return;
       }
 
-      // Alt 텍스트 검증
+      // Alt 텍스트 검증 (alt가 없거나 빈 경우 모두 포함)
       if (this.data.stats.missingAlt > 0) {
-        this.addIssue('critical', `${this.data.stats.missingAlt}개 이미지에 alt 속성이 없습니다`, {
+        this.addIssue('critical', `${this.data.stats.missingAlt}개 이미지의 alt가 비어있습니다`, {
           impact: '접근성과 SEO에 중요합니다',
-          images: this.data.images
-            .filter(img => !img.hasAlt)
-            .slice(0, 5)
-            .map(img => img.filename)
+          note: 'alt 속성이 없거나 빈 값("")인 경우 모두 포함'
         });
       } else {
         this.addPassed('모든 이미지에 alt 속성이 있습니다');
-      }
-
-      // 빈 alt 체크
-      if (this.data.stats.emptyAlt > 0) {
-        const ratio = this.data.stats.emptyAlt / this.data.total;
-        if (ratio > 0.5) {
-          this.addIssue('warning', `${this.data.stats.emptyAlt}개 이미지의 alt가 비어있습니다 (${Math.round(ratio * 100)}%)`, {
-            note: '장식용 이미지가 아니라면 설명을 추가하세요'
-          });
-        } else {
-          this.addIssue('info', `${this.data.stats.emptyAlt}개 이미지의 alt가 비어있습니다`);
-        }
       }
 
       // Lazy Loading 검증
@@ -488,6 +502,32 @@
       // Title 속성 사용 (선택사항)
       if (this.data.stats.withTitle > this.data.total * 0.8) {
         this.addIssue('info', 'title 속성이 과도하게 사용되었습니다. alt로 충분합니다.');
+      }
+      
+      // 파일 크기 검증
+      if (this.data.stats.veryLargeImages > 0) {
+        this.addIssue('critical', `${this.data.stats.veryLargeImages}개 이미지가 500KB를 초과합니다`, {
+          impact: '페이지 로딩 속도에 심각한 영향을 줍니다'
+        });
+      }
+      
+      if (this.data.stats.largeImages > 0) {
+        const onlyLarge = this.data.stats.largeImages - this.data.stats.veryLargeImages;
+        if (onlyLarge > 0) {
+          this.addIssue('warning', `${onlyLarge}개 이미지가 100KB를 초과합니다`, {
+            suggestion: '이미지를 압축하거나 최신 포맷(WebP, AVIF)을 사용하세요'
+          });
+        }
+      } else if (this.data.total > 0) {
+        this.addPassed('모든 이미지가 적절한 크기입니다');
+      }
+      
+      // 평균 크기 체크
+      const avgSizeKB = this.data.stats.avgSize > 0 ? Math.round(this.data.stats.avgSize / 1024) : 0;
+      if (avgSizeKB > 150) {
+        this.addIssue('warning', `이미지 평균 크기가 너무 큽니다 (${avgSizeKB}KB)`, {
+          recommendation: '평균 50-100KB를 목표로 최적화하세요'
+        });
       }
     }
   }

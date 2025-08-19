@@ -1517,3 +1517,221 @@
     font-size: 10px;
   }
 }
+
+/* ============================
+   이미지 분석 스타일
+   ============================ */
+.image-stats {
+  margin: 20px 0;
+  padding: 15px;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.stat-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  padding: 6px 4px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.stat-card.good {
+  background: #f0fdf4;
+  border-color: #86efac;
+}
+
+.stat-card.info {
+  background: #eff6ff;
+  border-color: #93c5fd;
+}
+
+.stat-card.warning {
+  background: #fef3c7;
+  border-color: #fcd34d;
+}
+
+.stat-card.error {
+  background: #fef2f2;
+  border-color: #fca5a5;
+}
+
+.stat-label {
+  font-size: 10px;
+  color: #6b7280;
+  margin-bottom: 2px;
+  line-height: 1.1;
+}
+
+.stat-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+/* 문제 이미지 통합 리스트 */
+.problem-images {
+  margin: 15px 0;
+  padding: 10px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+}
+
+.problem-image-wrapper {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  padding: 8px;
+}
+
+.problem-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.problem-item-compact,
+.problem-item-full {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.problem-item-full {
+  border-top: 1px solid #f3f4f6;
+  padding-top: 6px;
+  margin-top: 4px;
+}
+
+.image-name {
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  color: #374151;
+  min-width: 120px;
+}
+
+.problem-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.problem-tag {
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.problem-tag.very-large {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.problem-tag.large {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.problem-tag.no-alt,
+.problem-tag.empty-alt {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.problem-tag.no-lazy {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.problem-tag.no-size {
+  background: #fed7aa;
+  color: #92400e;
+}
+
+.image-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  color: #374151;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.image-toggle-btn:hover {
+  background: #e5e7eb;
+  border-color: #9ca3af;
+}
+
+.toggle-icon {
+  font-size: 10px;
+  transition: transform 0.2s ease;
+}
+
+.problem-list-expanded {
+  margin-top: 8px;
+}
+
+.problem-list-expanded .image-list-container {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.problem-list-expanded .image-problem-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* 모바일 반응형 - 이미지 분석 */
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+  }
+  
+  .stat-card {
+    padding: 4px 2px;
+  }
+  
+  .stat-label {
+    font-size: 9px;
+  }
+  
+  .stat-value {
+    font-size: 12px;
+  }
+  
+  .problem-item-compact,
+  .problem-item-full {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  
+  .image-name {
+    min-width: auto;
+  }
+  
+  .problem-tags {
+    margin-left: 0;
+  }
+}
