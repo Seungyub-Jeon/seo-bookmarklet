@@ -1264,6 +1264,9 @@
       const facebook = socialData.facebook || {};
       const facebookHtml = socialData.facebookHtml || {};
       
+      // 소셜미디어 코드 생성
+      const socialCode = this.generateSocialCode(openGraph, twitter, facebook, openGraphHtml, twitterHtml, facebookHtml);
+      
       return `
         <div class="category-detail">
           <div class="category-header">
@@ -1281,45 +1284,18 @@
             </div>
           </div>
 
-          <!-- Open Graph 섹션 -->
-          <div class="social-section">
-            <h3 class="section-title">📘 Facebook (Open Graph)</h3>
-            <div class="social-meta-list">
-              ${this.renderSocialMetaItem('og:title', openGraph.title, openGraphHtml.title)}
-              ${this.renderSocialMetaItem('og:description', openGraph.description, openGraphHtml.description)}
-              ${this.renderSocialMetaItem('og:image', openGraph.image, openGraphHtml.image)}
-              ${this.renderSocialMetaItem('og:url', openGraph.url, openGraphHtml.url)}
-              ${this.renderSocialMetaItem('og:type', openGraph.type, openGraphHtml.type)}
-              ${this.renderSocialMetaItem('og:site_name', openGraph.siteName, openGraphHtml.siteName)}
-              ${this.renderSocialMetaItem('og:locale', openGraph.locale, openGraphHtml.locale)}
+          <!-- 소셜미디어 코드 블록 -->
+          <div class="social-code-section">
+            <h3 class="section-title">💻 소셜미디어 메타 태그 코드</h3>
+            <div class="social-code-container">
+              <pre class="social-code-block"><code class="html">${socialCode}</code></pre>
+              <button class="copy-code-btn" onclick="navigator.clipboard.writeText(this.previousElementSibling.querySelector('code').textContent)">
+                📋 복사
+              </button>
             </div>
           </div>
 
-          <!-- Twitter Card 섹션 -->
-          <div class="social-section">
-            <h3 class="section-title">🐦 Twitter Card</h3>
-            <div class="social-meta-list">
-              ${this.renderSocialMetaItem('twitter:card', twitter.card, twitterHtml.card)}
-              ${this.renderSocialMetaItem('twitter:title', twitter.title, twitterHtml.title)}
-              ${this.renderSocialMetaItem('twitter:description', twitter.description, twitterHtml.description)}
-              ${this.renderSocialMetaItem('twitter:image', twitter.image, twitterHtml.image)}
-              ${this.renderSocialMetaItem('twitter:site', twitter.site, twitterHtml.site)}
-              ${this.renderSocialMetaItem('twitter:creator', twitter.creator, twitterHtml.creator)}
-            </div>
-          </div>
-
-          <!-- Facebook 추가 설정 -->
-          ${facebook.appId || facebook.pages ? `
-            <div class="social-section">
-              <h3 class="section-title">⚙️ Facebook 추가 설정</h3>
-              <div class="social-meta-list">
-                ${facebook.appId ? this.renderSocialMetaItem('fb:app_id', facebook.appId, facebookHtml.appId) : ''}
-                ${facebook.pages ? this.renderSocialMetaItem('fb:pages', facebook.pages, facebookHtml.pages) : ''}
-              </div>
-            </div>
-          ` : ''}
-
-          <!-- 기본 체크리스트 -->
+          <!-- 간단한 체크리스트 -->
           <div class="social-section">
             <h3 class="section-title">📋 검증 결과</h3>
             <div class="check-list category-checks">
@@ -1340,6 +1316,95 @@
           </div>
         </div>
       `;
+    }
+
+    generateSocialCode(openGraph, twitter, facebook, openGraphHtml, twitterHtml, facebookHtml) {
+      const lines = [];
+      
+      // Open Graph 태그들
+      lines.push('<!-- Open Graph / Facebook -->');
+      if (openGraph.title || openGraphHtml.title) {
+        lines.push(openGraphHtml.title || `<meta property="og:title" content="${openGraph.title}">`);
+      } else {
+        lines.push('<meta property="og:title" content="페이지 제목"> <!-- 누락 -->');
+      }
+      
+      if (openGraph.description || openGraphHtml.description) {
+        lines.push(openGraphHtml.description || `<meta property="og:description" content="${openGraph.description}">`);
+      } else {
+        lines.push('<meta property="og:description" content="페이지 설명"> <!-- 누락 -->');
+      }
+      
+      if (openGraph.image || openGraphHtml.image) {
+        lines.push(openGraphHtml.image || `<meta property="og:image" content="${openGraph.image}">`);
+      } else {
+        lines.push('<meta property="og:image" content="https://example.com/image.jpg"> <!-- 누락 -->');
+      }
+      
+      if (openGraph.url || openGraphHtml.url) {
+        lines.push(openGraphHtml.url || `<meta property="og:url" content="${openGraph.url}">`);
+      } else {
+        lines.push('<meta property="og:url" content="https://example.com/current-page"> <!-- 누락 -->');
+      }
+      
+      if (openGraph.type || openGraphHtml.type) {
+        lines.push(openGraphHtml.type || `<meta property="og:type" content="${openGraph.type}">`);
+      } else {
+        lines.push('<meta property="og:type" content="website"> <!-- 누락 -->');
+      }
+      
+      if (openGraph.siteName || openGraphHtml.siteName) {
+        lines.push(openGraphHtml.siteName || `<meta property="og:site_name" content="${openGraph.siteName}">`);
+      }
+      
+      // Twitter Card 태그들
+      lines.push('');
+      lines.push('<!-- Twitter Card -->');
+      if (twitter.card || twitterHtml.card) {
+        lines.push(twitterHtml.card || `<meta name="twitter:card" content="${twitter.card}">`);
+      } else {
+        lines.push('<meta name="twitter:card" content="summary_large_image"> <!-- 누락 -->');
+      }
+      
+      if (twitter.title || twitterHtml.title) {
+        lines.push(twitterHtml.title || `<meta name="twitter:title" content="${twitter.title}">`);
+      } else {
+        lines.push('<meta name="twitter:title" content="페이지 제목"> <!-- 누락 -->');
+      }
+      
+      if (twitter.description || twitterHtml.description) {
+        lines.push(twitterHtml.description || `<meta name="twitter:description" content="${twitter.description}">`);
+      } else {
+        lines.push('<meta name="twitter:description" content="페이지 설명"> <!-- 누락 -->');
+      }
+      
+      if (twitter.image || twitterHtml.image) {
+        lines.push(twitterHtml.image || `<meta name="twitter:image" content="${twitter.image}">`);
+      } else {
+        lines.push('<meta name="twitter:image" content="https://example.com/image.jpg"> <!-- 누락 -->');
+      }
+      
+      if (twitter.site || twitterHtml.site) {
+        lines.push(twitterHtml.site || `<meta name="twitter:site" content="${twitter.site}">`);
+      }
+      
+      if (twitter.creator || twitterHtml.creator) {
+        lines.push(twitterHtml.creator || `<meta name="twitter:creator" content="${twitter.creator}">`);
+      }
+      
+      // Facebook 추가 설정
+      if (facebook.appId || facebook.pages) {
+        lines.push('');
+        lines.push('<!-- Facebook 추가 설정 -->');
+        if (facebook.appId || facebookHtml.appId) {
+          lines.push(facebookHtml.appId || `<meta property="fb:app_id" content="${facebook.appId}">`);
+        }
+        if (facebook.pages || facebookHtml.pages) {
+          lines.push(facebookHtml.pages || `<meta property="fb:pages" content="${facebook.pages}">`);
+        }
+      }
+      
+      return this.escapeHtml(lines.join('\n'));
     }
 
     renderSocialMetaItem(tagName, content, htmlCode) {

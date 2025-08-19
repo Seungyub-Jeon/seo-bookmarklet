@@ -1959,6 +1959,83 @@
   border-left: 4px solid #1da1f2;
 }
 
+/* 소셜미디어 코드 블록 */
+.social-code-section {
+  margin: 20px 0;
+  padding: 15px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.social-code-section .section-title {
+  margin: 0 0 15px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.social-code-container {
+  position: relative;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.social-code-block {
+  margin: 0;
+  padding: 16px;
+  background: #ffffff;
+  font-family: 'Courier New', Monaco, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #374151;
+  overflow-x: auto;
+  white-space: pre;
+  word-wrap: normal;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.social-code-block code {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  background: none;
+  padding: 0;
+  border: none;
+}
+
+.copy-code-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #4f46e5;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.copy-code-btn:hover {
+  background: #4338ca;
+}
+
+.copy-code-btn:active {
+  background: #3730a3;
+}
+
 /* 모바일 반응형 - 소셜미디어 */
 @media (max-width: 768px) {
   .social-meta-item {
@@ -1975,6 +2052,23 @@
   .meta-tag-code {
     font-size: 10px;
     padding: 3px 6px;
+  }
+
+  .social-code-block {
+    font-size: 11px;
+    padding: 12px;
+    max-height: 300px;
+  }
+  
+  .copy-code-btn {
+    position: static;
+    width: 100%;
+    margin-top: 10px;
+    justify-content: center;
+  }
+  
+  .social-code-container {
+    padding-bottom: 0;
   }
 }
 
