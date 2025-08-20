@@ -682,6 +682,11 @@
         return this.renderContentCategory(category);
       }
 
+      // 시맨틱 카테고리도 특별 처리
+      if (categoryKey === 'semantic') {
+        return this.renderSemanticCategory(category);
+      }
+
       return `
         <div class="category-detail">
           <div class="category-header">
@@ -1594,6 +1599,316 @@
           ` : ''}
         </div>
       `;
+    }
+
+    renderSemanticCategory(category) {
+      const semanticData = this.results.categories?.semantic?.data || {};
+      const html5Tags = semanticData.html5Tags || {};
+      const improvements = semanticData.improvements || [];
+      const genericTags = semanticData.genericTags || {};
+      const pageStructure = semanticData.pageStructure || {};
+      
+      // 점수는 카테고리 점수를 사용
+      const semanticScore = category.score || 0;
+      
+      return `
+        <div class="category-detail">
+          <!-- 카테고리 헤더 -->
+          <div class="category-header">
+            <div class="cat-title">
+              <span class="cat-icon-large">${category.icon}</span>
+              <div>
+                <h2>${category.name} <span class="item-count">${category.items.length}개 항목 체크</span></h2>
+              </div>
+            </div>
+            <div class="cat-score">
+              <div class="score-bar">
+                <div class="score-fill" style="width: ${semanticScore}%; background: ${this.getScoreColor(semanticScore)}"></div>
+              </div>
+              <span class="score-label">${semanticScore}/100</span>
+            </div>
+          </div>
+
+          <!-- 시맨틱 마크업 현황 요약 -->
+          <div class="semantic-summary">
+            <h3 class="section-title">📊 시맨틱 마크업 분석 결과</h3>
+            <div class="summary-cards">
+              <div class="summary-card ${semanticScore >= 70 ? 'good' : semanticScore >= 50 ? 'warning' : 'error'}">
+                <div class="summary-label">시맨틱 품질</div>
+                <div class="summary-value">${this.getStructureLevel(semanticScore)}</div>
+                <div class="summary-detail">점수: ${semanticScore}/100</div>
+              </div>
+              <div class="summary-card ${genericTags.div < 50 ? 'good' : genericTags.div < 100 ? 'warning' : 'error'}">
+                <div class="summary-label">DIV 사용량</div>
+                <div class="summary-value">${genericTags.div || 0}개</div>
+                <div class="summary-detail">${genericTags.div > 100 ? '과다 사용' : genericTags.div > 50 ? '많음' : '적절'}</div>
+              </div>
+              <div class="summary-card ${genericTags.span < 30 ? 'good' : genericTags.span < 60 ? 'warning' : 'error'}">
+                <div class="summary-label">SPAN 사용량</div>
+                <div class="summary-value">${genericTags.span || 0}개</div>
+                <div class="summary-detail">${genericTags.span > 60 ? '과다 사용' : genericTags.span > 30 ? '많음' : '적절'}</div>
+              </div>
+              <div class="summary-card info">
+                <div class="summary-label">시맨틱 태그</div>
+                <div class="summary-value">${this.countSemanticTags(html5Tags)}개</div>
+                <div class="summary-detail">HTML5 시맨틱 태그</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- HTML5 시맨틱 태그 사용 현황 -->
+          <div class="semantic-tags-usage">
+            <h3 class="section-title">📊 HTML5 시맨틱 태그 사용 현황</h3>
+            <div class="tags-grid">
+              ${this.renderSemanticTagsGrid(html5Tags)}
+            </div>
+          </div>
+
+          <!-- 페이지 구조 분석 -->
+          <div class="page-structure-analysis">
+            <h3 class="section-title">🏗️ 페이지 구조 분석</h3>
+            <div class="structure-overview">
+              ${this.renderPageStructureAnalysis(html5Tags, pageStructure)}
+            </div>
+          </div>
+
+          <!-- 체크 리스트 -->
+          <div class="check-list category-checks">
+            ${category.items.map(item => this.renderSemanticCheckItem(item)).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    renderSemanticCheckItem(item) {
+      // 먼저 HTML 태그를 이스케이프 처리
+      let escapedTitle = this.escapeHtml(item.title);
+      let enhancedSuggestion = item.suggestion || '';
+      
+      // 메시지 개선 - 이스케이프된 텍스트에서 패턴 매칭
+      if (item.title.includes('태그가 없습니다') || item.title.includes('태그를 사용하지 않았습니다')) {
+        const tagMatch = item.title.match(/<(\w+)>/);
+        if (tagMatch) {
+          // 태그 이름을 강조 표시
+          escapedTitle = escapedTitle.replace(/&lt;(\w+)&gt;/, '<code>&lt;$1&gt;</code>');
+          if (!enhancedSuggestion) {
+            enhancedSuggestion = this.getTagSuggestion(tagMatch[1]);
+          }
+        }
+      } else if (item.title.includes('대신')) {
+        const match = item.title.match(/<(\w+)>\s*대신\s*<(\w+)>/);
+        if (match) {
+          // 태그 이름들을 강조 표시
+          escapedTitle = escapedTitle.replace(/&lt;(\w+)&gt;/g, '<code>&lt;$1&gt;</code>');
+          if (!enhancedSuggestion) {
+            enhancedSuggestion = `<code>&lt;${match[1]}&gt;</code> 태그는 시맨틱 의미가 없습니다. <code>&lt;${match[2]}&gt;</code> 태그는 더 명확한 의미를 전달합니다.`;
+          }
+        }
+      } else if (item.title.includes('이미지가 많지만')) {
+        // figure 태그 관련 메시지 처리
+        escapedTitle = escapedTitle.replace(/&lt;(\w+)&gt;/g, '<code>&lt;$1&gt;</code>');
+      }
+      
+      return `
+        <div class="check-item ${item.status}">
+          <div class="check-indicator">
+            ${item.status === 'success' ? '✓' : item.status === 'warning' ? '!' : item.status === 'info' ? 'ℹ' : '×'}
+          </div>
+          <div class="check-content">
+            <div class="check-title">${escapedTitle}</div>
+            ${item.current ? `
+              <div class="check-current">
+                <span class="label">현재 상태:</span>
+                <code>${this.escapeHtml(item.current)}</code>
+              </div>
+            ` : ''}
+            ${enhancedSuggestion && item.status !== 'success' ? `
+              <div class="check-suggestion">${enhancedSuggestion}</div>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    getTagSuggestion(tag) {
+      const suggestions = {
+        'main': '페이지의 주요 콘텐츠 영역을 &lt;main&gt; 태그로 감싸세요. 페이지당 하나만 사용해야 합니다.',
+        'nav': '네비게이션 메뉴를 &lt;nav&gt; 태그로 감싸세요. 주요 탐색 링크 그룹에 사용합니다.',
+        'header': '페이지나 섹션의 헤더 영역을 &lt;header&gt; 태그로 정의하세요.',
+        'footer': '페이지나 섹션의 푸터 영역을 &lt;footer&gt; 태그로 정의하세요.',
+        'article': '독립적으로 재사용 가능한 콘텐츠는 &lt;article&gt; 태그를 사용하세요.',
+        'section': '문서의 주제별 그룹은 &lt;section&gt; 태그로 구분하세요.',
+        'aside': '주요 콘텐츠와 간접적으로 관련된 콘텐츠는 &lt;aside&gt; 태그를 사용하세요.',
+        'figure': '이미지, 다이어그램, 코드 등을 &lt;figure&gt; 태그로 감싸고 &lt;figcaption&gt;으로 설명을 추가하세요.'
+      };
+      return suggestions[tag.toLowerCase()] || `&lt;${tag}&gt; 태그를 적절한 위치에 사용하세요.`;
+    }
+
+    countSemanticTags(html5Tags) {
+      const semanticTags = ['header', 'nav', 'main', 'article', 'section', 'aside', 'footer', 'figure'];
+      let count = 0;
+      semanticTags.forEach(tag => {
+        if (html5Tags[tag] && html5Tags[tag] > 0) {
+          count += html5Tags[tag];
+        }
+      });
+      return count;
+    }
+
+    renderSemanticTagsGrid(html5Tags) {
+      // 주요 시맨틱 태그들과 사용 개수를 보여주는 그리드
+      const semanticTags = [
+        { name: 'HEADER', count: html5Tags.header || 0, icon: '🏠' },
+        { name: 'NAV', count: html5Tags.nav || 0, icon: '🧭' },
+        { name: 'MAIN', count: html5Tags.main || 0, icon: '📄' },
+        { name: 'ARTICLE', count: html5Tags.article || 0, icon: '📰' },
+        { name: 'SECTION', count: html5Tags.section || 0, icon: '📑' },
+        { name: 'ASIDE', count: html5Tags.aside || 0, icon: '📌' },
+        { name: 'FOOTER', count: html5Tags.footer || 0, icon: '🔚' },
+        { name: 'FIGURE', count: html5Tags.figure || 0, icon: '🖼️' }
+      ];
+      
+      return semanticTags.map(tag => `
+        <div class="tag-usage-card ${tag.count > 0 ? 'used' : 'unused'}">
+          <div class="tag-name">${tag.name}</div>
+          <div class="tag-count ${tag.count > 0 ? 'active' : 'inactive'}">${tag.count}</div>
+        </div>
+      `).join('');
+    }
+
+    renderPageStructureAnalysis(html5Tags, pageStructure) {
+      const hasMain = html5Tags.main > 0;
+      const hasHeader = html5Tags.header > 0;
+      const hasFooter = html5Tags.footer > 0;
+      const hasNav = html5Tags.nav > 0;
+      const hasArticle = html5Tags.article > 0;
+      const hasSection = html5Tags.section > 0;
+      const hasAside = html5Tags.aside > 0;
+      
+      let structureHTML = '<div class="structure-diagram">';
+      
+      // 페이지 구조 다이어그램
+      structureHTML += '<div class="page-layout">';
+      
+      // Header
+      structureHTML += `<div class="layout-section ${hasHeader ? 'present' : 'missing'}">
+        <div class="layout-label">Header</div>
+        <div class="layout-status">${hasHeader ? `✓ ${html5Tags.header}개` : '✗ 없음'}</div>
+      </div>`;
+      
+      // Nav
+      structureHTML += `<div class="layout-section ${hasNav ? 'present' : 'missing'}">
+        <div class="layout-label">Navigation</div>
+        <div class="layout-status">${hasNav ? `✓ ${html5Tags.nav}개` : '✗ 없음'}</div>
+      </div>`;
+      
+      // Main content area
+      structureHTML += '<div class="layout-main-area">';
+      
+      // Main
+      structureHTML += `<div class="layout-section main ${hasMain ? 'present' : 'missing'}">
+        <div class="layout-label">Main</div>
+        <div class="layout-status">${hasMain ? `✓ ${html5Tags.main}개` : '✗ 없음'}</div>
+        ${hasMain && html5Tags.main > 1 ? '<div class="layout-warning">⚠️ main은 1개만 사용</div>' : ''}
+      </div>`;
+      
+      // Article & Section
+      if (hasArticle || hasSection) {
+        structureHTML += '<div class="layout-content-sections">';
+        if (hasArticle) {
+          structureHTML += `<div class="layout-section small present">
+            <div class="layout-label">Article</div>
+            <div class="layout-status">${html5Tags.article}개</div>
+          </div>`;
+        }
+        if (hasSection) {
+          structureHTML += `<div class="layout-section small present">
+            <div class="layout-label">Section</div>
+            <div class="layout-status">${html5Tags.section}개</div>
+          </div>`;
+        }
+        structureHTML += '</div>';
+      }
+      
+      // Aside
+      if (hasAside) {
+        structureHTML += `<div class="layout-section aside present">
+          <div class="layout-label">Aside</div>
+          <div class="layout-status">${html5Tags.aside}개</div>
+        </div>`;
+      }
+      
+      structureHTML += '</div>'; // layout-main-area
+      
+      // Footer
+      structureHTML += `<div class="layout-section ${hasFooter ? 'present' : 'missing'}">
+        <div class="layout-label">Footer</div>
+        <div class="layout-status">${hasFooter ? `✓ ${html5Tags.footer}개` : '✗ 없음'}</div>
+      </div>`;
+      
+      structureHTML += '</div>'; // page-layout
+      structureHTML += '</div>'; // structure-diagram
+      
+      // 구조 평가
+      let structureScore = 0;
+      let maxScore = 0;
+      
+      const structureChecks = [
+        { condition: hasHeader, points: 15, message: 'Header 태그 사용' },
+        { condition: hasNav, points: 15, message: 'Navigation 태그 사용' },
+        { condition: hasMain && html5Tags.main === 1, points: 20, message: 'Main 태그 올바르게 사용' },
+        { condition: hasFooter, points: 15, message: 'Footer 태그 사용' },
+        { condition: hasArticle || hasSection, points: 20, message: '콘텐츠 구조화 태그 사용' },
+        { condition: hasAside, points: 15, message: 'Aside 태그 사용' }
+      ];
+      
+      structureHTML += '<div class="structure-evaluation">';
+      structureHTML += '<h4>구조 평가</h4>';
+      structureHTML += '<ul class="structure-checklist">';
+      
+      structureChecks.forEach(check => {
+        maxScore += check.points;
+        if (check.condition) {
+          structureScore += check.points;
+          structureHTML += `<li class="check-pass">✓ ${check.message}</li>`;
+        } else {
+          structureHTML += `<li class="check-fail">✗ ${check.message}</li>`;
+        }
+      });
+      
+      structureHTML += '</ul>';
+      
+      const percentage = Math.round((structureScore / maxScore) * 100);
+      structureHTML += `<div class="structure-score">
+        <span class="score-label">구조 완성도:</span>
+        <span class="score-value ${percentage >= 70 ? 'good' : percentage >= 50 ? 'warning' : 'error'}">${percentage}%</span>
+      </div>`;
+      
+      structureHTML += '</div>'; // structure-evaluation
+      
+      return structureHTML;
+    }
+
+    isSemanticTagOptimal(tag, count) {
+      switch(tag) {
+        case 'main': return count === 1;
+        case 'header': return count >= 1 && count <= 2;
+        case 'footer': return count >= 1 && count <= 2;
+        case 'nav': return count >= 1 && count <= 3;
+        case 'article': return count >= 0;
+        case 'section': return count >= 0;
+        case 'aside': return count >= 0;
+        case 'figure': return count >= 0;
+        default: return true;
+      }
+    }
+
+    getStructureLevel(score) {
+      if (score >= 90) return '최상급';
+      if (score >= 80) return '상급';
+      if (score >= 70) return '중급';
+      if (score >= 60) return '하급';
+      return '개선필요';
     }
 
     renderParagraphAnalysis(paragraphStats) {

@@ -589,6 +589,259 @@
         withTh: optimizer.querySelectorAll('table th').length,
         withScope: optimizer.querySelectorAll('th[scope]').length
       };
+
+      // 추가: 시맨틱 구조 트리 데이터
+      this.data.semanticStructure = this.buildSemanticTree();
+      
+      // 추가: 시맨틱 품질 점수
+      this.data.semanticScore = this.calculateSemanticScore();
+      
+      // 추가: 개선 가능 요소 감지
+      this.data.improvements = this.detectImprovements();
+    }
+
+    buildSemanticTree() {
+      // 문서의 시맨틱 구조를 트리 형태로 구성
+      const tree = [];
+      const semanticElements = document.querySelectorAll('header, nav, main, article, section, aside, footer');
+      
+      semanticElements.forEach(el => {
+        const level = this.getElementLevel(el);
+        tree.push({
+          tag: el.tagName.toLowerCase(),
+          text: this.getElementDescription(el),
+          level: level,
+          path: this.getElementPath(el)
+        });
+      });
+      
+      return tree;
+    }
+
+    getElementLevel(element) {
+      // 요소의 중첩 레벨 계산
+      let level = 1;
+      let parent = element.parentElement;
+      
+      while (parent && parent !== document.body) {
+        if (['HEADER', 'NAV', 'MAIN', 'ARTICLE', 'SECTION', 'ASIDE', 'FOOTER'].includes(parent.tagName)) {
+          level++;
+        }
+        parent = parent.parentElement;
+      }
+      
+      return level;
+    }
+
+    getElementDescription(element) {
+      // 요소에 대한 설명 텍스트 생성
+      const tagName = element.tagName.toLowerCase();
+      
+      // ID나 주요 클래스명으로 설명 생성
+      if (element.id) {
+        return `#${element.id}`;
+      }
+      
+      // 클래스명에서 의미있는 것 추출
+      const classList = Array.from(element.classList);
+      if (classList.length > 0) {
+        const meaningfulClass = classList.find(cls => 
+          !cls.match(/^(col|row|container|wrapper|inner|outer|box|item|list)/) &&
+          cls.length > 2
+        );
+        if (meaningfulClass) {
+          return `.${meaningfulClass}`;
+        }
+      }
+      
+      // 헤딩이나 제목 텍스트 찾기
+      const heading = element.querySelector('h1, h2, h3, h4, h5, h6');
+      if (heading) {
+        const text = heading.textContent.trim();
+        if (text) {
+          return text.substring(0, 30) + (text.length > 30 ? '...' : '');
+        }
+      }
+      
+      // 기본 설명
+      const descriptions = {
+        header: '사이트 헤더',
+        nav: '네비게이션',
+        main: '주요 콘텐츠',
+        article: '독립 콘텐츠',
+        section: '콘텐츠 섹션',
+        aside: '보조 콘텐츠',
+        footer: '사이트 푸터'
+      };
+      
+      return descriptions[tagName] || tagName;
+    }
+
+    getElementPath(element) {
+      // 요소의 DOM 경로 생성
+      const path = [];
+      let current = element;
+      
+      while (current && current !== document.body) {
+        const tagName = current.tagName.toLowerCase();
+        if (['header', 'nav', 'main', 'article', 'section', 'aside', 'footer'].includes(tagName)) {
+          path.unshift(tagName);
+        }
+        current = current.parentElement;
+      }
+      
+      return path.join(' > ');
+    }
+
+    calculateSemanticScore() {
+      // 시맨틱 태그 사용 비율 계산
+      const allElements = document.querySelectorAll('*').length;
+      const semanticElements = document.querySelectorAll('header, nav, main, article, section, aside, footer, figure, figcaption, time, mark, address').length;
+      const divSpanCount = document.querySelectorAll('div, span').length;
+      
+      const semanticRatio = semanticElements / allElements;
+      const divSpanRatio = divSpanCount / allElements;
+      
+      // 점수 계산 (0-100) - 더 엄격한 기준 적용
+      let score = 100;
+      
+      // div/span 사용 비율에 따른 감점 (더 엄격하게)
+      if (divSpanRatio > 0.6) score -= 40;      // 60% 이상이면 -40
+      else if (divSpanRatio > 0.5) score -= 35; // 50% 이상이면 -35
+      else if (divSpanRatio > 0.4) score -= 30; // 40% 이상이면 -30
+      else if (divSpanRatio > 0.3) score -= 25; // 30% 이상이면 -25
+      else if (divSpanRatio > 0.2) score -= 15; // 20% 이상이면 -15
+      else if (divSpanRatio > 0.1) score -= 10; // 10% 이상이면 -10
+      
+      // 시맨틱 태그 사용 비율에 따른 감점 (더 엄격하게)
+      if (semanticRatio < 0.02) score -= 40;    // 2% 미만이면 -40
+      else if (semanticRatio < 0.05) score -= 35; // 5% 미만이면 -35
+      else if (semanticRatio < 0.08) score -= 25; // 8% 미만이면 -25
+      else if (semanticRatio < 0.1) score -= 20;  // 10% 미만이면 -20
+      else if (semanticRatio < 0.15) score -= 15; // 15% 미만이면 -15
+      else if (semanticRatio < 0.2) score -= 10;  // 20% 미만이면 -10
+      
+      // 필수 구조 태그 체크 (더 엄격하게)
+      const mainCount = document.querySelectorAll('main').length;
+      const hasNav = document.querySelector('nav') !== null;
+      const hasHeader = document.querySelector('header') !== null;
+      const hasFooter = document.querySelector('footer') !== null;
+      const hasSection = document.querySelector('section') !== null;
+      const hasArticle = document.querySelector('article') !== null;
+      const hasAside = document.querySelector('aside') !== null;
+      
+      // main 태그 체크 (매우 중요! 더 엄격하게)
+      if (mainCount === 0) score -= 30;    // main 없으면 -30 (필수 태그이므로 큰 감점)
+      else if (mainCount > 1) score -= 20; // main 여러개면 -20 (잘못된 사용)
+      
+      // 필수 구조 태그들 체크 (더 엄격하게)
+      if (!hasHeader) score -= 15; // header 없으면 -15
+      if (!hasNav) score -= 10;    // nav 없으면 -10
+      if (!hasFooter) score -= 10; // footer 없으면 -10
+      
+      // 콘텐츠 구조화 태그 체크
+      if (!hasSection && !hasArticle) score -= 15; // section과 article 둘 다 없으면 -15
+      
+      // aside 태그 체크 (선택적이지만 권장)
+      if (!hasAside) score -= 5; // aside 없으면 -5
+      
+      return Math.max(0, Math.min(100, score));
+    }
+
+    detectImprovements() {
+      const improvements = [];
+      
+      // class명으로 시맨틱 태그 추천
+      const divWithSemanticClass = document.querySelectorAll('div[class*="nav"], div[class*="header"], div[class*="footer"], div[class*="sidebar"], div[class*="aside"], div[class*="article"], div[class*="content"], div[class*="menu"]');
+      
+      divWithSemanticClass.forEach(div => {
+        const className = div.className;
+        let suggestion = '';
+        let reason = '';
+        
+        if (className.includes('nav') || className.includes('menu')) {
+          suggestion = 'nav';
+          reason = '네비게이션 영역은 <nav> 태그가 더 적절합니다';
+        } else if (className.includes('header')) {
+          suggestion = 'header';
+          reason = '헤더 영역은 <header> 태그가 더 적절합니다';
+        } else if (className.includes('footer')) {
+          suggestion = 'footer';
+          reason = '푸터 영역은 <footer> 태그가 더 적절합니다';
+        } else if (className.includes('sidebar') || className.includes('aside')) {
+          suggestion = 'aside';
+          reason = '사이드바는 <aside> 태그가 더 적절합니다';
+        } else if (className.includes('article') || className.includes('post')) {
+          suggestion = 'article';
+          reason = '독립적인 콘텐츠는 <article> 태그가 더 적절합니다';
+        } else if (className.includes('content') || className.includes('main')) {
+          if (!document.querySelector('main')) {
+            suggestion = 'main';
+            reason = '주요 콘텐츠 영역은 <main> 태그가 더 적절합니다';
+          } else {
+            suggestion = 'section';
+            reason = '콘텐츠 섹션은 <section> 태그가 더 적절합니다';
+          }
+        }
+        
+        if (suggestion) {
+          // HTML 코드 스니펫 생성
+          const currentHtml = `<div class="${className}">`;
+          const suggestedHtml = `<${suggestion}>`;
+          
+          improvements.push({
+            current: currentHtml,
+            suggested: suggestedHtml,
+            reason: reason
+          });
+        }
+      });
+      
+      // ID로도 체크
+      const divWithSemanticId = document.querySelectorAll('div[id*="nav"], div[id*="header"], div[id*="footer"], div[id*="sidebar"], div[id*="main"]');
+      
+      divWithSemanticId.forEach(div => {
+        const id = div.id;
+        let suggestion = '';
+        let reason = '';
+        
+        if (id.includes('nav')) {
+          suggestion = 'nav';
+          reason = '네비게이션 영역은 <nav> 태그가 더 적절합니다';
+        } else if (id.includes('header')) {
+          suggestion = 'header';
+          reason = '헤더 영역은 <header> 태그가 더 적절합니다';
+        } else if (id.includes('footer')) {
+          suggestion = 'footer';
+          reason = '푸터 영역은 <footer> 태그가 더 적절합니다';
+        } else if (id.includes('sidebar')) {
+          suggestion = 'aside';
+          reason = '사이드바는 <aside> 태그가 더 적절합니다';
+        } else if (id.includes('main') && !document.querySelector('main')) {
+          suggestion = 'main';
+          reason = '주요 콘텐츠 영역은 <main> 태그가 더 적절합니다';
+        }
+        
+        if (suggestion) {
+          const currentHtml = `<div id="${id}">`;
+          const suggestedHtml = `<${suggestion} id="${id}">`;
+          
+          // 중복 체크
+          const isDuplicate = improvements.some(imp => 
+            imp.current === currentHtml && imp.suggested === suggestedHtml
+          );
+          
+          if (!isDuplicate) {
+            improvements.push({
+              current: currentHtml,
+              suggested: suggestedHtml,
+              reason: reason
+            });
+          }
+        }
+      });
+      
+      return improvements.slice(0, 5); // 최대 5개만 표시
     }
 
     validate() {

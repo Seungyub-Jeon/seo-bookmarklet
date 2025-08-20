@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="시맨틱 HTML5 테스트 페이지 - 다양한 시맨틱 태그와 구조를 테스트합니다">
+  <title>시맨틱 HTML5 테스트 페이지 | SEO 북마클릿</title>
+  
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    /* 의도적으로 시맨틱하지 않은 구조 */
+    .navigation {
+      background: #333;
+      color: white;
+      padding: 15px;
+    }
+    
+    .navigation ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+    }
+    
+    .navigation li {
+      margin-right: 20px;
+    }
+    
+    .navigation a {
+      color: white;
+      text-decoration: none;
+    }
+    
+    #header {
+      background: #f0f0f0;
+      padding: 30px;
+      text-align: center;
+    }
+    
+    .sidebar {
+      float: right;
+      width: 300px;
+      padding: 20px;
+      background: #f9f9f9;
+      margin-left: 20px;
+    }
+    
+    #footer {
+      background: #333;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      margin-top: 50px;
+      clear: both;
+    }
+    
+    .content-wrapper {
+      overflow: hidden;
+    }
+    
+    .main-content {
+      margin-right: 340px;
+    }
+    
+    /* 시맨틱 태그 스타일 */
+    article {
+      margin-bottom: 30px;
+      padding: 20px;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    
+    section {
+      margin-bottom: 20px;
+    }
+    
+    figure {
+      margin: 20px 0;
+      text-align: center;
+    }
+    
+    figcaption {
+      color: #666;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+    
+    mark {
+      background: yellow;
+      padding: 2px 4px;
+    }
+    
+    time {
+      color: #666;
+      font-size: 14px;
+    }
+    
+    address {
+      font-style: normal;
+      background: #f5f5f5;
+      padding: 10px;
+      border-left: 3px solid #333;
+    }
+  </style>
+</head>
+<body>
+  <!-- 시맨틱하지 않은 헤더 (div#header 사용) -->
+  <div id="header">
+    <h1>시맨틱 HTML5 테스트 페이지</h1>
+    <p>이 페이지는 시맨틱 태그와 비시맨틱 태그가 섞여 있습니다</p>
+  </div>
+
+  <!-- 시맨틱하지 않은 네비게이션 (div.navigation 사용) -->
+  <div class="navigation">
+    <ul>
+      <li><a href="#home">홈</a></li>
+      <li><a href="#about">소개</a></li>
+      <li><a href="#services">서비스</a></li>
+      <li><a href="#contact">연락처</a></li>
+    </ul>
+  </div>
+
+  <div class="container">
+    <!-- 올바른 시맨틱 구조 시작 -->
+    <header>
+      <h2>실제 Header 태그 영역</h2>
+      <nav>
+        <ul>
+          <li><a href="#section1">섹션 1</a></li>
+          <li><a href="#section2">섹션 2</a></li>
+          <li><a href="#section3">섹션 3</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="content-wrapper">
+      <!-- 시맨틱하지 않은 사이드바 (div.sidebar 사용) -->
+      <div class="sidebar">
+        <h3>사이드바 영역</h3>
+        <p>이 영역은 div.sidebar로 구현되어 있습니다.</p>
+        <p>aside 태그를 사용하는 것이 더 적절합니다.</p>
+      </div>
+
+      <!-- main 태그 사용 -->
+      <main>
+        <div class="main-content">
+          <!-- article 태그 사용 -->
+          <article>
+            <header>
+              <h2>블로그 포스트 제목</h2>
+              <time datetime="2024-01-15">2024년 1월 15일</time>
+            </header>
+            
+            <section>
+              <h3>첫 번째 섹션</h3>
+              <p>이것은 <mark>강조된 텍스트</mark>가 포함된 문단입니다.</p>
+              <p>시맨틱 HTML5는 문서의 구조와 의미를 명확하게 전달합니다.</p>
+              
+              <figure>
+                <img src="https://via.placeholder.com/400x200" alt="샘플 이미지">
+                <figcaption>그림 1: 샘플 이미지 설명</figcaption>
+              </figure>
+            </section>
+            
+            <section>
+              <h3>두 번째 섹션</h3>
+              <p>여기는 또 다른 섹션입니다. <strong>중요한 내용</strong>과 <em>강조할 내용</em>이 있습니다.</p>
+              <blockquote cite="https://example.com">
+                "인용문은 blockquote 태그를 사용합니다."
+                <cite>- 저자명</cite>
+              </blockquote>
+            </section>
+            
+            <footer>
+              <p>작성자: 홍길동</p>
+              <address>
+                이메일: hong@example.com<br>
+                주소: 서울특별시 강남구
+              </address>
+            </footer>
+          </article>
+
+          <!-- 두 번째 article -->
+          <article>
+            <h2>또 다른 포스트</h2>
+            <section>
+              <h3>코드 예제</h3>
+              <p>아래는 코드 예제입니다:</p>
+              <pre><code>
+function semanticHTML() {
+  console.log("시맨틱 HTML5를 사용하세요!");
+}
+              </code></pre>
+            </section>
+          </article>
+
+          <!-- 시맨틱하지 않은 콘텐츠 영역 -->
+          <div class="content-section">
+            <div class="article-wrapper">
+              <h2>DIV로 만든 가짜 article</h2>
+              <p>이 영역은 div로 구현되어 있지만 article 태그가 더 적절합니다.</p>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- 올바른 aside 사용 -->
+      <aside>
+        <h3>관련 링크</h3>
+        <ul>
+          <li><a href="#">HTML5 스펙</a></li>
+          <li><a href="#">시맨틱 마크업 가이드</a></li>
+          <li><a href="#">웹 접근성</a></li>
+        </ul>
+      </aside>
+    </div>
+
+    <!-- 올바른 footer 사용 -->
+    <footer>
+      <p>&copy; 2024 시맨틱 테스트. 모든 권리 보유.</p>
+      <nav>
+        <a href="#privacy">개인정보처리방침</a> |
+        <a href="#terms">이용약관</a> |
+        <a href="#sitemap">사이트맵</a>
+      </nav>
+    </footer>
+  </div>
+
+  <!-- 시맨틱하지 않은 푸터 (div#footer 사용) -->
+  <div id="footer">
+    <p>이것은 div#footer로 만든 가짜 푸터입니다</p>
+  </div>
+
+  <!-- 다양한 div와 span 사용으로 과다 사용 테스트 -->
+  <div><div><div><span>중첩된</span> <span>div와</span> <span>span</span></div></div></div>
+  <div class="wrapper"><div class="inner"><div class="content"><span>더 많은 div</span></div></div></div>
+  
+  <!-- 폼 접근성 테스트 -->
+  <form>
+    <label for="name">이름:</label>
+    <input type="text" id="name" name="name" required>
+    
+    <label for="email">이메일:</label>
+    <input type="email" id="email" name="email" required>
+    
+    <input type="text" placeholder="레이블 없는 입력 필드">
+    
+    <button type="submit">전송</button>
+  </form>
+
+  <!-- 테이블 구조 테스트 -->
+  <table>
+    <caption>샘플 테이블</caption>
+    <thead>
+      <tr>
+        <th scope="col">항목</th>
+        <th scope="col">값</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>데이터 1</td>
+        <td>100</td>
+      </tr>
+      <tr>
+        <td>데이터 2</td>
+        <td>200</td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+</html>
