@@ -237,6 +237,343 @@
 
       this.injectStyles();
     }
+
+    // Shadow DOM을 사용한 헤더 생성
+    createShadowHeader(totalScore, totalIssues) {
+      const headerHost = document.createElement('div');
+      headerHost.className = 'zupp-shadow-header-host';
+      
+      // Shadow Root 생성
+      const shadow = headerHost.attachShadow({ mode: 'open' });
+      
+      // Shadow DOM 내부 HTML과 스타일
+      shadow.innerHTML = `
+        <style>
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+          
+          .zupp-header {
+            padding: 20px 32px;
+            display: flex;
+            align-items: center;
+            background: white;
+            border-bottom: 1px solid #f0f0f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          }
+          
+          .header-left {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+          }
+          
+          .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+          }
+          
+          .logo-icon {
+            font-size: 32px;
+            line-height: 1;
+          }
+          
+          .brand-text h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #111;
+            line-height: 1.2;
+          }
+          
+          .brand-text p {
+            font-size: 12px;
+            color: #999;
+            margin-top: 2px;
+          }
+          
+          .header-center {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+          }
+          
+          .score-circle {
+            width: 60px;
+            height: 60px;
+          }
+          
+          .circular-chart {
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+            max-height: 100%;
+          }
+          
+          .circle-bg {
+            fill: none;
+            stroke: #f0f0f0;
+            stroke-width: 2.8;
+          }
+          
+          .circle {
+            fill: none;
+            stroke: #10b981;
+            stroke-width: 2.8;
+            stroke-linecap: round;
+            animation: progress 1s ease-out forwards;
+          }
+          
+          @keyframes progress {
+            0% { stroke-dasharray: 0 100; }
+          }
+          
+          .score-text {
+            fill: #111;
+            font-size: 12px;
+            font-weight: 700;
+            text-anchor: middle;
+          }
+          
+          .issue-count {
+            font-size: 14px;
+            color: #666;
+          }
+          
+          .header-right {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+          }
+          
+          .powered-by {
+            text-align: right;
+          }
+          
+          .powered-text {
+            display: block;
+            font-size: 10px;
+            color: #999;
+            margin-bottom: 2px;
+          }
+          
+          .company-name {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+          }
+          
+          .header-actions {
+            display: flex;
+            gap: 8px;
+          }
+          
+          .btn-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            border: 1px solid #e5e5e5;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #666;
+            transition: all 0.2s;
+          }
+          
+          .btn-icon:hover {
+            background: #f5f5f5;
+            color: #333;
+          }
+        </style>
+        
+        <header class="zupp-header">
+          <div class="header-left">
+            <div class="brand-logo">
+              <span class="logo-icon">🔍</span>
+              <div class="brand-text">
+                <h1>줄줄분석기</h1>
+                <p>SEO/GEO Analyzer</p>
+              </div>
+            </div>
+          </div>
+          <div class="header-center">
+            <div class="score-circle">
+              <svg viewBox="0 0 36 36" class="circular-chart">
+                <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                <path class="circle" stroke-dasharray="${totalScore}, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                <text x="18" y="20.35" class="score-text">${totalScore}</text>
+              </svg>
+            </div>
+            <div class="score-info">
+              <p class="issue-count">${totalIssues}개 항목 점검</p>
+            </div>
+          </div>
+          <div class="header-right">
+            <div class="powered-by">
+              <span class="powered-text">POWERED BY</span>
+              <span class="company-name">SOYOYU</span>
+            </div>
+            <div class="header-actions">
+              <button class="btn-icon minimize" data-action="minimize">−</button>
+              <button class="btn-icon close" data-action="close">×</button>
+            </div>
+          </div>
+        </header>
+      `;
+      
+      // Shadow DOM 내부의 버튼에 이벤트 리스너 추가
+      const minimizeBtn = shadow.querySelector('[data-action="minimize"]');
+      const closeBtn = shadow.querySelector('[data-action="close"]');
+      
+      if (minimizeBtn) {
+        minimizeBtn.addEventListener('click', () => this.minimize());
+      }
+      
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => this.close());
+      }
+      
+      return headerHost;
+    }
+
+    // Shadow DOM을 사용한 네비게이션 생성
+    createShadowNav() {
+      const navHost = document.createElement('div');
+      navHost.className = 'zupp-shadow-nav-host';
+      
+      // Shadow Root 생성
+      const shadow = navHost.attachShadow({ mode: 'open' });
+      
+      // Shadow DOM 내부 HTML과 스타일
+      shadow.innerHTML = `
+        <style>
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+          
+          nav {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 8px;
+            padding: 16px 24px;
+            background: linear-gradient(to bottom, #fafbff, #f5f6fa);
+            border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+            max-height: 160px;
+            overflow-y: auto;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          }
+          
+          nav::-webkit-scrollbar {
+            width: 4px;
+          }
+          
+          nav::-webkit-scrollbar-track {
+            background: transparent;
+          }
+          
+          nav::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.2);
+            border-radius: 2px;
+          }
+          
+          .cat-btn {
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 8px;
+            font-size: 13px;
+            color: #6b7280;
+            transition: all 0.2s;
+            min-width: 0;
+            overflow: hidden;
+          }
+          
+          .cat-btn:hover {
+            background: #f3f4f6;
+            color: #374151;
+          }
+          
+          .cat-btn.active {
+            background: #6366f1;
+            color: white;
+            border-color: #6366f1;
+          }
+          
+          .cat-icon {
+            font-size: 16px;
+            line-height: 1;
+            flex-shrink: 0;
+          }
+          
+          .cat-name {
+            font-weight: 500;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+          
+          /* 반응형 디자인 */
+          @media (max-width: 768px) {
+            nav {
+              padding: 12px 16px;
+              grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+              gap: 6px;
+              max-height: 140px;
+            }
+            
+            .cat-btn {
+              padding: 8px 10px;
+              font-size: 12px;
+            }
+            
+            .cat-icon {
+              font-size: 14px;
+            }
+          }
+        </style>
+        
+        <nav class="category-nav">
+          <button class="cat-btn ${this.activeCategory === 'all' ? 'active' : ''}" data-cat="all">
+            <span class="cat-icon">📊</span>
+            <span class="cat-name">전체</span>
+          </button>
+          ${Object.entries(this.categories).map(([key, cat]) => `
+            <button class="cat-btn ${this.activeCategory === key ? 'active' : ''}" data-cat="${key}">
+              <span class="cat-icon">${cat.icon}</span>
+              <span class="cat-name">${cat.name}</span>
+            </button>
+          `).join('')}
+        </nav>
+      `;
+      
+      // Shadow DOM 내부의 버튼들에 이벤트 리스너 추가
+      const buttons = shadow.querySelectorAll('.cat-btn');
+      buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const category = btn.getAttribute('data-cat');
+          this.activeCategory = category;
+          this.render(); // 전체 UI 재렌더링
+        });
+      });
+      
+      return navHost;
+    }
     
     preventScroll() {
       // 원본 스크롤 위치 저장
@@ -376,7 +713,91 @@
       }
     }
 
+    // Shadow DOM을 사용한 렌더링 (CSS 충돌 방지용)
+    renderWithShadow() {
+      const totalScore = this.results.score || 0;
+      const totalIssues = Object.values(this.categories).reduce((sum, cat) => sum + (cat.issueCount || 0), 0);
+      
+      // 컨테이너 초기화
+      this.container.innerHTML = '';
+      
+      // zupp-modern 래퍼 생성
+      const modernWrapper = document.createElement('div');
+      modernWrapper.className = 'zupp-modern';
+      
+      // Shadow DOM 헤더 추가
+      const shadowHeader = this.createShadowHeader(totalScore, totalIssues);
+      modernWrapper.appendChild(shadowHeader);
+      
+      // Shadow DOM 네비게이션 추가
+      const shadowNav = this.createShadowNav();
+      modernWrapper.appendChild(shadowNav);
+      
+      // 나머지 콘텐츠는 일반 DOM으로 추가
+      const contentContainer = document.createElement('div');
+      contentContainer.innerHTML = `
+        <!-- 콘텐츠 영역 -->
+        <main class="content-area">
+          ${this.renderContent()}
+        </main>
+
+        <!-- 하단 액션 바 -->
+        <footer class="action-bar">
+          <div class="action-buttons">
+            <button class="action-btn export">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              Export
+            </button>
+            <button class="action-btn copy">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+              Copy
+            </button>
+            <button class="action-btn refresh">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <polyline points="23 4 23 10 17 10"/>
+                <polyline points="1 20 1 14 7 14"/>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+              </svg>
+              Refresh
+            </button>
+          </div>
+          <div class="footer-meta">
+            <span>By SOYOYU</span>
+            <span>•</span>
+            <span>${new Date().toLocaleDateString('ko-KR')}</span>
+          </div>
+        </footer>
+      `;
+      
+      // 콘텐츠를 modernWrapper에 추가
+      while (contentContainer.firstChild) {
+        modernWrapper.appendChild(contentContainer.firstChild);
+      }
+      
+      // 전체를 컨테이너에 추가
+      this.container.appendChild(modernWrapper);
+      
+      // 이벤트 리스너 설정
+      this.attachEventListeners();
+    }
+
+    // 기존 render 메서드 (호환성 유지)
     render() {
+      // Shadow DOM 지원 여부 확인 후 적절한 렌더링 방식 선택
+      if (typeof Element.prototype.attachShadow !== 'undefined') {
+        // Shadow DOM 지원하는 경우
+        this.renderWithShadow();
+        return;
+      }
+      
+      // Shadow DOM 미지원 시 기존 방식 사용
       const totalScore = this.results.score || 0;
       const totalIssues = Object.values(this.categories).reduce((sum, cat) => sum + (cat.issueCount || 0), 0);
 
@@ -2115,14 +2536,19 @@
     }
 
     attachEventListeners() {
-      // 카테고리 네비게이션
-      this.container.querySelectorAll('.cat-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const cat = e.currentTarget.dataset.cat;
-          this.activeCategory = cat;
-          this.render();
+      // Shadow DOM 사용 시에는 Shadow DOM 내부에서 이벤트 처리하므로
+      // 일반 DOM의 카테고리 버튼만 처리
+      const catButtons = this.container.querySelectorAll('.cat-btn');
+      if (catButtons.length > 0) {
+        // 기존 방식 (Shadow DOM 미사용 시)
+        catButtons.forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const cat = e.currentTarget.dataset.cat;
+            this.activeCategory = cat;
+            this.render();
+          });
         });
-      });
+      }
 
       // 카드 클릭 (전체 보기에서)
       this.container.querySelectorAll('.overview-card').forEach(card => {

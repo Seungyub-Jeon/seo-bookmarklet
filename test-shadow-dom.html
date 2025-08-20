@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shadow DOM 테스트 - CSS 충돌 시뮬레이션</title>
+  
+  <style>
+    /* 공격적인 CSS - theninetosix.com 사이트처럼 */
+    nav {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: 60px !important;
+      background: red !important;
+      z-index: 9999 !important;
+    }
+    
+    header {
+      position: fixed !important;
+      display: block !important;
+      padding: 100px !important;
+      background: blue !important;
+      color: yellow !important;
+    }
+    
+    .zupp-header {
+      background: green !important;
+      padding: 50px !important;
+    }
+    
+    .cat-btn {
+      background: purple !important;
+      color: white !important;
+      font-size: 30px !important;
+    }
+    
+    /* 모든 div에 영향을 주는 스타일 */
+    div {
+      border: 2px solid orange !important;
+      margin: 10px !important;
+    }
+    
+    /* 모든 버튼에 영향 */
+    button {
+      background: pink !important;
+      border-radius: 50% !important;
+    }
+    
+    body {
+      background: #f0f0f0;
+      padding: 20px;
+    }
+    
+    .test-content {
+      margin-top: 100px;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <strong>사이트의 공격적인 NAV 스타일 (position: fixed)</strong>
+  </nav>
+  
+  <header>
+    <strong>사이트의 공격적인 HEADER 스타일</strong>
+  </header>
+  
+  <div class="test-content">
+    <h1>Shadow DOM 테스트 페이지</h1>
+    <p>이 페이지는 CSS 충돌을 시뮬레이션합니다.</p>
+    <p>theninetosix.com과 같이 공격적인 CSS가 적용되어 있습니다.</p>
+    
+    <h2>테스트 시나리오:</h2>
+    <ul>
+      <li>nav 태그에 position: fixed 적용됨</li>
+      <li>header 태그에 강제 스타일 적용됨</li>
+      <li>모든 div와 button에 글로벌 스타일 적용됨</li>
+      <li>.zupp-header 클래스에 직접 스타일 적용됨</li>
+    </ul>
+    
+    <h2>예상 결과:</h2>
+    <ul>
+      <li>Shadow DOM을 사용한 헤더/네비게이션은 영향받지 않음</li>
+      <li>나머지 콘텐츠 영역은 일부 영향받을 수 있음</li>
+    </ul>
+    
+    <button onclick="loadBookmarklet()">북마클릿 실행</button>
+  </div>
+  
+  <script>
+    function loadBookmarklet() {
+      // 로컬 북마클릿 로드
+      const script = document.createElement('script');
+      script.src = 'http://localhost:8000/zupp-bookmarklet.js';
+      document.body.appendChild(script);
+    }
+  </script>
+</body>
+</html>
