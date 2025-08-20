@@ -20,7 +20,7 @@
       if (retries < maxRetries) {
         setTimeout(check, 10);
       } else {
-        console.error('❌ ZuppSEO 로딩 타임아웃 - analyzers-geo-mobile.js');
+        // Loading timeout
       }
     }
     

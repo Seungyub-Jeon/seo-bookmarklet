@@ -103,7 +103,6 @@
             <h2>방법 1: 드래그 & 드롭</h2>
             <p>아래 버튼을 북마크 바로 드래그하세요:</p>
             
-            <a href="javascript:(function(){const baseUrl=window.location.origin+window.location.pathname.replace(/[^\/]*$/,'');const cssLink=document.createElement('link');cssLink.rel='stylesheet';cssLink.type='text/css';cssLink.href=baseUrl+'ui.css';document.head.appendChild(cssLink);window.ZuppSEO=window.ZuppSEO||{};window.ZuppSEO.baseUrl=baseUrl;const scripts=['zupp.js','analyzers.js','analyzers-extended.js','analyzers-technical.js','analyzers-geo-mobile.js','ui.js'];let index=0;function loadNextScript(){if(index>=scripts.length){setTimeout(()=>{if(window.ZuppSEO&&window.ZuppSEO.run){console.log('🚀 Running ZuppSEO...');window.ZuppSEO.run();}else{console.error('❌ ZuppSEO not found');}},100);return;}const src=scripts[index];const script=document.createElement('script');script.src=baseUrl+src;script.onload=()=>{console.log('✅ '+src+' loaded ('+(index+1)+'/'+scripts.length+')');index++;loadNextScript();};script.onerror=()=>{console.error('❌ Failed to load '+src);};document.head.appendChild(script);}console.log('📍 Loading from:',baseUrl);loadNextScript();})();" 
                class="bookmarklet-link">
                 🔍 zupp SEO 분석
             </a>
@@ -166,7 +165,6 @@
 
         // 직접 실행
         function runDirectly() {
-            console.log('🚀 zupp 직접 실행 시작...');
             showStatus('로딩 중...', 'success');
             
             // CSS 파일 먼저 로드
@@ -195,7 +193,6 @@
                 if (index >= scripts.length) {
                     setTimeout(() => {
                         if (window.ZuppSEO && window.ZuppSEO.run) {
-                            console.log('🎯 ZuppSEO 실행!');
                             window.ZuppSEO.run();
                             showStatus('✅ zupp SEO 분석이 시작되었습니다!', 'success');
                         } else {
@@ -209,7 +206,6 @@
                 const script = document.createElement('script');
                 script.src = src;
                 script.onload = () => {
-                    console.log(`✅ ${src} loaded (${index + 1}/${scripts.length})`);
                     index++;
                     loadNextScript();
                 };
@@ -235,7 +231,6 @@
                 'ui.js'
             ];
             
-            console.log('📁 파일 확인 중...');
             let results = [];
             let checked = 0;
             
@@ -251,7 +246,6 @@
                         
                         if (checked === files.length) {
                             showStatus(results.join('\n'), results.every(r => r.includes('✅')) ? 'success' : 'error');
-                            console.log(results.join('\n'));
                         }
                     })
                     .catch(err => {
@@ -260,7 +254,6 @@
                         
                         if (checked === files.length) {
                             showStatus(results.join('\n'), 'error');
-                            console.log(results.join('\n'));
                         }
                     });
             });
@@ -281,8 +274,6 @@
 
         // 페이지 로드 완료
         window.addEventListener('DOMContentLoaded', () => {
-            console.log('🎯 zupp 북마클릿 테스트 페이지 준비 완료');
-            console.log('📍 현재 경로:', window.location.pathname);
         });
     </script>
 </body>

@@ -677,6 +677,11 @@
         return this.renderSocialCategory(category);
       }
 
+      // 콘텐츠 카테고리도 특별 처리
+      if (categoryKey === 'content') {
+        return this.renderContentCategory(category);
+      }
+
       return `
         <div class="category-detail">
           <div class="category-header">
@@ -1405,6 +1410,225 @@
       }
       
       return this.escapeHtml(lines.join('\n'));
+    }
+
+    renderContentCategory(category) {
+      const contentData = this.results.categories?.content?.data || {};
+      const stats = contentData.stats || {};
+      const paragraphStats = contentData.paragraphStats || {};
+      const sentenceStructure = contentData.sentenceStructure || {};
+      const readability = contentData.readability || {};
+      const topKeywords = contentData.topKeywords || [];
+      
+      return `
+        <div class="category-detail">
+          <div class="category-header">
+            <div class="cat-title">
+              <span class="cat-icon-large">${category.icon}</span>
+              <div>
+                <h2>${category.name} <span class="item-count">${category.items.length}개 항목 체크</span></h2>
+              </div>
+            </div>
+            <div class="cat-score">
+              <div class="score-bar">
+                <div class="score-fill" style="width: ${category.score}%; background: ${this.getScoreColor(category.score)}"></div>
+              </div>
+              <span class="score-label">${category.score}/100</span>
+            </div>
+          </div>
+
+          <!-- 콘텐츠 통계 대시보드 -->
+          <div class="content-stats-dashboard">
+            <h3 class="section-title">📊 콘텐츠 통계</h3>
+            <div class="stats-grid content-stats-grid">
+              <div class="stat-card">
+                <div class="stat-value">${stats.totalWords?.toLocaleString() || 0}</div>
+                <div class="stat-label">총 단어</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">${sentenceStructure.total || 0}</div>
+                <div class="stat-label">문장</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">${paragraphStats.total || 0}</div>
+                <div class="stat-label">문단</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">${contentData.readingTime || 0}분</div>
+                <div class="stat-label">읽기시간</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">${stats.characters?.toLocaleString() || 0}</div>
+                <div class="stat-label">총 글자</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">${stats.charactersNoSpaces?.toLocaleString() || 0}</div>
+                <div class="stat-label">글자(공백X)</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">${stats.koreanWords?.toLocaleString() || 0}</div>
+                <div class="stat-label">한글단어</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">${stats.englishWords?.toLocaleString() || 0}</div>
+                <div class="stat-label">영문단어</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 가독성 및 품질 지표 -->
+          <div class="content-quality-section">
+            <h3 class="section-title">📝 가독성 및 품질</h3>
+            <div class="quality-metrics">
+              <div class="quality-item ${this.getReadabilityClass(readability.score)}">
+                <div class="quality-label">가독성 점수</div>
+                <div class="quality-value">
+                  ${readability.score || 0}점 
+                  <span class="quality-level">(${readability.level || '분석중'})</span>
+                </div>
+              </div>
+              <div class="quality-item">
+                <div class="quality-label">평균 문장 길이</div>
+                <div class="quality-value">
+                  ${sentenceStructure.avgLength || 0}단어
+                  ${sentenceStructure.avgLength > 25 ? '<span class="warning">⚠️ 긴편</span>' : 
+                    sentenceStructure.avgLength >= 15 && sentenceStructure.avgLength <= 20 ? '<span class="good">✓ 적절</span>' : ''}
+                </div>
+              </div>
+              <div class="quality-item">
+                <div class="quality-label">텍스트/HTML 비율</div>
+                <div class="quality-value">
+                  ${((stats.textHtmlRatio || 0) * 100).toFixed(1)}%
+                  ${stats.textHtmlRatio >= 0.25 ? '<span class="good">✓</span>' : '<span class="warning">⚠️</span>'}
+                </div>
+              </div>
+              <div class="quality-item">
+                <div class="quality-label">복잡한 문장 비율</div>
+                <div class="quality-value">
+                  ${sentenceStructure.complexRatio || 0}%
+                  ${parseFloat(sentenceStructure.complexRatio) > 30 ? '<span class="warning">⚠️ 높음</span>' : '<span class="good">✓ 적절</span>'}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 키워드 밀도 차트 -->
+          ${this.renderKeywordChart(topKeywords)}
+
+          <!-- 문단 구조 분석 -->
+          ${this.renderParagraphAnalysis(paragraphStats)}
+
+          <!-- 검증 결과 -->
+          <div class="content-section">
+            <h3 class="section-title">📋 검증 결과</h3>
+            <div class="check-list category-checks">
+              ${category.items.map(item => `
+                <div class="check-item ${item.status}">
+                  <div class="check-indicator">
+                    ${item.status === 'success' ? '✓' : item.status === 'warning' ? '!' : item.status === 'info' ? 'ℹ' : '×'}
+                  </div>
+                  <div class="check-content">
+                    <div class="check-title">${item.title}</div>
+                    ${item.suggestion && item.status !== 'success' ? `
+                      <div class="check-suggestion">${item.suggestion}</div>
+                    ` : ''}
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    renderKeywordChart(topKeywords) {
+      if (!topKeywords || topKeywords.length === 0) {
+        return `
+          <div class="content-section">
+            <h3 class="section-title">🔍 주요 키워드</h3>
+            <div class="keyword-empty">키워드 분석 데이터가 없습니다.</div>
+          </div>
+        `;
+      }
+
+      const maxCount = Math.max(...topKeywords.map(k => k.count));
+      const displayKeywords = topKeywords.slice(0, 5); // TOP 5만 표시
+
+      return `
+        <div class="content-section">
+          <h3 class="section-title">🔍 주요 키워드 (TOP 5)</h3>
+          <div class="keyword-chart">
+            ${displayKeywords.map(keyword => `
+              <div class="keyword-item">
+                <div class="keyword-info">
+                  <span class="keyword-word">${keyword.word}</span>
+                  <span class="keyword-density">${keyword.density}</span>
+                </div>
+                <div class="keyword-bar">
+                  <div class="keyword-fill" style="width: ${(keyword.count / maxCount) * 100}%"></div>
+                  <span class="keyword-count">${keyword.count}회</span>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+          ${topKeywords.length > 5 ? `
+            <div class="keyword-more">
+              <button class="toggle-btn" onclick="this.parentElement.parentElement.classList.toggle('expanded')">
+                외 ${topKeywords.length - 5}개 키워드 더보기
+              </button>
+              <div class="keyword-chart-extra">
+                ${topKeywords.slice(5).map(keyword => `
+                  <div class="keyword-item">
+                    <div class="keyword-info">
+                      <span class="keyword-word">${keyword.word}</span>
+                      <span class="keyword-density">${keyword.density}</span>
+                    </div>
+                    <div class="keyword-bar">
+                      <div class="keyword-fill" style="width: ${(keyword.count / maxCount) * 100}%"></div>
+                      <span class="keyword-count">${keyword.count}회</span>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    renderParagraphAnalysis(paragraphStats) {
+      if (!paragraphStats) return '';
+
+      return `
+        <div class="content-section">
+          <h3 class="section-title">📝 문단 구조 분석</h3>
+          <div class="paragraph-analysis">
+            <div class="paragraph-stat">
+              <span class="stat-label">총 문단:</span>
+              <span class="stat-value ${paragraphStats.total >= 3 ? 'good' : 'warning'}">${paragraphStats.total}개</span>
+            </div>
+            <div class="paragraph-stat">
+              <span class="stat-label">빈 문단:</span>
+              <span class="stat-value ${paragraphStats.empty === 0 ? 'good' : 'warning'}">${paragraphStats.empty}개</span>
+            </div>
+            <div class="paragraph-stat">
+              <span class="stat-label">짧은 문단:</span>
+              <span class="stat-value">${paragraphStats.short}개 <span class="note">(50자 미만)</span></span>
+            </div>
+            <div class="paragraph-stat">
+              <span class="stat-label">평균 길이:</span>
+              <span class="stat-value ${paragraphStats.avgLength <= 500 ? 'good' : 'warning'}">${Math.round(paragraphStats.avgLength)}자</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    getReadabilityClass(score) {
+      if (score >= 80) return 'excellent';
+      if (score >= 60) return 'good';  
+      if (score >= 40) return 'average';
+      return 'poor';
     }
 
     renderSocialMetaItem(tagName, content, htmlCode) {

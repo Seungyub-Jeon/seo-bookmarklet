@@ -20,7 +20,7 @@
       if (retries < maxRetries) {
         setTimeout(check, 10);
       } else {
-        console.error('❌ ZuppSEO 로딩 타임아웃 - analyzers-extended.js');
+        // Loading timeout
       }
     }
     
@@ -273,6 +273,12 @@
       // 읽기 시간 추정 (분당 200단어 기준)
       this.data.readingTime = Math.ceil(words.length / 200);
 
+      // 문장 구조 분석
+      this.analyzeSentenceStructure(bodyText);
+
+      // 가독성 점수 계산
+      this.calculateReadabilityScore(bodyText, words);
+
       // 중복 콘텐츠 체크
       this.checkDuplicateContent();
     }
@@ -300,8 +306,93 @@
       this.data.duplicates = duplicates;
     }
 
+    analyzeSentenceStructure(text) {
+      // 문장 분석
+      const sentences = text.match(/[.!?]+/g) || [];
+      const allSentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+      
+      // 문장 길이 분석
+      const sentenceLengths = allSentences.map(s => s.trim().split(/\s+/).length);
+      const avgSentenceLength = sentenceLengths.length > 0 
+        ? sentenceLengths.reduce((sum, len) => sum + len, 0) / sentenceLengths.length 
+        : 0;
+      
+      // 복잡한 문장 (20단어 이상) 비율
+      const complexSentences = sentenceLengths.filter(len => len >= 20).length;
+      const complexSentenceRatio = sentenceLengths.length > 0 
+        ? (complexSentences / sentenceLengths.length * 100).toFixed(1)
+        : 0;
+
+      this.data.sentenceStructure = {
+        total: sentences.length,
+        avgLength: Math.round(avgSentenceLength),
+        shortSentences: sentenceLengths.filter(len => len <= 10).length,
+        mediumSentences: sentenceLengths.filter(len => len > 10 && len < 20).length,
+        complexSentences: complexSentences,
+        complexRatio: complexSentenceRatio
+      };
+    }
+
+    calculateReadabilityScore(text, words) {
+      // 간단한 가독성 점수 (한국어 기준 조정)
+      const sentences = (text.match(/[.!?]+/g) || []).length;
+      const syllables = this.countSyllables(text);
+      
+      // 평균 문장 길이
+      const avgSentenceLength = sentences > 0 ? words.length / sentences : 0;
+      
+      // 평균 음절 수 (한국어는 문자당 1음절로 근사)
+      const avgSyllablesPerWord = words.length > 0 ? syllables / words.length : 0;
+      
+      // 한국어 맞춤 가독성 점수 (0-100, 높을수록 읽기 쉬움)
+      let readabilityScore = 100;
+      
+      // 문장이 길수록 감점
+      if (avgSentenceLength > 25) readabilityScore -= 20;
+      else if (avgSentenceLength > 20) readabilityScore -= 10;
+      else if (avgSentenceLength > 15) readabilityScore -= 5;
+      
+      // 복잡한 단어가 많으면 감점 (음절 수 기준)
+      if (avgSyllablesPerWord > 3) readabilityScore -= 15;
+      else if (avgSyllablesPerWord > 2.5) readabilityScore -= 10;
+      else if (avgSyllablesPerWord > 2) readabilityScore -= 5;
+      
+      readabilityScore = Math.max(0, Math.min(100, readabilityScore));
+      
+      this.data.readability = {
+        score: Math.round(readabilityScore),
+        level: this.getReadabilityLevel(readabilityScore),
+        avgSentenceLength: Math.round(avgSentenceLength),
+        avgSyllablesPerWord: avgSyllablesPerWord.toFixed(1)
+      };
+    }
+
+    countSyllables(text) {
+      // 한국어: 각 문자를 1음절로 계산
+      const koreanChars = (text.match(/[가-힣]/g) || []).length;
+      
+      // 영어: 간단한 음절 추정
+      const englishWords = text.match(/[a-zA-Z]+/g) || [];
+      let englishSyllables = 0;
+      englishWords.forEach(word => {
+        const vowels = word.toLowerCase().match(/[aeiou]/g) || [];
+        englishSyllables += Math.max(1, vowels.length);
+      });
+      
+      return koreanChars + englishSyllables;
+    }
+
+    getReadabilityLevel(score) {
+      if (score >= 90) return '매우 쉬움';
+      if (score >= 80) return '쉬움';  
+      if (score >= 70) return '보통';
+      if (score >= 60) return '어려움';
+      if (score >= 50) return '매우 어려움';
+      return '극도로 어려움';
+    }
+
     validate() {
-      const { stats, paragraphStats, lists, topKeywords, duplicates } = this.data;
+      const { stats, paragraphStats, lists, topKeywords, duplicates, sentenceStructure, readability } = this.data;
       
       // 콘텐츠 양 검증
       if (stats.totalWords < 300) {
@@ -381,6 +472,39 @@
       if (stats.koreanWords > 0 && stats.englishWords > 0) {
         const koreanRatio = (stats.koreanWords / stats.totalWords * 100).toFixed(1);
         this.addPassed(`언어 분포: 한글 ${koreanRatio}%, 영문 ${(100 - parseFloat(koreanRatio)).toFixed(1)}%`);
+      }
+
+      // 문장 구조 검증
+      if (sentenceStructure) {
+        if (sentenceStructure.avgLength > 25) {
+          this.addIssue('warning', `문장이 너무 깁니다 (평균 ${sentenceStructure.avgLength}단어)`, {
+            suggestion: '15-20단어로 문장을 나누면 가독성이 향상됩니다'
+          });
+        } else if (sentenceStructure.avgLength >= 15 && sentenceStructure.avgLength <= 20) {
+          this.addPassed(`적절한 문장 길이 (평균 ${sentenceStructure.avgLength}단어)`);
+        }
+
+        if (parseFloat(sentenceStructure.complexRatio) > 30) {
+          this.addIssue('info', `복잡한 문장이 많습니다 (${sentenceStructure.complexRatio}%)`, {
+            suggestion: '긴 문장을 나누어 가독성을 개선하세요'
+          });
+        }
+      }
+
+      // 가독성 점수 검증
+      if (readability) {
+        if (readability.score >= 80) {
+          this.addPassed(`가독성 우수 (${readability.score}점 - ${readability.level})`);
+        } else if (readability.score >= 60) {
+          this.addIssue('info', `가독성 보통 (${readability.score}점 - ${readability.level})`, {
+            suggestion: '문장을 간결하게 만들고 쉬운 단어를 사용하세요'
+          });
+        } else {
+          this.addIssue('warning', `가독성 낮음 (${readability.score}점 - ${readability.level})`, {
+            impact: '독자가 내용을 이해하기 어려울 수 있습니다',
+            suggestion: '짧고 명확한 문장으로 개선하세요'
+          });
+        }
       }
     }
   }

@@ -2072,6 +2072,312 @@
   }
 }
 
+/* ============================
+   콘텐츠 분석 스타일
+   ============================ */
+
+/* 콘텐츠 통계 대시보드 */
+.content-stats-dashboard {
+  margin: 20px 0;
+  padding: 20px;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border: 1px solid #cbd5e0;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.content-stats-dashboard .section-title {
+  margin: 0 0 20px 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #2d3748;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.content-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 0;
+}
+
+.content-stats-grid .stat-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.content-stats-grid .stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.content-stats-grid .stat-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: #2b6cb0;
+  margin-bottom: 6px;
+}
+
+.content-stats-grid .stat-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #4a5568;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* 품질 지표 섹션 */
+.content-quality-section {
+  margin: 20px 0;
+  padding: 20px;
+  background: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.content-quality-section .section-title {
+  margin: 0 0 18px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #2d3748;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.quality-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.quality-item {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+  transition: border-color 0.2s;
+}
+
+.quality-item.excellent {
+  border-left: 4px solid #10b981;
+}
+
+.quality-item.good {
+  border-left: 4px solid #3b82f6;
+}
+
+.quality-item.average {
+  border-left: 4px solid #f59e0b;
+}
+
+.quality-item.poor {
+  border-left: 4px solid #ef4444;
+}
+
+.quality-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.quality-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.quality-level {
+  font-size: 12px;
+  font-weight: 400;
+  color: #6b7280;
+}
+
+.quality-value .good {
+  color: #10b981;
+  font-weight: 500;
+}
+
+.quality-value .warning {
+  color: #f59e0b;
+  font-weight: 500;
+}
+
+/* 키워드 차트 */
+.content-section {
+  margin: 20px 0;
+  padding: 18px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.content-section .section-title {
+  margin: 0 0 16px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.keyword-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.keyword-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.keyword-info {
+  min-width: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.keyword-word {
+  font-weight: 600;
+  font-size: 13px;
+  color: #374151;
+}
+
+.keyword-density {
+  font-size: 11px;
+  color: #6b7280;
+  font-family: monospace;
+}
+
+.keyword-bar {
+  flex: 1;
+  position: relative;
+  height: 20px;
+  background: #f3f4f6;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.keyword-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+  border-radius: 10px;
+  transition: width 0.3s ease;
+}
+
+.keyword-count {
+  position: absolute;
+  right: 8px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #374151;
+  z-index: 2;
+}
+
+.keyword-empty {
+  text-align: center;
+  padding: 24px;
+  color: #6b7280;
+  font-style: italic;
+}
+
+.keyword-more {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.keyword-more .toggle-btn {
+  width: 100%;
+  padding: 8px 16px;
+  background: #f9fafb;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  color: #374151;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.keyword-more .toggle-btn:hover {
+  background: #f3f4f6;
+}
+
+.keyword-chart-extra {
+  display: none;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f3f4f6;
+}
+
+.content-section.expanded .keyword-chart-extra {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 문단 분석 */
+.paragraph-analysis {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.paragraph-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: #f9fafb;
+  border-radius: 6px;
+  border: 1px solid #f0f0f0;
+}
+
+.paragraph-stat .stat-label {
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.paragraph-stat .stat-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.paragraph-stat .stat-value.good {
+  color: #10b981;
+}
+
+.paragraph-stat .stat-value.warning {
+  color: #f59e0b;
+}
+
+.paragraph-stat .note {
+  font-size: 11px;
+  color: #9ca3af;
+  font-weight: 400;
+  margin-left: 4px;
+}
+
 /* 모바일 반응형 - 이미지 분석 */
 @media (max-width: 768px) {
   .stats-grid {
@@ -2104,5 +2410,83 @@
   
   .problem-tags {
     margin-left: 0;
+  }
+
+  /* 콘텐츠 분석 모바일 최적화 */
+  .content-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .content-stats-grid .stat-card {
+    padding: 12px;
+  }
+
+  .content-stats-grid .stat-value {
+    font-size: 16px;
+  }
+
+  .content-stats-grid .stat-label {
+    font-size: 11px;
+  }
+
+  .content-stats-dashboard {
+    padding: 16px;
+  }
+
+  .content-quality-section {
+    padding: 16px;
+  }
+
+  .quality-metrics {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .quality-item {
+    padding: 12px;
+  }
+
+  .quality-value {
+    font-size: 14px;
+  }
+
+  .content-section {
+    padding: 14px;
+  }
+
+  .keyword-info {
+    min-width: 100px;
+  }
+
+  .keyword-word {
+    font-size: 12px;
+  }
+
+  .keyword-density {
+    font-size: 10px;
+  }
+
+  .keyword-bar {
+    height: 18px;
+  }
+
+  .keyword-count {
+    font-size: 10px;
+  }
+
+  .paragraph-stat {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 10px;
+  }
+
+  .paragraph-stat .stat-label {
+    font-size: 12px;
+  }
+
+  .paragraph-stat .stat-value {
+    font-size: 13px;
   }
 }

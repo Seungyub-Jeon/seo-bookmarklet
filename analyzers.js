@@ -20,7 +20,7 @@
       if (retries < maxRetries) {
         setTimeout(check, 10); // 10ms 후 재시도
       } else {
-        console.error('❌ ZuppSEO 로딩 타임아웃 - analyzers.js');
+        // ZuppSEO 로딩 타임아웃
       }
     }
     
