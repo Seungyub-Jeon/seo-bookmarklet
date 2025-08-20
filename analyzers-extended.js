@@ -953,6 +953,226 @@
       super('accessibility', 'high');
     }
 
+    // ARIA 속성 상세 분석
+    checkAriaAttributes() {
+      const results = {
+        total: 0,
+        roles: {},
+        properties: {},
+        states: {},
+        landmarks: [],
+        liveRegions: [],
+        issues: [],
+        warnings: []
+      };
+
+      // 모든 ARIA 속성을 가진 요소들 찾기
+      const ariaElements = optimizer.querySelectorAll('[role], [aria-label], [aria-labelledby], [aria-describedby], [aria-hidden], [aria-live], [aria-atomic], [aria-relevant], [aria-busy], [aria-disabled], [aria-expanded], [aria-pressed], [aria-selected], [aria-checked], [aria-required], [aria-invalid], [aria-valuemin], [aria-valuemax], [aria-valuenow], [aria-valuetext], [aria-level], [aria-setsize], [aria-posinset], [aria-rowcount], [aria-colcount], [aria-rowindex], [aria-colindex], [aria-colspan], [aria-rowspan], [aria-sort], [aria-controls], [aria-owns], [aria-flowto], [aria-current], [aria-haspopup], [aria-autocomplete], [aria-multiline], [aria-multiselectable], [aria-orientation], [aria-readonly], [aria-placeholder], [aria-activedescendant], [aria-keyshortcuts], [aria-roledescription], [aria-details], [aria-errormessage]');
+      
+      ariaElements.forEach(element => {
+        results.total++;
+        
+        // Role 분석
+        const role = element.getAttribute('role');
+        if (role) {
+          results.roles[role] = (results.roles[role] || 0) + 1;
+          
+          // 랜드마크 역할 체크
+          const landmarkRoles = ['banner', 'navigation', 'main', 'contentinfo', 'complementary', 'search', 'form', 'region'];
+          if (landmarkRoles.includes(role)) {
+            const label = element.getAttribute('aria-label') || element.getAttribute('aria-labelledby');
+            results.landmarks.push({
+              role: role,
+              label: label,
+              hasLabel: !!label
+            });
+            
+            // region 역할은 레이블이 필수
+            if (role === 'region' && !label) {
+              results.issues.push({
+                type: 'error',
+                message: 'role="region"은 aria-label 또는 aria-labelledby가 필요합니다',
+                element: this.getElementSelector(element)
+              });
+            }
+          }
+          
+          // 잘못된 role 사용 체크
+          const abstractRoles = ['command', 'composite', 'input', 'landmark', 'range', 'roletype', 'section', 'sectionhead', 'select', 'structure', 'widget', 'window'];
+          if (abstractRoles.includes(role)) {
+            results.issues.push({
+              type: 'error',
+              message: `추상 role "${role}"은 직접 사용할 수 없습니다`,
+              element: this.getElementSelector(element)
+            });
+          }
+        }
+        
+        // Live Region 체크
+        const ariaLive = element.getAttribute('aria-live');
+        if (ariaLive) {
+          results.liveRegions.push({
+            politeness: ariaLive,
+            atomic: element.getAttribute('aria-atomic'),
+            relevant: element.getAttribute('aria-relevant'),
+            element: this.getElementSelector(element)
+          });
+        }
+        
+        // 상태 속성 체크
+        const stateAttrs = ['aria-disabled', 'aria-expanded', 'aria-pressed', 'aria-selected', 'aria-checked', 'aria-hidden'];
+        stateAttrs.forEach(attr => {
+          if (element.hasAttribute(attr)) {
+            const value = element.getAttribute(attr);
+            results.states[attr] = (results.states[attr] || 0) + 1;
+            
+            // aria-hidden="true"인 요소 내부의 포커스 가능 요소 체크
+            if (attr === 'aria-hidden' && value === 'true') {
+              const focusable = element.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])');
+              if (focusable.length > 0) {
+                results.issues.push({
+                  type: 'error',
+                  message: 'aria-hidden="true" 요소 내부에 포커스 가능한 요소가 있습니다',
+                  element: this.getElementSelector(element),
+                  count: focusable.length
+                });
+              }
+            }
+          }
+        });
+        
+        // 속성 속성 체크
+        const propertyAttrs = ['aria-label', 'aria-labelledby', 'aria-describedby', 'aria-required', 'aria-invalid'];
+        propertyAttrs.forEach(attr => {
+          if (element.hasAttribute(attr)) {
+            results.properties[attr] = (results.properties[attr] || 0) + 1;
+            
+            // aria-labelledby/describedby의 참조 유효성 체크
+            if ((attr === 'aria-labelledby' || attr === 'aria-describedby')) {
+              const ids = element.getAttribute(attr).split(' ');
+              ids.forEach(id => {
+                if (!document.getElementById(id)) {
+                  results.warnings.push({
+                    type: 'warning',
+                    message: `${attr}가 참조하는 ID "${id}"를 찾을 수 없습니다`,
+                    element: this.getElementSelector(element)
+                  });
+                }
+              });
+            }
+          }
+        });
+      });
+      
+      // 중복 랜드마크 체크
+      const landmarkCounts = {};
+      results.landmarks.forEach(landmark => {
+        landmarkCounts[landmark.role] = (landmarkCounts[landmark.role] || 0) + 1;
+      });
+      
+      Object.entries(landmarkCounts).forEach(([role, count]) => {
+        if (count > 1 && role !== 'region') {
+          const unlabeled = results.landmarks.filter(l => l.role === role && !l.hasLabel).length;
+          if (unlabeled > 0) {
+            results.warnings.push({
+              type: 'warning',
+              message: `동일한 ${role} 랜드마크가 ${count}개 있습니다. aria-label로 구분하는 것을 권장합니다`,
+              count: count,
+              unlabeled: unlabeled
+            });
+          }
+        }
+      });
+      
+      return results;
+    }
+
+    // 요소 선택자 생성
+    getElementSelector(element) {
+      if (element.id) return `#${element.id}`;
+      if (element.className) return `.${element.className.split(' ')[0]}`;
+      return element.tagName.toLowerCase();
+    }
+
+    // 폼 접근성 체크
+    checkFormAccessibility() {
+      const results = {
+        totalInputs: 0,
+        labeled: [],
+        unlabeled: [],
+        placeholderOnly: [],
+        requiredFields: [],
+        fieldsets: []
+      };
+      
+      // 모든 폼 입력 요소 선택
+      const inputs = optimizer.querySelectorAll('input:not([type="hidden"]), textarea, select');
+      
+      inputs.forEach(input => {
+        results.totalInputs++;
+        
+        const inputId = input.id;
+        const inputName = input.name;
+        const placeholder = input.placeholder;
+        const required = input.required || input.getAttribute('aria-required') === 'true';
+        const type = input.type || 'text';
+        
+        // 레이블 찾기
+        let label = null;
+        if (inputId) {
+          label = optimizer.querySelector(`label[for="${inputId}"]`);
+        }
+        if (!label) {
+          // 부모 label 체크
+          label = input.closest('label');
+        }
+        
+        // aria-label 또는 aria-labelledby 체크
+        const ariaLabel = input.getAttribute('aria-label');
+        const ariaLabelledby = input.getAttribute('aria-labelledby');
+        
+        const inputInfo = {
+          type: type,
+          id: inputId,
+          name: inputName,
+          required: required
+        };
+        
+        if (label || ariaLabel || ariaLabelledby) {
+          results.labeled.push({
+            ...inputInfo,
+            labelText: label ? label.textContent.trim() : (ariaLabel || 'aria-labelledby 사용')
+          });
+        } else if (placeholder && !label) {
+          results.placeholderOnly.push({
+            ...inputInfo,
+            placeholder: placeholder
+          });
+        } else {
+          results.unlabeled.push(inputInfo);
+        }
+        
+        if (required) {
+          results.requiredFields.push({
+            ...inputInfo,
+            hasLabel: !!(label || ariaLabel || ariaLabelledby)
+          });
+        }
+      });
+      
+      // fieldset/legend 체크
+      const fieldsets = optimizer.querySelectorAll('fieldset');
+      fieldsets.forEach(fieldset => {
+        const legend = fieldset.querySelector('legend');
+        results.fieldsets.push({
+          hasLegend: !!legend,
+          legendText: legend ? legend.textContent.trim() : ''
+        });
+      });
+      
+      return results;
+    }
+
     collect() {
       // 언어 설정
       this.data.language = {
@@ -967,8 +1187,14 @@
         href: link.getAttribute('href')
       }));
 
-      // 색상 대비 (간단 체크)
+      // 색상 대비 (개선된 체크)
       this.data.colorContrast = this.checkColorContrast();
+      
+      // 폼 접근성 (새로 추가)
+      this.data.formAccessibility = this.checkFormAccessibility();
+      
+      // ARIA 속성 상세 분석 (새로 추가)
+      this.data.ariaAnalysis = this.checkAriaAttributes();
 
       // 키보드 접근성
       this.data.keyboard = {
@@ -1003,40 +1229,149 @@
       };
     }
 
-    checkColorContrast() {
-      // 간단한 색상 대비 체크 (텍스트 요소 샘플링)
-      const elements = optimizer.querySelectorAll('p, span, div, a, button').slice(0, 20);
-      let lowContrast = 0;
+    // RGB 색상을 상대 휘도로 변환 (WCAG 공식)
+    getLuminance(r, g, b) {
+      const [rs, gs, bs] = [r, g, b].map(c => {
+        c = c / 255;
+        return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+      });
+      return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
+    }
+
+    // 대비 비율 계산 (WCAG 공식)
+    getContrastRatio(color1, color2) {
+      const l1 = this.getLuminance(...this.parseColor(color1));
+      const l2 = this.getLuminance(...this.parseColor(color2));
+      const lighter = Math.max(l1, l2);
+      const darker = Math.min(l1, l2);
+      return (lighter + 0.05) / (darker + 0.05);
+    }
+
+    // 색상 파싱 (rgb, rgba, hex)
+    parseColor(color) {
+      // hex to rgb
+      if (color.startsWith('#')) {
+        const hex = color.slice(1);
+        return [
+          parseInt(hex.substr(0, 2), 16),
+          parseInt(hex.substr(2, 2), 16),
+          parseInt(hex.substr(4, 2), 16)
+        ];
+      }
+      // rgb/rgba
+      const match = color.match(/\d+/g);
+      return match ? match.slice(0, 3).map(Number) : [0, 0, 0];
+    }
+
+    // 요소의 실제 배경색 찾기
+    getBackgroundColor(element) {
+      let el = element;
+      let bgColor = 'rgb(255, 255, 255)'; // 기본값: 흰색
       
-      elements.forEach(el => {
+      while (el && el !== document.body) {
         const style = window.getComputedStyle(el);
-        const color = style.color;
-        const bgColor = style.backgroundColor;
+        const bg = style.backgroundColor;
         
-        // RGB 값 추출 (간단한 체크)
-        if (color && bgColor && bgColor !== 'rgba(0, 0, 0, 0)') {
-          // 매우 기본적인 대비 체크
-          const colorMatch = color.match(/\d+/g);
-          const bgMatch = bgColor.match(/\d+/g);
+        if (bg && bg !== 'transparent' && bg !== 'rgba(0, 0, 0, 0)') {
+          bgColor = bg;
+          break;
+        }
+        el = el.parentElement;
+      }
+      
+      // body의 배경색도 체크
+      if (el === document.body) {
+        const bodyStyle = window.getComputedStyle(document.body);
+        if (bodyStyle.backgroundColor && bodyStyle.backgroundColor !== 'transparent') {
+          bgColor = bodyStyle.backgroundColor;
+        }
+      }
+      
+      return bgColor;
+    }
+
+    checkColorContrast() {
+      const results = {
+        totalChecked: 0,
+        passed: [],
+        failed: [],
+        warnings: [],
+        sufficient: true,
+        message: ''
+      };
+
+      // 텍스트를 포함한 요소들 선택 (샘플링)
+      const elements = optimizer.querySelectorAll('p, span, div, a, button, h1, h2, h3, h4, h5, h6, li, td, th');
+      const sampled = Array.from(elements).slice(0, 50); // 최대 50개 샘플링
+      
+      sampled.forEach(element => {
+        // 텍스트가 있는 요소만 체크
+        const hasText = element.childNodes && Array.from(element.childNodes).some(node => 
+          node.nodeType === 3 && node.textContent.trim().length > 0
+        );
+        
+        if (!hasText) return;
+        
+        const style = window.getComputedStyle(element);
+        const color = style.color;
+        const bgColor = this.getBackgroundColor(element);
+        
+        if (color && bgColor) {
+          const ratio = this.getContrastRatio(color, bgColor);
+          const fontSize = parseFloat(style.fontSize);
+          const fontWeight = style.fontWeight;
+          const isLarge = fontSize >= 18 || (fontSize >= 14 && 
+                          (fontWeight === 'bold' || parseInt(fontWeight) >= 700));
           
-          if (colorMatch && bgMatch) {
-            const brightness = (rgb) => (rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000;
-            const colorBrightness = brightness(colorMatch.map(Number));
-            const bgBrightness = brightness(bgMatch.map(Number));
-            const contrast = Math.abs(colorBrightness - bgBrightness);
-            
-            if (contrast < 125) { // 매우 기본적인 임계값
-              lowContrast++;
-            }
+          // WCAG 기준
+          const aaRequirement = isLarge ? 3 : 4.5;
+          const aaaRequirement = isLarge ? 4.5 : 7;
+          
+          results.totalChecked++;
+          
+          const result = {
+            element: element.tagName.toLowerCase(),
+            text: element.textContent.trim().substring(0, 50),
+            ratio: Math.round(ratio * 100) / 100,
+            colors: { text: color, background: bgColor },
+            fontSize: fontSize,
+            isLarge: isLarge
+          };
+          
+          if (ratio >= aaaRequirement) {
+            results.passed.push({ ...result, level: 'AAA' });
+          } else if (ratio >= aaRequirement) {
+            results.passed.push({ ...result, level: 'AA' });
+          } else if (ratio >= 3) {
+            results.warnings.push({ ...result, 
+              required: aaRequirement,
+              message: `대비 비율 ${ratio.toFixed(2)}:1 (최소 ${aaRequirement}:1 필요)`
+            });
+          } else {
+            results.failed.push({ ...result,
+              required: aaRequirement,
+              message: `심각: 대비 비율 ${ratio.toFixed(2)}:1 (최소 ${aaRequirement}:1 필요)`
+            });
+            results.sufficient = false;
           }
         }
       });
-
-      return {
-        checked: elements.length,
-        lowContrast: lowContrast,
-        ratio: lowContrast / elements.length
-      };
+      
+      // 전체 결과 메시지 생성
+      if (results.totalChecked > 0) {
+        const passRate = Math.round((results.passed.length / results.totalChecked) * 100);
+        if (passRate >= 90) {
+          results.message = `색상 대비 우수 (${passRate}% 통과)`;
+        } else if (passRate >= 70) {
+          results.message = `색상 대비 양호 (${passRate}% 통과)`;
+        } else {
+          results.message = `색상 대비 개선 필요 (${passRate}% 통과)`;
+        }
+      } else {
+        results.message = '색상 대비 검사 필요';
+      }
+      
+      return results;
     }
 
     validate() {
@@ -1116,6 +1451,20 @@
       } else {
         this.addPassed(`포커스 가능 요소: ${this.data.focusable.total}개`);
       }
+    }
+    
+    // analyze 메서드 오버라이드하여 raw data도 반환
+    analyze() {
+      this.collect();
+      this.validate();
+      return {
+        category: this.category,
+        priority: this.priority,
+        issues: this.issues,
+        passed: this.passed,
+        score: this.calculateScore(),
+        data: this.data  // raw data 추가
+      };
     }
   }
 

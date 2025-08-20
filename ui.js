@@ -65,6 +65,11 @@
           this.categories[key].score = data.score || 0;
           this.categories[key].issueCount = (data.issues || []).length;
           
+          // 접근성 카테고리는 raw data도 저장
+          if (key === 'accessibility' && data.data) {
+            this.categories[key].data = data.data;
+          }
+          
           // 스마트 배지 정보 계산
           this.categories[key].badgeInfo = this.calculateSmartBadge(data.issues || []);
         }
@@ -1106,6 +1111,11 @@
       // 시맨틱 카테고리도 특별 처리
       if (categoryKey === 'semantic') {
         return this.renderSemanticCategory(category);
+      }
+
+      // 접근성 카테고리도 특별 처리
+      if (categoryKey === 'accessibility') {
+        return this.renderAccessibilityCategory(category);
       }
 
       return `
@@ -2330,6 +2340,515 @@
       if (score >= 70) return '중급';
       if (score >= 60) return '하급';
       return '개선필요';
+    }
+
+    renderAccessibilityCategory(category) {
+      const categoryHTML = [];
+      
+      // 카테고리 헤더 (시맨틱 탭과 동일한 스타일)
+      const itemCount = category.items ? category.items.length : 0;
+      categoryHTML.push(`
+        <div class="category-header">
+          <div class="cat-title">
+            <span class="cat-icon-large">${category.icon || '♿'}</span>
+            <div>
+              <h2>${category.name} <span class="item-count">${itemCount}개 항목 체크</span></h2>
+            </div>
+          </div>
+          ${category.description ? `<p class="category-description">${category.description}</p>` : ''}
+        </div>
+      `);
+      
+      // data가 없는 경우 대비
+      if (!category.data) {
+        categoryHTML.push(`
+          <div class="content-section">
+            <p style="text-align: center; color: #6b7280; padding: 40px;">
+              접근성 데이터를 불러올 수 없습니다.<br>
+              페이지를 새로고침하고 다시 시도해주세요.
+            </p>
+          </div>
+        `);
+        return categoryHTML.join('');
+      }
+      
+      // 접근성 통계 카드 (1행 4개 레이아웃)
+      categoryHTML.push('<div class="accessibility-stats-grid">');
+      
+      // 언어 설정 카드
+      const langScore = category.data.language?.html ? 100 : 0;
+      categoryHTML.push(`
+        <div class="stat-card">
+          <div class="stat-icon">🌐</div>
+          <div class="stat-title">언어 설정</div>
+          <div class="stat-value ${langScore === 100 ? 'good' : 'error'}">
+            ${category.data.language?.html || '미설정'}
+          </div>
+          <div class="stat-label">HTML lang 속성</div>
+        </div>
+      `);
+      
+      // 포커스 가능 요소 카드
+      const focusableTotal = category.data.focusable?.total || 0;
+      categoryHTML.push(`
+        <div class="stat-card">
+          <div class="stat-icon">🎯</div>
+          <div class="stat-title">포커스 가능 요소</div>
+          <div class="stat-value">${focusableTotal}개</div>
+          <div class="stat-label">
+            링크: ${category.data.focusable?.links || 0}, 
+            버튼: ${category.data.focusable?.buttons || 0}
+          </div>
+        </div>
+      `);
+      
+      // 키보드 접근성 카드
+      const hasTabindex = (category.data.keyboard?.tabindex || 0) > 0;
+      const hasNegativeTabindex = (category.data.keyboard?.tabindexNegative || 0) > 0;
+      categoryHTML.push(`
+        <div class="stat-card">
+          <div class="stat-icon">⌨️</div>
+          <div class="stat-title">키보드 접근성</div>
+          <div class="stat-value ${hasNegativeTabindex ? 'warning' : 'good'}">
+            ${category.data.keyboard?.tabindex || 0}개
+          </div>
+          <div class="stat-label">tabindex 사용</div>
+        </div>
+      `);
+      
+      // Skip Navigation 카드
+      const hasSkipNav = category.data.skipNav?.hasSkipLink || false;
+      categoryHTML.push(`
+        <div class="stat-card">
+          <div class="stat-icon">⏭️</div>
+          <div class="stat-title">Skip Navigation</div>
+          <div class="stat-value ${hasSkipNav ? 'good' : 'warning'}">
+            ${hasSkipNav ? '있음' : '없음'}
+          </div>
+          <div class="stat-label">콘텐츠 바로가기</div>
+        </div>
+      `);
+      
+      categoryHTML.push('</div>'); // accessibility-stats-grid
+      
+      // 상세 분석 섹션들
+      categoryHTML.push('<div class="analysis-sections">');
+      
+      // 언어 및 국제화 섹션
+      categoryHTML.push(this.renderLanguageSection(category.data));
+      
+      // 키보드 접근성 섹션
+      categoryHTML.push(this.renderKeyboardSection(category.data));
+      
+      // 미디어 접근성 섹션
+      if (category.data.media && (category.data.media.videos > 0 || category.data.media.audios > 0)) {
+        categoryHTML.push(this.renderMediaSection(category.data));
+      }
+      
+      // 색상 대비 섹션 (개선됨)
+      if (category.data.colorContrast) {
+        categoryHTML.push(this.renderColorContrastSection(category.data));
+      }
+      
+      // 폼 접근성 섹션 (새로 추가)
+      if (category.data.formAccessibility) {
+        categoryHTML.push(this.renderFormAccessibilitySection(category.data));
+      }
+      
+      // ARIA 속성 분석 섹션 (새로 추가)
+      if (category.data.ariaAnalysis) {
+        categoryHTML.push(this.renderAriaAnalysisSection(category.data));
+      }
+      
+      categoryHTML.push('</div>'); // analysis-sections
+      
+      return categoryHTML.join('');
+    }
+    
+    renderLanguageSection(data) {
+      const hasHtmlLang = data.language?.html;
+      const hreflangCount = data.language?.hreflang || 0;
+      
+      return `
+        <div class="content-section">
+          <h3 class="section-title">🌐 언어 및 국제화</h3>
+          <div class="issue-list">
+            <div class="issue-item ${hasHtmlLang ? 'success' : 'error'}">
+              <span class="issue-status">${hasHtmlLang ? '✓' : '✗'}</span>
+              <span class="issue-text">HTML lang 속성: ${hasHtmlLang ? data.language.html : '설정 필요'}</span>
+            </div>
+            ${hreflangCount > 0 ? `
+              <div class="issue-item success">
+                <span class="issue-status">✓</span>
+                <span class="issue-text">hreflang 태그 ${hreflangCount}개 설정됨</span>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }
+    
+    renderKeyboardSection(data) {
+      const tabindexCount = data.keyboard?.tabindex || 0;
+      const negativeCount = data.keyboard?.tabindexNegative || 0;
+      const positiveCount = data.keyboard?.tabindexPositive || 0;
+      
+      return `
+        <div class="content-section">
+          <h3 class="section-title">⌨️ 키보드 접근성</h3>
+          <div class="issue-list">
+            <div class="issue-item ${positiveCount === 0 ? 'success' : 'warning'}">
+              <span class="issue-status">${positiveCount === 0 ? '✓' : '⚠'}</span>
+              <span class="issue-text">양수 tabindex: ${positiveCount}개 ${positiveCount > 0 ? '(권장하지 않음)' : ''}</span>
+            </div>
+            <div class="issue-item info">
+              <span class="issue-status">ℹ</span>
+              <span class="issue-text">음수 tabindex: ${negativeCount}개 (프로그래밍 포커스용)</span>
+            </div>
+            ${data.keyboard?.accesskey > 0 ? `
+              <div class="issue-item success">
+                <span class="issue-status">✓</span>
+                <span class="issue-text">accesskey 속성: ${data.keyboard.accesskey}개</span>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }
+    
+    renderMediaSection(data) {
+      const videoCount = data.media?.videos || 0;
+      const captionedVideos = data.media?.videosWithCaptions || 0;
+      const audioCount = data.media?.audios || 0;
+      
+      return `
+        <div class="content-section">
+          <h3 class="section-title">🎥 미디어 접근성</h3>
+          <div class="issue-list">
+            ${videoCount > 0 ? `
+              <div class="issue-item ${captionedVideos === videoCount ? 'success' : 'warning'}">
+                <span class="issue-status">${captionedVideos === videoCount ? '✓' : '⚠'}</span>
+                <span class="issue-text">비디오 자막: ${captionedVideos}/${videoCount}개</span>
+              </div>
+            ` : ''}
+            ${audioCount > 0 ? `
+              <div class="issue-item info">
+                <span class="issue-status">ℹ</span>
+                <span class="issue-text">오디오 파일: ${audioCount}개</span>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }
+    
+    renderColorContrastSection(data) {
+      const contrast = data.colorContrast;
+      
+      if (!contrast || !contrast.totalChecked) {
+        return `
+          <div class="content-section">
+            <h3 class="section-title">🎨 색상 대비</h3>
+            <div class="issue-list">
+              <div class="issue-item info">
+                <span class="issue-status">ℹ</span>
+                <span class="issue-text">색상 대비 검사 필요</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+      
+      const passRate = Math.round((contrast.passed.length / contrast.totalChecked) * 100);
+      
+      return `
+        <div class="content-section">
+          <h3 class="section-title">🎨 색상 대비 상세 분석</h3>
+          
+          <div class="contrast-summary">
+            <div class="contrast-stat-card ${passRate >= 90 ? 'good' : passRate >= 70 ? 'warning' : 'error'}">
+              <div class="stat-header">
+                <span class="stat-label">검사 요소</span>
+                <span class="stat-value">${contrast.totalChecked}개</span>
+              </div>
+              <div class="stat-footer">
+                <span class="stat-label">통과율</span>
+                <span class="stat-value">${passRate}%</span>
+              </div>
+            </div>
+          </div>
+          
+          ${contrast.failed.length > 0 ? `
+            <div class="contrast-issues">
+              <h4>❌ 개선 필요 (${contrast.failed.length}개)</h4>
+              <div class="issue-list">
+                ${contrast.failed.slice(0, 5).map(item => `
+                  <div class="contrast-issue-item error">
+                    <div class="issue-header">
+                      <span class="element-tag">&lt;${item.element}&gt;</span>
+                      <span class="contrast-ratio error">비율: ${item.ratio}:1</span>
+                    </div>
+                    <div class="issue-text">${item.text}</div>
+                    <div class="issue-details">
+                      <div class="color-samples">
+                        <span class="color-sample" style="background:${item.colors.text};" title="텍스트 색상"></span>
+                        <span class="color-sample" style="background:${item.colors.background};" title="배경 색상"></span>
+                      </div>
+                      <span class="requirement">최소 ${item.required}:1 필요</span>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+          
+          ${contrast.warnings.length > 0 ? `
+            <div class="contrast-warnings">
+              <h4>⚠️ 주의 필요 (${contrast.warnings.length}개)</h4>
+              <div class="issue-list">
+                ${contrast.warnings.slice(0, 3).map(item => `
+                  <div class="contrast-issue-item warning">
+                    <div class="issue-header">
+                      <span class="element-tag">&lt;${item.element}&gt;</span>
+                      <span class="contrast-ratio warning">비율: ${item.ratio}:1</span>
+                    </div>
+                    <div class="issue-text">${item.text}</div>
+                    <div class="issue-details">
+                      <span class="level-info">WCAG AA 통과, AAA 미달</span>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+          
+          ${contrast.passed.length > 0 ? `
+            <div class="contrast-passed">
+              <h4 class="collapsed">✅ 통과 (${contrast.passed.length}개)</h4>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+    
+    renderFormAccessibilitySection(data) {
+      const formData = data.formAccessibility;
+      
+      if (!formData || !formData.totalInputs) {
+        return '';
+      }
+      
+      const labeledRate = Math.round((formData.labeled.length / formData.totalInputs) * 100);
+      
+      return `
+        <div class="content-section">
+          <h3 class="section-title">📝 폼 접근성 분석</h3>
+          
+          <div class="form-summary">
+            <div class="form-stat-card ${labeledRate === 100 ? 'good' : labeledRate >= 80 ? 'warning' : 'error'}">
+              <div class="stat-header">
+                <span class="stat-label">전체 입력 필드</span>
+                <span class="stat-value">${formData.totalInputs}개</span>
+              </div>
+              <div class="stat-footer">
+                <span class="stat-label">레이블 연결</span>
+                <span class="stat-value">${labeledRate}%</span>
+              </div>
+            </div>
+          </div>
+          
+          ${formData.unlabeled.length > 0 ? `
+            <div class="form-issues">
+              <h4>❌ 레이블 없는 필드 (${formData.unlabeled.length}개)</h4>
+              <div class="issue-list">
+                ${formData.unlabeled.map(item => `
+                  <div class="form-issue-item error">
+                    <span class="issue-status">✗</span>
+                    <span class="issue-text">
+                      ${item.type} 필드 ${item.id ? `(#${item.id})` : item.name ? `(name="${item.name}")` : '(식별자 없음)'}
+                      ${item.required ? '<span class="required-badge">필수</span>' : ''}
+                    </span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+          
+          ${formData.placeholderOnly.length > 0 ? `
+            <div class="form-warnings">
+              <h4>⚠️ Placeholder만 사용 (${formData.placeholderOnly.length}개)</h4>
+              <div class="issue-list">
+                ${formData.placeholderOnly.map(item => `
+                  <div class="form-issue-item warning">
+                    <span class="issue-status">⚠</span>
+                    <span class="issue-text">
+                      "${item.placeholder}" - 명시적 레이블 추가 필요
+                      ${item.required ? '<span class="required-badge">필수</span>' : ''}
+                    </span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+          
+          ${formData.requiredFields.length > 0 ? `
+            <div class="form-required">
+              <h4>ℹ️ 필수 필드 (${formData.requiredFields.length}개)</h4>
+              <div class="issue-list">
+                ${formData.requiredFields.map(item => `
+                  <div class="form-issue-item ${item.hasLabel ? 'success' : 'warning'}">
+                    <span class="issue-status">${item.hasLabel ? '✓' : '⚠'}</span>
+                    <span class="issue-text">
+                      ${item.type} 필드 ${item.id ? `(#${item.id})` : ''}
+                      ${item.hasLabel ? '- 레이블 있음' : '- 레이블 필요'}
+                    </span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    renderAriaAnalysisSection(data) {
+      const aria = data.ariaAnalysis;
+      if (!aria || aria.total === 0) {
+        return `
+          <div class="content-section">
+            <h3 class="section-title">🏷️ ARIA 속성 분석</h3>
+            <div class="info-message">
+              <div class="message-icon">ℹ️</div>
+              <div class="message-content">
+                <strong>ARIA 속성이 사용되지 않았습니다</strong>
+                <p>필요한 경우 ARIA 속성을 사용하여 접근성을 향상시킬 수 있습니다.</p>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+      
+      // Role 통계
+      const roleCount = Object.keys(aria.roles || {}).length;
+      const totalRoles = Object.values(aria.roles || {}).reduce((sum, count) => sum + count, 0);
+      
+      // Property 통계
+      const propertyCount = Object.keys(aria.properties || {}).length;
+      const totalProperties = Object.values(aria.properties || {}).reduce((sum, count) => sum + count, 0);
+      
+      // State 통계
+      const stateCount = Object.keys(aria.states || {}).length;
+      const totalStates = Object.values(aria.states || {}).reduce((sum, count) => sum + count, 0);
+      
+      // 이슈와 경고 카운트
+      const issueCount = aria.issues?.length || 0;
+      const warningCount = aria.warnings?.length || 0;
+      
+      return `
+        <div class="content-section">
+          <h3 class="section-title">🏷️ ARIA 속성 분석</h3>
+          
+          <div class="aria-summary">
+            <div class="aria-stat-card ${aria.total > 0 ? 'good' : 'neutral'}">
+              <div class="stat-header">
+                <span class="stat-title">전체 ARIA 사용</span>
+                <span class="stat-value">${aria.total}개</span>
+              </div>
+              <div class="stat-breakdown">
+                <div class="breakdown-item">
+                  <span class="icon">🎭</span>
+                  <span class="label">Roles:</span>
+                  <span class="value">${totalRoles}개 (${roleCount}종)</span>
+                </div>
+                <div class="breakdown-item">
+                  <span class="icon">📝</span>
+                  <span class="label">Properties:</span>
+                  <span class="value">${totalProperties}개 (${propertyCount}종)</span>
+                </div>
+                <div class="breakdown-item">
+                  <span class="icon">🔄</span>
+                  <span class="label">States:</span>
+                  <span class="value">${totalStates}개 (${stateCount}종)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          ${aria.landmarks && aria.landmarks.length > 0 ? `
+            <div class="aria-landmarks">
+              <h4>🗺️ 랜드마크 역할 (${aria.landmarks.length}개)</h4>
+              <div class="landmark-list">
+                ${aria.landmarks.map(landmark => `
+                  <div class="landmark-item ${landmark.hasLabel ? 'good' : 'warning'}">
+                    <span class="role-badge">${landmark.role}</span>
+                    ${landmark.label ? 
+                      `<span class="landmark-label">${landmark.label}</span>` : 
+                      `<span class="no-label">레이블 없음</span>`
+                    }
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+          
+          ${aria.liveRegions && aria.liveRegions.length > 0 ? `
+            <div class="aria-live-regions">
+              <h4>📢 라이브 리전 (${aria.liveRegions.length}개)</h4>
+              <div class="live-region-list">
+                ${aria.liveRegions.map(region => `
+                  <div class="live-region-item">
+                    <span class="politeness-badge ${region.politeness}">${region.politeness}</span>
+                    <span class="element-ref">${region.element}</span>
+                    ${region.atomic ? `<span class="atomic-badge">atomic</span>` : ''}
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+          
+          ${issueCount > 0 ? `
+            <div class="aria-issues">
+              <h4>❌ 오류 (${issueCount}개)</h4>
+              <div class="issue-list">
+                ${aria.issues.slice(0, 5).map(issue => `
+                  <div class="issue-item error">
+                    <span class="issue-message">${issue.message}</span>
+                    <span class="element-ref">${issue.element}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+          
+          ${warningCount > 0 ? `
+            <div class="aria-warnings">
+              <h4>⚠️ 경고 (${warningCount}개)</h4>
+              <div class="issue-list">
+                ${aria.warnings.slice(0, 5).map(warning => `
+                  <div class="issue-item warning">
+                    <span class="issue-message">${warning.message}</span>
+                    ${warning.element ? `<span class="element-ref">${warning.element}</span>` : ''}
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+          
+          ${roleCount > 0 ? `
+            <div class="aria-roles-detail">
+              <h4>사용된 ARIA Roles</h4>
+              <div class="role-tags">
+                ${Object.entries(aria.roles).map(([role, count]) => `
+                  <span class="role-tag">
+                    <span class="role-name">${role}</span>
+                    <span class="role-count">${count}</span>
+                  </span>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      `;
     }
 
     renderParagraphAnalysis(paragraphStats) {

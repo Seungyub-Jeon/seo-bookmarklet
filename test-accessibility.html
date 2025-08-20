@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="접근성 테스트 페이지 - 다양한 접근성 요소를 테스트합니다">
+  <title>접근성 테스트 페이지 | SEO 북마클릿</title>
+  
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      background: #f0f0f0;
+      padding: 20px 0;
+      margin-bottom: 30px;
+    }
+    
+    h1 {
+      margin: 0;
+      padding: 0 20px;
+    }
+    
+    main {
+      padding: 20px;
+    }
+    
+    section {
+      margin-bottom: 30px;
+    }
+    
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: #000;
+      color: #fff;
+      padding: 8px;
+      text-decoration: none;
+      z-index: 100;
+    }
+    
+    .skip-link:focus {
+      top: 0;
+    }
+    
+    nav ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      gap: 20px;
+    }
+    
+    nav a {
+      text-decoration: none;
+      color: #333;
+      padding: 5px 10px;
+    }
+    
+    nav a:hover {
+      background: #e0e0e0;
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+    
+    input, textarea, select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    button {
+      background: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    button:hover {
+      background: #0056b3;
+    }
+    
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+    
+    footer {
+      background: #333;
+      color: white;
+      padding: 20px 0;
+      margin-top: 50px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <!-- Skip Navigation Link -->
+  <a href="#main" class="skip-link">콘텐츠 바로가기</a>
+  
+  <header>
+    <div class="container">
+      <h1>접근성 테스트 페이지</h1>
+      <nav role="navigation" aria-label="주 메뉴">
+        <ul>
+          <li><a href="#home">홈</a></li>
+          <li><a href="#about">소개</a></li>
+          <li><a href="#services">서비스</a></li>
+          <li><a href="#contact">연락처</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" role="main">
+    <div class="container">
+      <section aria-labelledby="focus-section">
+        <h2 id="focus-section">포커스 가능 요소 테스트</h2>
+        
+        <p>이 섹션은 다양한 포커스 가능 요소를 포함합니다.</p>
+        
+        <div>
+          <a href="#link1">일반 링크</a>
+          <a href="#link2" tabindex="0">tabindex="0" 링크</a>
+          <a href="#link3" tabindex="1">tabindex="1" 링크 (권장하지 않음)</a>
+          <a href="#link4" tabindex="-1">tabindex="-1" 링크 (프로그래밍 포커스용)</a>
+        </div>
+        
+        <div style="margin-top: 20px;">
+          <button>일반 버튼</button>
+          <button disabled>비활성화된 버튼</button>
+          <button accesskey="s">단축키 버튼 (Alt+S)</button>
+        </div>
+      </section>
+
+      <section aria-labelledby="form-section">
+        <h2 id="form-section">폼 접근성 테스트</h2>
+        
+        <form>
+          <div class="form-group">
+            <label for="name">이름 (레이블 있음)</label>
+            <input type="text" id="name" name="name" required aria-required="true">
+          </div>
+          
+          <div class="form-group">
+            <label for="email">이메일 (레이블 있음)</label>
+            <input type="email" id="email" name="email" required aria-required="true">
+          </div>
+          
+          <div class="form-group">
+            <input type="text" placeholder="레이블 없는 입력 필드 (접근성 문제)">
+          </div>
+          
+          <div class="form-group">
+            <label for="country">국가 선택</label>
+            <select id="country" name="country">
+              <option value="">선택하세요</option>
+              <option value="kr">대한민국</option>
+              <option value="us">미국</option>
+              <option value="jp">일본</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="message">메시지</label>
+            <textarea id="message" name="message" rows="4"></textarea>
+          </div>
+          
+          <fieldset>
+            <legend>성별 선택</legend>
+            <label>
+              <input type="radio" name="gender" value="male"> 남성
+            </label>
+            <label>
+              <input type="radio" name="gender" value="female"> 여성
+            </label>
+            <label>
+              <input type="radio" name="gender" value="other"> 기타
+            </label>
+          </fieldset>
+          
+          <button type="submit">전송</button>
+        </form>
+      </section>
+
+      <section aria-labelledby="media-section">
+        <h2 id="media-section">미디어 접근성 테스트</h2>
+        
+        <div>
+          <h3>비디오 (자막 있음)</h3>
+          <video controls width="400">
+            <source src="sample.mp4" type="video/mp4">
+            <track kind="captions" src="captions.vtt" srclang="ko" label="한국어 자막">
+            브라우저가 비디오를 지원하지 않습니다.
+          </video>
+        </div>
+        
+        <div style="margin-top: 20px;">
+          <h3>비디오 (자막 없음 - 접근성 문제)</h3>
+          <video controls width="400">
+            <source src="sample2.mp4" type="video/mp4">
+            브라우저가 비디오를 지원하지 않습니다.
+          </video>
+        </div>
+        
+        <div style="margin-top: 20px;">
+          <h3>오디오</h3>
+          <audio controls>
+            <source src="sample.mp3" type="audio/mpeg">
+            브라우저가 오디오를 지원하지 않습니다.
+          </audio>
+          <div class="transcript">
+            <p>오디오 트랜스크립트: 이것은 샘플 오디오 파일입니다.</p>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="landmark-section">
+        <h2 id="landmark-section">랜드마크 테스트</h2>
+        
+        <article>
+          <h3>Article 요소</h3>
+          <p>이것은 article 요소 내부의 콘텐츠입니다.</p>
+        </article>
+        
+        <aside>
+          <h3>Aside 요소</h3>
+          <p>이것은 aside 요소 내부의 보조 콘텐츠입니다.</p>
+        </aside>
+      </section>
+
+      <section aria-labelledby="aria-section">
+        <h2 id="aria-section">ARIA 속성 테스트</h2>
+        
+        <div role="alert">
+          이것은 경고 메시지입니다 (role="alert")
+        </div>
+        
+        <div role="button" tabindex="0" aria-pressed="false">
+          div로 만든 버튼 (role="button")
+        </div>
+        
+        <div aria-live="polite" aria-atomic="true">
+          라이브 리전 (실시간 업데이트 영역)
+        </div>
+        
+        <p aria-hidden="true">
+          이 텍스트는 스크린 리더에서 숨겨집니다 (aria-hidden="true")
+        </p>
+        
+        <span class="sr-only">
+          이 텍스트는 시각적으로 숨겨지지만 스크린 리더에서는 읽힙니다
+        </span>
+      </section>
+
+      <section aria-labelledby="table-section">
+        <h2 id="table-section">테이블 접근성</h2>
+        
+        <table>
+          <caption>2024년 분기별 매출 현황</caption>
+          <thead>
+            <tr>
+              <th scope="col">분기</th>
+              <th scope="col">매출액</th>
+              <th scope="col">성장률</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">1분기</th>
+              <td>1,000만원</td>
+              <td>10%</td>
+            </tr>
+            <tr>
+              <th scope="row">2분기</th>
+              <td>1,200만원</td>
+              <td>20%</td>
+            </tr>
+            <tr>
+              <th scope="row">3분기</th>
+              <td>1,500만원</td>
+              <td>25%</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- hreflang 태그 테스트를 위한 링크 -->
+      <link rel="alternate" hreflang="en" href="https://example.com/en">
+      <link rel="alternate" hreflang="ja" href="https://example.com/ja">
+      <link rel="alternate" hreflang="x-default" href="https://example.com">
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2024 접근성 테스트 페이지. 모든 권리 보유.</p>
+    </div>
+  </footer>
+
+  <script>
+    console.log('접근성 테스트 페이지 로드됨');
+  </script>
+</body>
+</html>
