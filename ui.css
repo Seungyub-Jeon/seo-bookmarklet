@@ -3390,6 +3390,408 @@
 }
 
 /* ============================
+   구조화된 데이터 스타일
+   ============================ */
+
+.schema-detection-card {
+  margin: 20px 0;
+  padding: 20px;
+  border-radius: 12px;
+  border: 2px solid #e5e7eb;
+}
+
+.schema-detection-card.detected {
+  background: linear-gradient(135deg, #f0fdf4 0%, #e6f7ff 100%);
+  border-color: #10b981;
+}
+
+.schema-detection-card.not-detected {
+  background: linear-gradient(135deg, #fef2f2 0%, #fff9e6 100%);
+  border-color: #ef4444;
+}
+
+.detection-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.detection-icon {
+  font-size: 36px;
+  line-height: 1;
+}
+
+.detection-content h3 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.detection-description {
+  margin: 0;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* 스키마 타입 뱃지 */
+.detected-schemas {
+  margin: 20px 0;
+}
+
+.schema-type-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.schema-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.schema-badge.detected {
+  background: #dbeafe;
+  border-color: #3b82f6;
+  color: #1e40af;
+}
+
+/* JSON-LD 상세 정보 */
+.jsonld-details {
+  margin: 20px 0;
+}
+
+.jsonld-list {
+  margin-top: 12px;
+}
+
+.jsonld-item {
+  margin-bottom: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.jsonld-item.valid {
+  border-color: #10b981;
+}
+
+.jsonld-item.error {
+  border-color: #ef4444;
+  background: #fef2f2;
+}
+
+.jsonld-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 15px;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.jsonld-index {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.jsonld-type {
+  flex: 1;
+  font-weight: 600;
+  color: #1e40af;
+}
+
+.jsonld-status {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.jsonld-status.success {
+  color: #059669;
+}
+
+.jsonld-status.error {
+  color: #dc2626;
+}
+
+.jsonld-content,
+.jsonld-preview {
+  padding: 15px;
+}
+
+.error-message {
+  margin: 0 0 10px 0;
+  color: #dc2626;
+  font-size: 14px;
+}
+
+.code-preview {
+  margin: 0;
+  padding: 12px;
+  background: #f8f9fa;
+  color: #212529;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+/* 스키마 예시 섹션 */
+.schema-examples-section {
+  margin: 30px 0;
+}
+
+.section-description {
+  margin: 8px 0 16px 0;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.schema-examples-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 16px;
+}
+
+.schema-example-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.2s;
+}
+
+.schema-example-card:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+}
+
+.example-header {
+  padding: 12px 15px;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.example-title {
+  margin: 0 0 4px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.example-desc {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.example-code {
+  position: relative;
+  padding: 15px;
+  background: white;
+}
+
+.code-block {
+  margin: 0;
+  padding: 12px;
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  overflow-x: auto;
+}
+
+.code-block code {
+  color: #1a1a1a;
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 11px;
+  line-height: 1.4;
+  white-space: pre;
+  display: block;
+}
+
+/* JSON 구문 강조 */
+.code-block .json-key {
+  color: #0969da;
+  font-weight: 600;
+}
+
+.code-block .json-string {
+  color: #032f62;
+}
+
+.code-block .json-value {
+  color: #0550ae;
+}
+
+.copy-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 4px 10px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s;
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.copy-btn:hover {
+  background: #0056b3;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.copy-icon {
+  font-size: 14px;
+}
+
+/* 도구 링크 섹션 */
+.schema-tools {
+  margin: 30px 0;
+  padding: 20px;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.tool-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.tool-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 15px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  text-decoration: none;
+  color: #374151;
+  transition: all 0.2s;
+}
+
+.tool-link:hover {
+  border-color: #3b82f6;
+  background: #eff6ff;
+  transform: translateX(4px);
+}
+
+.tool-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.tool-name {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Microdata 상세 정보 스타일 */
+.microdata-details,
+.rdfa-details {
+  margin: 20px 0;
+  padding: 20px;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.microdata-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.microdata-item {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 12px;
+}
+
+.microdata-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.microdata-index {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.microdata-type {
+  font-weight: 600;
+  color: #1e40af;
+}
+
+.microdata-properties {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.property-item {
+  display: flex;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.property-key {
+  font-weight: 600;
+  color: #4b5563;
+  min-width: 100px;
+}
+
+.property-value {
+  color: #374151;
+  flex: 1;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .schema-examples-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .tool-links {
+    grid-template-columns: 1fr;
+  }
+  
+  .copy-btn {
+    position: static;
+    margin-top: 10px;
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ============================
    색상 대비 분석 스타일
    ============================ */
 

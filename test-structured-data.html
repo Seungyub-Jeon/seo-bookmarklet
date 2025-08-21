@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="구조화된 데이터 테스트 페이지 - 다양한 Schema.org 마크업을 포함합니다">
+  <title>구조화된 데이터 테스트 페이지 | SEO 북마클릿</title>
+  
+  <!-- Open Graph Tags -->
+  <meta property="og:title" content="구조화된 데이터 테스트 페이지">
+  <meta property="og:description" content="Schema.org 구조화된 데이터 테스트">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://example.com/test">
+  <meta property="og:image" content="https://example.com/image.jpg">
+  
+  <!-- Twitter Card Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="구조화된 데이터 테스트 페이지">
+  <meta name="twitter:description" content="Schema.org 구조화된 데이터 테스트">
+  
+  <!-- JSON-LD 구조화된 데이터 -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "SEO 북마클릿 테스트",
+    "url": "https://example.com",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://example.com/search?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "테스트 회사",
+    "url": "https://example.com",
+    "logo": "https://example.com/logo.png",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+82-2-1234-5678",
+      "contactType": "customer service",
+      "availableLanguage": ["Korean", "English"]
+    },
+    "sameAs": [
+      "https://www.facebook.com/testcompany",
+      "https://www.twitter.com/testcompany",
+      "https://www.linkedin.com/company/testcompany"
+    ]
+  }
+  </script>
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "구조화된 데이터의 중요성",
+    "description": "SEO를 위한 구조화된 데이터 활용 방법",
+    "image": "https://example.com/article-image.jpg",
+    "author": {
+      "@type": "Person",
+      "name": "홍길동"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "테스트 블로그",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://example.com/logo.png"
+      }
+    },
+    "datePublished": "2024-01-15",
+    "dateModified": "2024-01-20"
+  }
+  </script>
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "테스트 제품",
+    "image": "https://example.com/product.jpg",
+    "description": "이것은 테스트 제품입니다",
+    "brand": {
+      "@type": "Brand",
+      "name": "테스트 브랜드"
+    },
+    "offers": {
+      "@type": "Offer",
+      "priceCurrency": "KRW",
+      "price": "50000",
+      "availability": "https://schema.org/InStock"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.5",
+      "reviewCount": "89"
+    }
+  }
+  </script>
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [{
+      "@type": "Question",
+      "name": "구조화된 데이터란 무엇인가요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "구조화된 데이터는 검색 엔진이 페이지 콘텐츠를 더 잘 이해할 수 있도록 돕는 표준화된 형식의 데이터입니다."
+      }
+    }, {
+      "@type": "Question",
+      "name": "구조화된 데이터가 SEO에 미치는 영향은?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "구조화된 데이터는 검색 결과에서 리치 스니펫을 표시하여 클릭률을 높이고 검색 엔진 최적화에 도움을 줍니다."
+      }
+    }]
+  }
+  </script>
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1,
+      "name": "홈",
+      "item": "https://example.com"
+    }, {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "제품",
+      "item": "https://example.com/products"
+    }, {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "테스트 제품",
+      "item": "https://example.com/products/test"
+    }]
+  }
+  </script>
+  
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      background: #f5f5f5;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      background: white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 20px 0;
+      margin-bottom: 30px;
+    }
+    
+    h1 {
+      margin: 0;
+      color: #2c3e50;
+    }
+    
+    .schema-info {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .schema-type {
+      display: inline-block;
+      background: #e3f2fd;
+      color: #1976d2;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 5px;
+      font-size: 14px;
+    }
+    
+    .microdata-example {
+      background: #f9f9f9;
+      border-left: 4px solid #4caf50;
+      padding: 20px;
+      margin: 20px 0;
+    }
+    
+    .rdfa-example {
+      background: #fff3e0;
+      border-left: 4px solid #ff9800;
+      padding: 20px;
+      margin: 20px 0;
+    }
+    
+    code {
+      background: #f4f4f4;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+    }
+    
+    .test-info {
+      background: #e8f5e9;
+      border: 1px solid #4caf50;
+      padding: 15px;
+      border-radius: 4px;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>구조화된 데이터 테스트 페이지</h1>
+      <p>이 페이지는 다양한 형식의 구조화된 데이터를 포함하고 있습니다.</p>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <div class="schema-info">
+        <h2>JSON-LD 구조화된 데이터</h2>
+        <p>이 페이지는 다음과 같은 JSON-LD Schema.org 타입을 포함합니다:</p>
+        <div>
+          <span class="schema-type">WebSite</span>
+          <span class="schema-type">Organization</span>
+          <span class="schema-type">Article</span>
+          <span class="schema-type">Product</span>
+          <span class="schema-type">FAQPage</span>
+          <span class="schema-type">BreadcrumbList</span>
+        </div>
+      </div>
+
+      <div class="schema-info">
+        <h2>Microdata 예시</h2>
+        <div class="microdata-example" itemscope itemtype="https://schema.org/Person">
+          <p>이름: <span itemprop="name">김철수</span></p>
+          <p>직업: <span itemprop="jobTitle">웹 개발자</span></p>
+          <p>회사: <span itemprop="worksFor" itemscope itemtype="https://schema.org/Organization">
+            <span itemprop="name">테크 회사</span>
+          </span></p>
+        </div>
+      </div>
+
+      <div class="schema-info">
+        <h2>RDFa 예시</h2>
+        <div class="rdfa-example" vocab="https://schema.org/" typeof="Event">
+          <h3 property="name">SEO 컨퍼런스 2024</h3>
+          <p>날짜: <span property="startDate" content="2024-06-15">2024년 6월 15일</span></p>
+          <p>장소: <span property="location" typeof="Place">
+            <span property="name">서울 컨벤션 센터</span>
+          </span></p>
+        </div>
+      </div>
+
+      <div class="test-info">
+        <h3>🧪 테스트 방법</h3>
+        <ol>
+          <li>북마클릿을 실행하여 '구조화된 데이터' 탭을 확인하세요</li>
+          <li>JSON-LD, Microdata, RDFa 감지 상태를 확인하세요</li>
+          <li>감지된 스키마 타입 목록을 확인하세요</li>
+          <li>예시 코드와 복사 기능을 테스트하세요</li>
+        </ol>
+      </div>
+
+      <article>
+        <h2>구조화된 데이터의 중요성</h2>
+        <p>구조화된 데이터는 웹페이지의 콘텐츠를 검색 엔진이 더 잘 이해할 수 있도록 돕는 표준화된 형식입니다. Schema.org 어휘를 사용하여 콘텐츠의 의미를 명확하게 전달할 수 있습니다.</p>
+        
+        <h3>주요 이점</h3>
+        <ul>
+          <li>검색 결과에서 리치 스니펫 표시</li>
+          <li>클릭률(CTR) 향상</li>
+          <li>검색 엔진의 콘텐츠 이해도 증가</li>
+          <li>음성 검색 최적화</li>
+        </ul>
+      </article>
+
+      <section>
+        <h2>테스트 도구</h2>
+        <p>구조화된 데이터를 검증하려면 다음 도구를 사용하세요:</p>
+        <ul>
+          <li><a href="https://search.google.com/test/rich-results" target="_blank">Google 리치 결과 테스트</a></li>
+          <li><a href="https://validator.schema.org/" target="_blank">Schema.org 검증 도구</a></li>
+        </ul>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2024 구조화된 데이터 테스트 페이지. 모든 권리 보유.</p>
+    </div>
+  </footer>
+
+  <script>
+    console.log('구조화된 데이터 테스트 페이지 로드됨');
+    
+    // JSON-LD 스크립트 확인
+    const jsonLdScripts = document.querySelectorAll('script[type="application/ld+json"]');
+    console.log(`발견된 JSON-LD 스크립트: ${jsonLdScripts.length}개`);
+    
+    // Microdata 확인
+    const microdataElements = document.querySelectorAll('[itemscope]');
+    console.log(`발견된 Microdata 요소: ${microdataElements.length}개`);
+    
+    // RDFa 확인
+    const rdfaElements = document.querySelectorAll('[typeof], [vocab]');
+    console.log(`발견된 RDFa 요소: ${rdfaElements.length}개`);
+  </script>
+</body>
+</html>

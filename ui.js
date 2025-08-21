@@ -39,6 +39,11 @@
       // 분석 결과를 카테고리별로 정리
       Object.entries(this.results.categories || {}).forEach(([key, data]) => {
         if (this.categories[key]) {
+          // schema와 accessibility 카테고리는 특별 처리 - 실제 데이터를 저장
+          if (key === 'schema' || key === 'accessibility') {
+            this.categories[key].data = data.data || {};
+          }
+          
           // 각 카테고리의 체크 항목들 정리
           const items = [];
           
@@ -1116,6 +1121,11 @@
       // 접근성 카테고리도 특별 처리
       if (categoryKey === 'accessibility') {
         return this.renderAccessibilityCategory(category);
+      }
+
+      // 구조화된 데이터 카테고리도 특별 처리
+      if (categoryKey === 'schema') {
+        return this.renderSchemaCategory(category);
       }
 
       return `
@@ -2847,6 +2857,339 @@
               </div>
             </div>
           ` : ''}
+        </div>
+      `;
+    }
+
+    renderSchemaCategory(category) {
+      // 실제 분석 데이터 가져오기 - category에서 직접 가져오기
+      const schemaData = category.data || {};
+      const jsonld = schemaData.jsonld || [];
+      const microdata = schemaData.microdata || {};
+      const rdfa = schemaData.rdfa || {};
+      const schemaTypes = schemaData.schemaTypes || {};
+      
+      // 구조화된 데이터 존재 여부 - 실제 데이터 확인
+      const hasJsonLd = jsonld.length > 0;
+      const hasMicrodata = microdata.itemscope > 0;
+      const hasRdfa = rdfa.vocab > 0 || rdfa.typeof > 0;
+      const hasStructuredData = hasJsonLd || hasMicrodata || hasRdfa;
+      
+      // 카테고리 헤더 (다른 탭과 동일한 스타일)
+      const itemCount = category.items ? category.items.length : 0;
+      
+      const categoryHTML = [];
+      
+      categoryHTML.push(`
+        <div class="category-detail">
+          <div class="category-header">
+            <div class="cat-title">
+              <span class="cat-icon-large">${category.icon || '📋'}</span>
+              <div>
+                <h2>${category.name} <span class="item-count">${itemCount}개 항목 체크</span></h2>
+              </div>
+            </div>
+            ${category.description ? `<p class="category-description">${category.description}</p>` : ''}
+          </div>
+      `);
+      
+      // 구조화된 데이터 감지 상태 카드
+      categoryHTML.push(`
+        <div class="schema-detection-card ${hasStructuredData ? 'detected' : 'not-detected'}">
+          <div class="detection-header">
+            <div class="detection-icon">${hasStructuredData ? '✅' : '❌'}</div>
+            <div class="detection-content">
+              <h3>${hasStructuredData ? '구조화된 데이터가 감지되었습니다' : '구조화된 데이터를 찾을 수 없습니다'}</h3>
+              <p class="detection-description">
+                ${hasStructuredData ? 
+                  `JSON-LD: ${jsonld.length}개, Microdata: ${microdata.itemscope || 0}개, RDFa: ${rdfa.typeof || rdfa.vocab || 0}개` :
+                  '구조화된 데이터를 추가하면 검색 결과에 리치 스니펫이 표시될 수 있습니다'
+                }
+              </p>
+            </div>
+          </div>
+        </div>
+      `);
+      
+      // 감지된 스키마 타입 표시
+      if (hasStructuredData) {
+        // JSON-LD에서 타입 추출
+        const jsonLdTypes = new Set();
+        jsonld.forEach(schema => {
+          if (schema['@type'] && !schema.error) {
+            const types = Array.isArray(schema['@type']) ? schema['@type'] : [schema['@type']];
+            types.forEach(type => jsonLdTypes.add(type));
+          }
+        });
+        
+        // Microdata에서 타입 추출
+        const microdataTypes = new Set();
+        if (microdata.items) {
+          microdata.items.forEach(item => {
+            if (item.type) {
+              const typeName = item.type.split('/').pop();
+              microdataTypes.add(typeName);
+            }
+          });
+        }
+        
+        const allTypes = [...jsonLdTypes, ...microdataTypes];
+        
+        if (allTypes.length > 0) {
+          categoryHTML.push(`
+            <div class="detected-schemas">
+              <h3 class="section-title">🎯 감지된 스키마 타입</h3>
+              <div class="schema-type-badges">
+                ${allTypes.map(type => `
+                  <span class="schema-badge detected">${type}</span>
+                `).join('')}
+              </div>
+            </div>
+          `);
+        }
+        
+        // JSON-LD 상세 정보
+        if (jsonld.length > 0) {
+          categoryHTML.push(`
+            <div class="jsonld-details">
+              <h3 class="section-title">📄 발견된 JSON-LD 데이터 (${jsonld.length}개)</h3>
+              <div class="jsonld-list">
+                ${jsonld.slice(0, 5).map((schema, index) => {
+                  if (schema.error) {
+                    return `
+                      <div class="jsonld-item error">
+                        <div class="jsonld-header">
+                          <span class="jsonld-index">#${index + 1}</span>
+                          <span class="jsonld-status error">❌ 오류</span>
+                        </div>
+                        <div class="jsonld-content">
+                          <p class="error-message">${schema.error}</p>
+                          <pre class="code-preview">${this.escapeHtml(schema.content || '')}</pre>
+                        </div>
+                      </div>
+                    `;
+                  }
+                  
+                  const type = Array.isArray(schema['@type']) ? schema['@type'].join(', ') : (schema['@type'] || 'Unknown');
+                  const context = schema['@context'] || '';
+                  
+                  return `
+                    <div class="jsonld-item valid">
+                      <div class="jsonld-header">
+                        <span class="jsonld-index">#${index + 1}</span>
+                        <span class="jsonld-type">${type}</span>
+                        <span class="jsonld-status success">✅ 유효</span>
+                      </div>
+                      <div class="jsonld-preview">
+                        <button class="copy-btn" onclick="navigator.clipboard.writeText(${JSON.stringify(JSON.stringify(schema, null, 2)).replace(/"/g, '&quot;')})">
+                          <span class="copy-icon">📋</span> 복사
+                        </button>
+                        <pre class="code-preview">${this.escapeHtml(JSON.stringify(schema, null, 2))}</pre>
+                      </div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          `);
+        }
+        
+        // Microdata 상세 정보
+        if (microdata.itemscope > 0 && microdata.items && microdata.items.length > 0) {
+          categoryHTML.push(`
+            <div class="microdata-details">
+              <h3 class="section-title">🏷️ 발견된 Microdata (${microdata.itemscope}개)</h3>
+              <div class="microdata-list">
+                ${microdata.items.slice(0, 3).map((item, index) => `
+                  <div class="microdata-item">
+                    <div class="microdata-header">
+                      <span class="microdata-index">#${index + 1}</span>
+                      <span class="microdata-type">${item.type ? item.type.split('/').pop() : 'Unknown'}</span>
+                    </div>
+                    <div class="microdata-properties">
+                      ${Object.entries(item.properties || {}).slice(0, 5).map(([key, value]) => `
+                        <div class="property-item">
+                          <span class="property-key">${key}:</span>
+                          <span class="property-value">${Array.isArray(value) ? value.join(', ') : value}</span>
+                        </div>
+                      `).join('')}
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `);
+        }
+      }
+      
+      // 주요 스키마 타입 예시 섹션
+      categoryHTML.push(`
+        <div class="schema-examples-section">
+          <h3 class="section-title">💡 권장 구조화된 데이터 예시</h3>
+          <p class="section-description">페이지 타입에 맞는 구조화된 데이터를 추가하세요. JSON-LD 형식을 권장합니다.</p>
+          
+          <div class="schema-examples-grid">
+            ${this.renderSchemaExample('Article', 'article', '뉴스, 블로그 포스트')}
+            ${this.renderSchemaExample('Product', 'product', '제품 페이지')}
+            ${this.renderSchemaExample('Organization', 'organization', '회사 소개')}
+            ${this.renderSchemaExample('FAQ', 'faq', '자주 묻는 질문')}
+            ${this.renderSchemaExample('BreadcrumbList', 'breadcrumb', '사이트 경로')}
+            ${this.renderSchemaExample('LocalBusiness', 'localBusiness', '지역 비즈니스')}
+          </div>
+        </div>
+      `);
+      
+      // 테스트 도구 링크
+      categoryHTML.push(`
+        <div class="schema-tools">
+          <h3 class="section-title">🛠️ 유용한 도구</h3>
+          <div class="tool-links">
+            <a href="https://search.google.com/test/rich-results" target="_blank" class="tool-link">
+              <span class="tool-icon">🔍</span>
+              <span class="tool-name">Google 리치 결과 테스트</span>
+            </a>
+            <a href="https://validator.schema.org/" target="_blank" class="tool-link">
+              <span class="tool-icon">✓</span>
+              <span class="tool-name">Schema.org 검증 도구</span>
+            </a>
+            <a href="https://developers.google.com/search/docs/appearance/structured-data" target="_blank" class="tool-link">
+              <span class="tool-icon">📚</span>
+              <span class="tool-name">구조화된 데이터 가이드</span>
+            </a>
+          </div>
+        </div>
+      `);
+      
+      // 기존 체크 리스트
+      if (category.items && category.items.length > 0) {
+        categoryHTML.push(`
+          <div class="check-list category-checks">
+            ${category.items.map(item => `
+              <div class="check-item ${item.status}">
+                <div class="check-indicator">
+                  ${item.status === 'success' ? '✓' : item.status === 'warning' ? '!' : item.status === 'info' ? 'ℹ' : '×'}
+                </div>
+                <div class="check-content">
+                  <div class="check-title">${item.title}</div>
+                  ${item.suggestion ? `<div class="check-suggestion">${item.suggestion}</div>` : ''}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `);
+      }
+      
+      categoryHTML.push('</div>'); // category-detail
+      
+      return categoryHTML.join('');
+    }
+    
+    formatSchemaType(type) {
+      const typeMap = {
+        article: 'Article',
+        organization: 'Organization', 
+        person: 'Person',
+        product: 'Product',
+        review: 'Review',
+        recipe: 'Recipe',
+        event: 'Event',
+        faq: 'FAQ',
+        howTo: 'HowTo',
+        breadcrumb: 'BreadcrumbList',
+        localBusiness: 'LocalBusiness',
+        website: 'WebSite',
+        searchAction: 'SearchAction'
+      };
+      return typeMap[type] || type;
+    }
+    
+    renderSchemaExample(title, type, description) {
+      const examples = {
+        article: {
+          "@context": "https://schema.org",
+          "@type": "Article",
+          "headline": "제목",
+          "author": {
+            "@type": "Person",
+            "name": "저자명"
+          },
+          "datePublished": "2024-01-01",
+          "image": "이미지URL"
+        },
+        product: {
+          "@context": "https://schema.org",
+          "@type": "Product",
+          "name": "제품명",
+          "image": "이미지URL",
+          "description": "제품 설명",
+          "offers": {
+            "@type": "Offer",
+            "price": "99000",
+            "priceCurrency": "KRW"
+          }
+        },
+        organization: {
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "회사명",
+          "url": "https://example.com",
+          "logo": "로고URL",
+          "sameAs": [
+            "https://facebook.com/company",
+            "https://twitter.com/company"
+          ]
+        },
+        faq: {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [{
+            "@type": "Question",
+            "name": "질문?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "답변"
+            }
+          }]
+        },
+        breadcrumb: {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "홈",
+            "item": "https://example.com"
+          }]
+        },
+        localBusiness: {
+          "@context": "https://schema.org",
+          "@type": "LocalBusiness",
+          "name": "비즈니스명",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "주소",
+            "addressLocality": "도시",
+            "postalCode": "우편번호"
+          },
+          "telephone": "전화번호"
+        }
+      };
+      
+      const example = examples[type] || {};
+      const jsonString = JSON.stringify(example, null, 2);
+      
+      return `
+        <div class="schema-example-card">
+          <div class="example-header">
+            <h4 class="example-title">${title}</h4>
+            <span class="example-desc">${description}</span>
+          </div>
+          <div class="example-code">
+            <pre class="code-block"><code>${this.escapeHtml(jsonString)}</code></pre>
+            <button class="copy-btn" onclick="navigator.clipboard.writeText(\`${jsonString.replace(/`/g, '\\`')}\`)">
+              <span class="copy-icon">📋</span> 복사
+            </button>
+          </div>
         </div>
       `;
     }
