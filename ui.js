@@ -39,9 +39,10 @@
       // 분석 결과를 카테고리별로 정리
       Object.entries(this.results.categories || {}).forEach(([key, data]) => {
         if (this.categories[key]) {
-          // schema와 accessibility 카테고리는 특별 처리 - 실제 데이터를 저장
-          if (key === 'schema' || key === 'accessibility') {
+          // schema, accessibility, technical 카테고리는 특별 처리 - 실제 데이터를 저장
+          if (key === 'schema' || key === 'accessibility' || key === 'technical') {
             this.categories[key].data = data.data || {};
+            console.log(`[DEBUG] ${key} 데이터:`, data.data);
           }
           
           // 각 카테고리의 체크 항목들 정리
@@ -1126,6 +1127,11 @@
       // 구조화된 데이터 카테고리도 특별 처리
       if (categoryKey === 'schema') {
         return this.renderSchemaCategory(category);
+      }
+      
+      // 기술적 SEO 카테고리도 특별 처리
+      if (categoryKey === 'technical') {
+        return this.renderTechnicalCategory(category);
       }
 
       return `
@@ -3192,6 +3198,263 @@
           </div>
         </div>
       `;
+    }
+
+    renderTechnicalCategory(category) {
+      const technicalData = category.data || {};
+      const coreWebVitals = technicalData.coreWebVitals || {};
+      const crawlability = technicalData.crawlability || {};
+      const resources = technicalData.resources || {};
+      
+      const categoryHTML = [];
+      
+      // 카테고리 헤더
+      categoryHTML.push(`
+        <div class="category-detail">
+          <div class="category-header">
+            <div class="cat-title">
+              <span class="cat-icon-large">${category.icon || '⚙️'}</span>
+              <div>
+                <h2>${category.name} <span class="item-count">${category.items?.length || 0}개 항목 체크</span></h2>
+              </div>
+            </div>
+            ${category.description ? `<p class="category-description">${category.description}</p>` : ''}
+          </div>
+      `);
+      
+      // Core Web Vitals 섹션
+      if (coreWebVitals) {
+        categoryHTML.push(`
+          <div class="core-web-vitals-section">
+            <h3 class="section-title">📊 Core Web Vitals</h3>
+            <div class="vitals-grid">
+              ${this.renderVitalGauge('LCP', coreWebVitals.lcp, 2500, 4000, 'Largest Contentful Paint')}
+              ${this.renderVitalGauge('FCP', coreWebVitals.fcp, 1800, 3000, 'First Contentful Paint')}
+              ${this.renderVitalGauge('CLS', coreWebVitals.cls, 0.1, 0.25, 'Cumulative Layout Shift', true)}
+              ${this.renderVitalGauge('FID', coreWebVitals.fid, 100, 300, 'First Input Delay')}
+              ${this.renderVitalGauge('TTFB', coreWebVitals.ttfb, 600, 1800, 'Time to First Byte')}
+            </div>
+            <div class="vitals-note">
+              <p>💡 Core Web Vitals는 실제 사용자 경험을 측정하는 중요한 지표입니다.</p>
+            </div>
+          </div>
+        `);
+      }
+      
+      // 크롤링 최적화 섹션
+      if (crawlability) {
+        categoryHTML.push(`
+          <div class="crawlability-section">
+            <h3 class="section-title">🤖 크롤링 & 인덱싱</h3>
+            <div class="crawl-grid">
+              ${this.renderCrawlItem('Canonical URL', crawlability.canonical)}
+              ${this.renderCrawlItem('Meta Robots', crawlability.metaRobots)}
+              ${this.renderCrawlItem('Hreflang', crawlability.hreflang)}
+              ${this.renderCrawlItem('Alternate Links', crawlability.alternateLinks)}
+              ${this.renderCrawlItem('Pagination', crawlability.pagination)}
+            </div>
+          </div>
+        `);
+      }
+      
+      // 리소스 최적화 섹션
+      if (technicalData.scripts || technicalData.stylesheets) {
+        categoryHTML.push(`
+          <div class="resource-section">
+            <h3 class="section-title">⚡ 리소스 최적화</h3>
+            <div class="resource-stats">
+              <div class="resource-card">
+                <div class="resource-icon">📜</div>
+                <div class="resource-info">
+                  <h4>JavaScript</h4>
+                  <p>총 ${technicalData.scripts?.total || 0}개</p>
+                  <p class="resource-detail">
+                    Async: ${technicalData.scripts?.async || 0}, 
+                    Defer: ${technicalData.scripts?.defer || 0}
+                  </p>
+                </div>
+              </div>
+              <div class="resource-card">
+                <div class="resource-icon">🎨</div>
+                <div class="resource-info">
+                  <h4>CSS</h4>
+                  <p>총 ${technicalData.stylesheets?.total || 0}개</p>
+                  <p class="resource-detail">
+                    Critical: ${technicalData.stylesheets?.critical || 0},
+                    Preload: ${technicalData.stylesheets?.preload || 0}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        `);
+      }
+      
+      // 보안 섹션
+      if (technicalData.security) {
+        categoryHTML.push(`
+          <div class="security-section">
+            <h3 class="section-title">🔒 보안 & 신뢰도</h3>
+            <div class="security-checks">
+              <div class="security-item ${technicalData.security.httpsLinks > technicalData.security.httpLinks ? 'secure' : 'warning'}">
+                <span class="security-icon">${technicalData.security.httpsLinks > technicalData.security.httpLinks ? '✅' : '⚠️'}</span>
+                <span>HTTPS 링크: ${technicalData.security.httpsLinks}개 / HTTP 링크: ${technicalData.security.httpLinks}개</span>
+              </div>
+              ${technicalData.security.mixedContent > 0 ? `
+                <div class="security-item warning">
+                  <span class="security-icon">⚠️</span>
+                  <span>Mixed Content 문제: ${technicalData.security.mixedContent}개 리소스</span>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        `);
+      }
+      
+      // 체크리스트
+      categoryHTML.push(`
+        <div class="check-list category-checks">
+          ${category.items.map(item => `
+            <div class="check-item ${item.status}">
+              <div class="check-indicator">
+                ${item.status === 'success' ? '✓' : item.status === 'warning' ? '!' : item.status === 'info' ? 'ℹ' : '×'}
+              </div>
+              <div class="check-content">
+                <div class="check-title">${item.title}</div>
+                ${item.current ? `
+                  <div class="check-current">
+                    <span class="label">현재:</span>
+                    <code>${this.escapeHtml(item.current)}</code>
+                  </div>
+                ` : ''}
+                ${item.suggestion && item.status !== 'success' ? `
+                  <div class="check-suggestion">${item.suggestion}</div>
+                ` : ''}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `);
+      
+      categoryHTML.push('</div>');
+      
+      return categoryHTML.join('');
+    }
+    
+    renderVitalGauge(metric, value, goodThreshold, poorThreshold, label, isDecimal = false) {
+      if (value === null || value === undefined) {
+        return `
+          <div class="vital-gauge">
+            <div class="gauge-label">${metric}</div>
+            <div class="gauge-value">-</div>
+            <div class="gauge-status">측정 중...</div>
+          </div>
+        `;
+      }
+      
+      let status = 'good';
+      let color = '#0cce6b';
+      
+      if (isDecimal) {
+        if (value > poorThreshold) {
+          status = 'poor';
+          color = '#ff4e42';
+        } else if (value > goodThreshold) {
+          status = 'needs-improvement';
+          color = '#ffa400';
+        }
+      } else {
+        if (value > poorThreshold) {
+          status = 'poor';
+          color = '#ff4e42';
+        } else if (value > goodThreshold) {
+          status = 'needs-improvement';
+          color = '#ffa400';
+        }
+      }
+      
+      const displayValue = isDecimal ? value.toFixed(2) : `${value}ms`;
+      
+      return `
+        <div class="vital-gauge ${status}">
+          <div class="gauge-circle" style="border-color: ${color}">
+            <div class="gauge-value">${displayValue}</div>
+          </div>
+          <div class="gauge-label">${metric}</div>
+          <div class="gauge-desc">${label}</div>
+        </div>
+      `;
+    }
+    
+    renderCrawlItem(title, data) {
+      // data가 없거나 undefined인 경우 처리
+      if (!data) {
+        return `
+          <div class="crawl-item unknown">
+            <div class="crawl-status">❓</div>
+            <div class="crawl-content">
+              <h4>${title}</h4>
+              <p>데이터 수집 중...</p>
+            </div>
+          </div>
+        `;
+      }
+      
+      let statusIcon = '❓';
+      let statusClass = 'unknown';
+      
+      try {
+        if (data.exists !== undefined) {
+          statusIcon = data.exists ? '✅' : '❌';
+          statusClass = data.exists ? 'success' : 'error';
+        } else if (data.count !== undefined) {
+          statusIcon = data.count > 0 ? '✅' : '⚠️';
+          statusClass = data.count > 0 ? 'success' : 'warning';
+        } else if (typeof data === 'object' && data !== null) {
+          const hasAny = Object.values(data).some(v => v === true);
+          statusIcon = hasAny ? '✅' : '⚠️';
+          statusClass = hasAny ? 'success' : 'warning';
+        }
+      } catch (e) {
+        console.log('Error in renderCrawlItem:', e);
+      }
+      
+      return `
+        <div class="crawl-item ${statusClass}">
+          <div class="crawl-status">${statusIcon}</div>
+          <div class="crawl-content">
+            <h4>${title}</h4>
+            ${this.formatCrawlData(data)}
+          </div>
+        </div>
+      `;
+    }
+    
+    formatCrawlData(data) {
+      if (!data) return '<p>데이터 없음</p>';
+      
+      try {
+        if (data.exists !== undefined && data.url) {
+          return `<p>${data.exists ? '설정됨' : '미설정'}: ${data.url}</p>`;
+        } else if (data.content !== undefined) {
+          return `<p>${data.content || '설정 없음'}</p>`;
+        } else if (data.count !== undefined) {
+          return `<p>${data.count}개 발견</p>`;
+        } else if (data.tags && Array.isArray(data.tags)) {
+          // hreflang 태그 처리
+          return `<p>${data.count || 0}개 언어 설정</p>`;
+        } else if (typeof data === 'object' && data !== null) {
+          const items = Object.entries(data)
+            .filter(([key, value]) => value === true)
+            .map(([key]) => key);
+          return items.length > 0 ? `<p>${items.join(', ')}</p>` : '<p>없음</p>';
+        }
+      } catch (e) {
+        console.log('Error in formatCrawlData:', e);
+        return '<p>데이터 처리 오류</p>';
+      }
+      
+      return '<p>-</p>';
     }
 
     renderParagraphAnalysis(paragraphStats) {

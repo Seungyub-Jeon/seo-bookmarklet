@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>기술적 SEO 테스트 페이지 - Core Web Vitals & 크롤링 최적화</title>
+    <meta name="description" content="Core Web Vitals, 크롤링 최적화, 리소스 최적화를 테스트하기 위한 페이지">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://example.com/test-technical-seo">
+    
+    <!-- Hreflang Tags -->
+    <link rel="alternate" hreflang="ko" href="https://example.com/ko/test">
+    <link rel="alternate" hreflang="en" href="https://example.com/en/test">
+    <link rel="alternate" hreflang="ja" href="https://example.com/ja/test">
+    <link rel="alternate" hreflang="x-default" href="https://example.com/test">
+    
+    <!-- Pagination -->
+    <link rel="prev" href="https://example.com/page/1">
+    <link rel="next" href="https://example.com/page/3">
+    
+    <!-- Sitemap -->
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml">
+    
+    <!-- DNS Prefetch for Performance -->
+    <link rel="dns-prefetch" href="//cdn.example.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    
+    <!-- 대용량 CSS 파일 시뮬레이션 -->
+    <style>
+        /* Large CSS for testing */
+        body { margin: 0; padding: 20px; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { color: #333; }
+        .test-section { margin: 40px 0; padding: 20px; background: #f5f5f5; border-radius: 8px; }
+        .large-css-1 { padding: 10px; } .large-css-2 { margin: 10px; } .large-css-3 { border: 1px solid #ccc; }
+        .large-css-4 { background: #fff; } .large-css-5 { color: #666; } .large-css-6 { font-size: 14px; }
+        /* 더 많은 CSS 규칙들... */
+        @media (max-width: 768px) { .container { padding: 10px; } }
+    </style>
+    
+    <!-- 인라인 JavaScript -->
+    <script>
+        // 성능 측정 시뮬레이션
+        window.addEventListener('load', function() {
+            // LCP 시뮬레이션
+            const lcpElement = document.querySelector('h1');
+            if (lcpElement) {
+                console.log('LCP Element:', lcpElement);
+            }
+            
+            // CLS 시뮬레이션 (레이아웃 시프트)
+            setTimeout(() => {
+                const banner = document.getElementById('lateBanner');
+                if (banner) {
+                    banner.style.height = '100px';
+                }
+            }, 1000);
+        });
+        
+        // 더 많은 인라인 스크립트...
+        function testFunction1() { console.log('Test 1'); }
+        function testFunction2() { console.log('Test 2'); }
+        function testFunction3() { console.log('Test 3'); }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>기술적 SEO 테스트 페이지</h1>
+        
+        <div class="test-section">
+            <h2>Core Web Vitals 테스트</h2>
+            <p>이 페이지는 LCP, FID, CLS, FCP, TTFB 등의 Core Web Vitals 메트릭을 테스트합니다.</p>
+            
+            <!-- Large Contentful Paint 요소 -->
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='400'%3E%3Crect fill='%23ddd' width='800' height='400'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23999' font-size='20'%3ELCP Test Image%3C/text%3E%3C/svg%3E" 
+                 alt="LCP 테스트 이미지" 
+                 width="800" 
+                 height="400"
+                 style="display: block; margin: 20px 0;">
+            
+            <!-- CLS 테스트를 위한 동적 콘텐츠 -->
+            <div id="lateBanner" style="background: #ffe4b5; padding: 10px; margin: 20px 0; transition: height 0.3s;">
+                늦게 로드되는 배너 (CLS 테스트)
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>크롤링 최적화 테스트</h2>
+            
+            <h3>내부 링크</h3>
+            <ul>
+                <li><a href="/page1">내부 페이지 1 (HTTPS)</a></li>
+                <li><a href="/page2">내부 페이지 2 (HTTPS)</a></li>
+                <li><a href="http://example.com/insecure">보안되지 않은 내부 링크 (HTTP)</a></li>
+            </ul>
+            
+            <h3>외부 링크</h3>
+            <ul>
+                <li><a href="https://www.google.com" rel="noopener noreferrer">Google (HTTPS)</a></li>
+                <li><a href="https://www.github.com" rel="noopener noreferrer">GitHub (HTTPS)</a></li>
+                <li><a href="http://insecure-site.com">보안되지 않은 외부 링크 (HTTP)</a></li>
+            </ul>
+        </div>
+        
+        <div class="test-section">
+            <h2>리소스 최적화 테스트</h2>
+            
+            <!-- 여러 외부 스크립트 -->
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+            
+            <!-- 여러 외부 스타일시트 -->
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+            
+            <!-- 인라인 스타일 -->
+            <style>
+                .inline-style-1 { color: red; }
+                .inline-style-2 { background: blue; }
+                .inline-style-3 { border: 1px solid green; }
+            </style>
+            
+            <!-- 인라인 스크립트 -->
+            <script>
+                console.log('인라인 스크립트 1');
+                console.log('인라인 스크립트 2');
+                console.log('인라인 스크립트 3');
+            </script>
+        </div>
+        
+        <div class="test-section">
+            <h2>보안 테스트</h2>
+            <p>이 섹션은 HTTPS/HTTP 혼합 콘텐츠를 테스트합니다.</p>
+            
+            <!-- Mixed Content 시뮬레이션 -->
+            <img src="http://insecure-image.com/image.jpg" alt="HTTP 이미지" onerror="this.style.display='none'">
+            <iframe src="http://insecure-iframe.com" style="display:none;"></iframe>
+        </div>
+        
+        <!-- FID 테스트를 위한 인터랙티브 요소 -->
+        <div class="test-section">
+            <h2>인터랙션 테스트</h2>
+            <button onclick="alert('FID 테스트')">클릭하여 FID 테스트</button>
+            <input type="text" placeholder="입력 필드 (FID 테스트)">
+        </div>
+    </div>
+    
+    <!-- 더 많은 외부 스크립트 (성능 테스트용) -->
+    <script>
+        // 추가 인라인 JavaScript
+        (function() {
+            console.log('IIFE 패턴 스크립트');
+            // 더 많은 코드...
+        })();
+    </script>
+</body>
+</html>

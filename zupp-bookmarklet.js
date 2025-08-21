@@ -5,11 +5,14 @@
 javascript:(function(){
   const BASE_URL = 'http://localhost:8000/';
   
+  // 캐시 버스팅을 위한 타임스탬프
+  const timestamp = Date.now();
+  
   // CSS 파일 먼저 로드
   const cssLink = document.createElement('link');
   cssLink.rel = 'stylesheet';
   cssLink.type = 'text/css';
-  cssLink.href = BASE_URL + 'ui.css';
+  cssLink.href = BASE_URL + 'ui.css?v=' + timestamp;
   document.head.appendChild(cssLink);
   
   // baseUrl을 전역에 저장
@@ -42,7 +45,7 @@ javascript:(function(){
     
     const src = scripts[index];
     const script = document.createElement('script');
-    script.src = BASE_URL + src;
+    script.src = BASE_URL + src + '?v=' + timestamp;
     
     script.onload = () => {
       index++;
