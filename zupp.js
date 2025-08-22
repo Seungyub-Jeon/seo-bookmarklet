@@ -350,7 +350,9 @@
           // Sprint 3: 기술적 분석기 (3개)
           SchemaAnalyzer, TechnicalSEOAnalyzer, PerformanceAnalyzer,
           // Sprint 4: GEO & 모바일 분석기 (2개)
-          GEOAnalyzer, MobileUXAnalyzer
+          GEOAnalyzer, MobileUXAnalyzer,
+          // 개별 등록된 분석기들
+          geo, mobile
         } = analyzers;
         
         // 모든 분석기 인스턴스 생성
@@ -376,6 +378,16 @@
         // GEO & 모바일 분석기들 (Sprint 4)
         if (GEOAnalyzer) allAnalyzers.push(new GEOAnalyzer());
         if (MobileUXAnalyzer) allAnalyzers.push(new MobileUXAnalyzer());
+        
+        // 개별 등록된 분석기들 추가 (registerAnalyzer로 등록된 것들)
+        if (geo) {
+          console.log('[AnalyzerCore] Adding registered GEO analyzer');
+          allAnalyzers.push(new geo());
+        }
+        if (mobile) {
+          console.log('[AnalyzerCore] Adding registered Mobile analyzer');
+          allAnalyzers.push(new mobile());
+        }
 
 
         // 모든 분석기 병렬 실행 (성능 최적화)
@@ -483,6 +495,14 @@
     BaseAnalyzer: BaseAnalyzer,
     ScoreCalculator: ScoreCalculator,
     AnalyzerCore: AnalyzerCore,
+    analyzers: {},  // 등록된 분석기들을 저장할 객체
+    ready: true,    // GEO 분석기가 이를 확인함
+    
+    // 분석기 등록 함수
+    registerAnalyzer(name, AnalyzerClass) {
+      console.log(`[ZuppSEO] Registering analyzer: ${name}`);
+      this.analyzers[name] = AnalyzerClass;
+    },
     
     // 분석 시작
     async run() {

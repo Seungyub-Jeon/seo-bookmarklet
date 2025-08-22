@@ -889,15 +889,16 @@
 .check-item {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  padding: 10px 12px;
+  gap: 12px;
+  padding: 14px 16px;
   background: #ffffff;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   transition: all 0.2s;
   width: 100%;
   box-sizing: border-box;
-  min-height: 48px;
+  min-height: 52px;
+  margin-bottom: 10px;
 }
 
 .check-item:hover {
@@ -2087,6 +2088,37 @@
 
 .copy-code-btn:active {
   background: #3730a3;
+}
+
+/* AI 최적화 체크리스트 그룹 스타일 */
+.check-group {
+  margin-bottom: 24px;
+}
+
+.check-group:last-child {
+  margin-bottom: 0;
+}
+
+.group-header {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 20px 0 12px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e1e8ed;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.check-group.schema-required .group-header {
+  border-bottom-color: #3498db;
+  color: #2980b9;
+}
+
+.check-group.content-optimization .group-header {
+  border-bottom-color: #27ae60;
+  color: #229954;
 }
 
 /* 모바일 반응형 - 소셜미디어 */
@@ -4504,6 +4536,216 @@
   color: #1f2937;
   font-size: 14px;
   margin: 0 2px;
+}
+
+/* 코드 예시 스타일 */
+.code-example {
+  margin-top: 12px;
+  background: #f8f9fa;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.code-example.suggestion {
+  background: #fef3c7;
+  border-color: #fbbf24;
+}
+
+.code-label {
+  padding: 8px 12px;
+  background: #e5e7eb;
+  font-size: 12px;
+  font-weight: 600;
+  color: #4b5563;
+  border-bottom: 1px solid #d1d5db;
+}
+
+.code-example.suggestion .code-label {
+  background: #fbbf24;
+  color: #78350f;
+}
+
+.code-example pre {
+  margin: 0;
+  padding: 12px;
+  overflow-x: auto;
+  background: white;
+  max-height: 200px;
+}
+
+.code-example code {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  color: #1f2937;
+}
+
+/* AI 최적화 탭 스타일 */
+.geo-category .ai-optimization-dashboard {
+  padding: 20px;
+}
+
+.ai-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.ai-metric-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+  transition: all 0.2s ease;
+}
+
+.ai-metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.metric-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.metric-icon {
+  font-size: 24px;
+}
+
+.metric-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.metric-score {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.metric-score.good {
+  color: #10b981;
+}
+
+.metric-score.warning {
+  color: #f59e0b;
+}
+
+.metric-score.error {
+  color: #ef4444;
+}
+
+.metric-details {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.metric-stat {
+  padding: 4px 0;
+  border-top: 1px solid #f3f4f6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.metric-stat:first-child {
+  border-top: none;
+}
+
+.eeat-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.eeat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.eeat-item:last-child {
+  border-bottom: none;
+}
+
+.eeat-score {
+  font-weight: 600;
+  color: #374151;
+}
+
+.ai-details-section {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.detail-card {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.detail-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.detail-content {
+  font-size: 12px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.status-good {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.status-bad {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.entity-group {
+  margin-bottom: 8px;
+  padding: 8px;
+  background: white;
+  border-radius: 4px;
+  line-height: 1.6;
+}
+
+.entity-group strong {
+  color: #374151;
+  margin-right: 8px;
 }
 
 /* No Data State */

@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>zupp - 한 번의 클릭으로 완벽한 SEO 분석</title>
-    <meta name="description" content="zupp는 13개 전문 분석기로 65개 이상의 SEO 체크 항목을 실시간으로 분석하는 무료 북마클릿 도구입니다.">
-    <meta name="keywords" content="SEO, 검색엔진최적화, 북마클릿, 웹사이트 분석, SEO 도구">
-    <meta property="og:title" content="zupp - 한 번의 클릭으로 완벽한 SEO 분석">
-    <meta property="og:description" content="65개 이상의 SEO 체크 항목을 실시간으로 분석하는 무료 북마클릿">
+    <title>zupp - AI 시대의 완벽한 SEO 분석 도구</title>
+    <meta name="description" content="zupp는 E-E-A-T, 지식 그래프 등 AI SEO를 포함한 100개 이상의 체크 항목을 실시간으로 분석하는 무료 북마클릿 도구입니다.">
+    <meta name="keywords" content="SEO, AI SEO, GEO, E-E-A-T, 지식 그래프, 검색엔진최적화, 북마클릿, 웹사이트 분석, SEO 도구">
+    <meta property="og:title" content="zupp - AI 시대의 완벽한 SEO 분석 도구">
+    <meta property="og:description" content="E-E-A-T와 AI 최적화를 포함한 100개 이상의 SEO 체크 항목을 실시간으로 분석하는 무료 북마클릿">
     <meta property="og:image" content="og-image.jpg">
     <link rel="canonical" href="https://zupp.com">
     
@@ -531,8 +531,8 @@
     <!-- 히어로 섹션 -->
     <section class="hero">
         <div class="container fade-in-up">
-            <h1>한 번의 클릭으로<br>완벽한 SEO 분석</h1>
-            <p class="subtitle">zupp는 65개 이상의 SEO 체크 항목을 실시간으로 분석하는<br>강력한 북마클릿 도구입니다</p>
+            <h1>한 번의 클릭으로<br>AI 시대의 완벽한 SEO 분석</h1>
+            <p class="subtitle">zupp는 E-E-A-T, 지식 그래프 등 AI SEO를 포함한<br>100개 이상의 체크 항목을 실시간으로 분석하는 강력한 북마클릿 도구입니다</p>
             <div class="hero-buttons">
                 <a href="#install" class="btn btn-primary">
                     <span>⚡</span>
@@ -555,7 +555,7 @@
             <!-- 북마클릿 버튼 -->
             <div class="bookmarklet-button">
                 <h3>👇 아래 버튼을 북마크 바로 드래그하세요</h3>
-                <a href="javascript:(function(){const BASE_URL='http://localhost:8000/';const timestamp=Date.now();const cssLink=document.createElement('link');cssLink.rel='stylesheet';cssLink.type='text/css';cssLink.href=BASE_URL+'ui.css?v='+timestamp;document.head.appendChild(cssLink);window.ZuppSEO=window.ZuppSEO||{};window.ZuppSEO.baseUrl=BASE_URL;const scripts=['zupp.js','analyzers.js','analyzers-extended.js','analyzers-technical.js','analyzers-geo-mobile.js','ui.js'];let index=0;function loadNextScript(){if(index>=scripts.length){setTimeout(()=>{if(window.ZuppSEO&&window.ZuppSEO.run){console.log('🚀 Running ZuppSEO...');window.ZuppSEO.run();}else{console.error('❌ ZuppSEO not found');}},100);return;}const src=scripts[index];const script=document.createElement('script');script.src=BASE_URL+src+'?v='+timestamp;script.onload=()=>{console.log('✅ '+src+' loaded ('+(index+1)+'/'+scripts.length+')');index++;loadNextScript();};script.onerror=()=>{console.error('❌ Failed to load '+src+' from '+BASE_URL);};document.head.appendChild(script);}console.log('📍 Loading from:',BASE_URL);loadNextScript();})();" 
+                <a href="javascript:(function(){const BASE_URL='http://localhost:8000/';const timestamp=Date.now();const cssLink=document.createElement('link');cssLink.rel='stylesheet';cssLink.type='text/css';cssLink.href=BASE_URL+'ui.css?v='+timestamp;document.head.appendChild(cssLink);window.ZuppSEO=window.ZuppSEO||{};window.ZuppSEO.baseUrl=BASE_URL;const scripts=['zupp.js','analyzers.js','analyzers-extended.js','analyzers-technical.js','analyzers-geo.js','ui.js'];let index=0;function loadNextScript(){if(index>=scripts.length){setTimeout(()=>{if(window.ZuppSEO&&window.ZuppSEO.run){window.ZuppSEO.run();}else{console.error('❌ ZuppSEO not found');}},100);return;}const src=scripts[index];const script=document.createElement('script');script.src=BASE_URL+src+'?v='+timestamp;script.onload=()=>{index++;loadNextScript();};script.onerror=()=>{console.error('❌ Failed to load '+src+' from '+BASE_URL);};document.head.appendChild(script);}loadNextScript();})();" 
                    class="bookmarklet-link" 
                    onclick="alert('🔖 이 버튼을 북마크 바로 드래그하세요!'); return false;">
                     🔍 zupp SEO 분석
@@ -599,7 +599,7 @@
                     <li>이름: <code style="background: #e2e8f0; padding: 4px 8px; border-radius: 4px;">zupp SEO 분석</code></li>
                     <li>URL: 아래 코드를 복사해서 붙여넣기
                         <div style="margin-top: 10px; padding: 15px; background: #2d3748; color: #48bb78; border-radius: 8px; font-family: monospace; font-size: 12px; overflow-x: auto;">
-                            javascript:(function(){const BASE_URL='http://localhost:8000/';const timestamp=Date.now();const cssLink=document.createElement('link');cssLink.rel='stylesheet';cssLink.type='text/css';cssLink.href=BASE_URL+'ui.css?v='+timestamp;document.head.appendChild(cssLink);window.ZuppSEO=window.ZuppSEO||{};window.ZuppSEO.baseUrl=BASE_URL;const scripts=['zupp.js','analyzers.js','analyzers-extended.js','analyzers-technical.js','analyzers-geo-mobile.js','ui.js'];let index=0;function loadNextScript(){if(index>=scripts.length){setTimeout(()=>{if(window.ZuppSEO&&window.ZuppSEO.run){window.ZuppSEO.run();}},100);return;}const src=scripts[index];const script=document.createElement('script');script.src=BASE_URL+src+'?v='+timestamp;script.onload=()=>{index++;loadNextScript();};document.head.appendChild(script);}loadNextScript();})();
+                            javascript:(function(){const BASE_URL='http://localhost:8000/';const timestamp=Date.now();const cssLink=document.createElement('link');cssLink.rel='stylesheet';cssLink.type='text/css';cssLink.href=BASE_URL+'ui.css?v='+timestamp;document.head.appendChild(cssLink);window.ZuppSEO=window.ZuppSEO||{};window.ZuppSEO.baseUrl=BASE_URL;const scripts=['zupp.js','analyzers.js','analyzers-extended.js','analyzers-technical.js','analyzers-geo.js','ui.js'];let index=0;function loadNextScript(){if(index>=scripts.length){setTimeout(()=>{if(window.ZuppSEO&&window.ZuppSEO.run){window.ZuppSEO.run();}else{console.error('❌ ZuppSEO not found');}},100);return;}const src=scripts[index];const script=document.createElement('script');script.src=BASE_URL+src+'?v='+timestamp;script.onload=()=>{index++;loadNextScript();};script.onerror=()=>{console.error('❌ Failed to load '+src+' from '+BASE_URL);};document.head.appendChild(script);}loadNextScript();})();
                         </div>
                     </li>
                     <li>저장 클릭 → 완료! 🎉</li>
@@ -629,11 +629,6 @@
                     <div class="feature-icon">🤖</div>
                     <h3>AI 검색 최적화</h3>
                     <p>ChatGPT, Claude, Perplexity 등 AI 검색엔진을 위한 GEO(Generative Engine Optimization)를 지원합니다.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📱</div>
-                    <h3>모바일 최적화</h3>
-                    <p>반응형 디자인, 터치 타겟 크기, 폰트 크기 등 모바일 UX를 종합적으로 체크합니다.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🇰🇷</div>
@@ -676,7 +671,7 @@
     <!-- 분석기 목록 -->
     <section id="analyzers" class="analyzers-section">
         <div class="container">
-            <h2 class="section-title">🔍 13개 전문 분석기</h2>
+            <h2 class="section-title">🔍 11개 전문 분석기 (AI 강화)</h2>
             <p class="section-subtitle">각 분야별 전문 분석기가 심층적으로 검사합니다</p>
 
             <div class="analyzers-grid">
@@ -751,24 +746,10 @@
                     </div>
                 </div>
                 <div class="analyzer-item">
-                    <div class="analyzer-icon">⚡</div>
-                    <div class="analyzer-info">
-                        <h4>성능</h4>
-                        <p>로딩 속도, Core Web Vitals</p>
-                    </div>
-                </div>
-                <div class="analyzer-item">
                     <div class="analyzer-icon">🤖</div>
                     <div class="analyzer-info">
                         <h4>AI 최적화</h4>
-                        <p>GEO, FAQ 스키마, 요약</p>
-                    </div>
-                </div>
-                <div class="analyzer-item">
-                    <div class="analyzer-icon">📱</div>
-                    <div class="analyzer-info">
-                        <h4>모바일 UX</h4>
-                        <p>반응형, 터치 타겟, 폰트</p>
+                        <p>EEAT, 지식 그래프, 대화형 SEO</p>
                     </div>
                 </div>
             </div>
@@ -783,6 +764,10 @@
             <a href="#install" class="btn btn-primary">
                 <span>🚀</span>
                 <span>무료로 설치하기</span>
+            </a>
+            <a href="test-geo-comparison.html" class="btn btn-secondary" style="margin-left: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <span>🧪</span>
+                <span>AI SEO 테스트하기</span>
             </a>
         </div>
     </section>
@@ -846,7 +831,7 @@
                 'analyzers.js',
                 'analyzers-extended.js',
                 'analyzers-technical.js',
-                'analyzers-geo-mobile.js',
+                'analyzers-geo.js',
                 'ui.js'
             ];
             

@@ -403,6 +403,244 @@
     }
   }
   
-  // BaseAnalyzer 로드 대기 후 초기화
-  waitForBaseAnalyzer(initTechnicalAnalyzer);
+  // SchemaAnalyzer 추가 - Git 원본 복원
+  function initSchemaAnalyzer() {
+    const BaseAnalyzer = window.ZuppSEO.BaseAnalyzer;
+    const optimizer = window.ZuppSEO.optimizer;
+    
+    class SchemaAnalyzer extends BaseAnalyzer {
+      constructor() {
+        super('schema', 'high');
+      }
+
+      collect() {
+        // JSON-LD 스크립트
+        const jsonldScripts = optimizer.querySelectorAll('script[type="application/ld+json"]');
+        this.data.jsonld = [];
+        
+        jsonldScripts.forEach(script => {
+          try {
+            const data = JSON.parse(script.textContent || '{}');
+            this.data.jsonld.push(data);
+          } catch (e) {
+            this.data.jsonld.push({ error: 'Invalid JSON-LD', content: script.textContent?.substring(0, 100) });
+          }
+        });
+
+        // Microdata
+        this.data.microdata = {
+          itemscope: optimizer.querySelectorAll('[itemscope]').length,
+          itemtype: optimizer.querySelectorAll('[itemtype]').length,
+          itemprop: optimizer.querySelectorAll('[itemprop]').length,
+          items: this.collectMicrodataItems()
+        };
+
+        // RDFa
+        this.data.rdfa = {
+          vocab: optimizer.querySelectorAll('[vocab]').length,
+          typeof: optimizer.querySelectorAll('[typeof]').length,
+          property: optimizer.querySelectorAll('[property]').length,
+          resource: optimizer.querySelectorAll('[resource]').length
+        };
+
+        // 스키마 타입 분석
+        this.analyzeSchemaTypes();
+      }
+
+      collectMicrodataItems() {
+        const items = [];
+        const elements = optimizer.querySelectorAll('[itemscope]');
+        
+        elements.forEach(el => {
+          const item = {
+            type: el.getAttribute('itemtype') || 'unknown',
+            properties: {}
+          };
+          
+          const props = el.querySelectorAll('[itemprop]');
+          props.forEach(prop => {
+            const name = prop.getAttribute('itemprop');
+            const content = prop.getAttribute('content') || prop.textContent?.trim() || '';
+            if (name) {
+              item.properties[name] = content;
+            }
+          });
+          
+          items.push(item);
+        });
+        
+        return items;
+      }
+
+      analyzeSchemaTypes() {
+        this.data.schemaTypes = {
+          article: false,
+          organization: false,
+          person: false,
+          product: false,
+          review: false,
+          recipe: false,
+          event: false,
+          faq: false,
+          howTo: false,
+          breadcrumb: false,
+          localBusiness: false,
+          website: false,
+          searchAction: false
+        };
+
+        // JSON-LD에서 스키마 타입 찾기
+        this.data.jsonld.forEach(schema => {
+          if (schema['@type']) {
+            const type = schema['@type'].toLowerCase();
+            Object.keys(this.data.schemaTypes).forEach(key => {
+              if (type.includes(key.toLowerCase())) {
+                this.data.schemaTypes[key] = true;
+              }
+            });
+          }
+        });
+
+        // Microdata에서 스키마 타입 찾기
+        this.data.microdata.items.forEach(item => {
+          const type = item.type.toLowerCase();
+          Object.keys(this.data.schemaTypes).forEach(key => {
+            if (type.includes(key.toLowerCase())) {
+              this.data.schemaTypes[key] = true;
+            }
+          });
+        });
+      }
+
+      validate() {
+        // 구조화 데이터 존재 여부
+        const hasStructuredData = this.data.jsonld.length > 0 || 
+                                 this.data.microdata.itemscope > 0 || 
+                                 this.data.rdfa.vocab > 0;
+
+        if (!hasStructuredData) {
+          this.addIssue('warning', '구조화 데이터가 없습니다', {
+            impact: '검색 결과에 리치 스니펫이 표시되지 않습니다',
+            suggestion: 'Schema.org 마크업 추가를 고려하세요'
+          });
+        } else {
+          this.addPassed('구조화 데이터가 발견되었습니다');
+        }
+
+        // JSON-LD 검증
+        if (this.data.jsonld.length > 0) {
+          let validCount = 0;
+          let errorCount = 0;
+          
+          this.data.jsonld.forEach(schema => {
+            if (schema.error) {
+              errorCount++;
+            } else if (schema['@context'] && schema['@type']) {
+              validCount++;
+            }
+          });
+
+          if (errorCount > 0) {
+            this.addIssue('critical', `잘못된 JSON-LD가 ${errorCount}개 있습니다`, {
+              impact: '구조화 데이터가 인식되지 않습니다'
+            });
+          }
+
+          if (validCount > 0) {
+            this.addPassed(`유효한 JSON-LD ${validCount}개 발견`);
+          }
+        }
+
+        // 권장 스키마 타입
+        const pageType = this.detectPageType();
+        const recommendedSchemas = this.getRecommendedSchemas(pageType);
+        
+        recommendedSchemas.forEach(schemaType => {
+          if (!this.data.schemaTypes[schemaType]) {
+            this.addIssue('info', `${schemaType} 스키마 추가를 고려하세요`, {
+              pageType: pageType
+            });
+          }
+        });
+
+        // Organization/Website 스키마 (홈페이지)
+        if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
+          if (!this.data.schemaTypes.organization && !this.data.schemaTypes.website) {
+            this.addIssue('warning', '홈페이지에 Organization 또는 Website 스키마가 없습니다');
+          }
+        }
+
+        // Breadcrumb 스키마
+        const breadcrumbs = document.querySelectorAll('.breadcrumb, .breadcrumbs, nav[aria-label*="breadcrumb"]');
+        if (breadcrumbs.length > 0 && !this.data.schemaTypes.breadcrumb) {
+          this.addIssue('info', 'Breadcrumb 스키마를 추가하여 검색 결과를 개선하세요');
+        }
+
+        // FAQ 스키마 (GEO 중요)
+        if (this.data.schemaTypes.faq) {
+          this.addPassed('FAQ 스키마 발견 (AI 검색엔진 최적화에 유리)');
+        }
+
+        // HowTo 스키마
+        if (this.data.schemaTypes.howTo) {
+          this.addPassed('HowTo 스키마 발견 (단계별 가이드에 최적)');
+        }
+
+        // 구조화 데이터 완성도
+        if (this.data.microdata.items.length > 0) {
+          const incompleteItems = this.data.microdata.items.filter(item => 
+            Object.keys(item.properties).length < 3
+          );
+          
+          if (incompleteItems.length > 0) {
+            this.addIssue('warning', `불완전한 Microdata 아이템이 ${incompleteItems.length}개 있습니다`, {
+              suggestion: '필수 속성을 모두 포함시키세요'
+            });
+          }
+        }
+      }
+
+      detectPageType() {
+        // 페이지 타입 감지 로직
+        const path = window.location.pathname.toLowerCase();
+        const title = document.title.toLowerCase();
+        const h1 = document.querySelector('h1')?.textContent?.toLowerCase() || '';
+        
+        if (path.includes('product') || path.includes('shop')) return 'product';
+        if (path.includes('article') || path.includes('blog') || path.includes('post')) return 'article';
+        if (path.includes('about')) return 'organization';
+        if (path.includes('contact')) return 'localBusiness';
+        if (path.includes('faq')) return 'faq';
+        if (title.includes('how to') || h1.includes('how to')) return 'howTo';
+        
+        return 'general';
+      }
+
+      getRecommendedSchemas(pageType) {
+        const recommendations = {
+          product: ['product', 'review', 'breadcrumb'],
+          article: ['article', 'breadcrumb', 'person'],
+          organization: ['organization', 'website'],
+          localBusiness: ['localBusiness', 'organization'],
+          faq: ['faq'],
+          howTo: ['howTo'],
+          general: ['website', 'breadcrumb']
+        };
+        
+        return recommendations[pageType] || recommendations.general;
+      }
+    }
+
+    // 전역 등록
+    if (window.ZuppSEO) {
+      window.ZuppSEO.analyzers = window.ZuppSEO.analyzers || {};
+      window.ZuppSEO.analyzers.SchemaAnalyzer = SchemaAnalyzer;
+    }
+  }
+  
+  // 모든 분석기 초기화
+  waitForBaseAnalyzer(() => {
+    initTechnicalAnalyzer();
+    initSchemaAnalyzer();
+  });
 })();

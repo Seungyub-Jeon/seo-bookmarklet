@@ -37,8 +37,8 @@
       // 분석 결과를 카테고리별로 정리
       Object.entries(this.results.categories || {}).forEach(([key, data]) => {
         if (this.categories[key]) {
-          // schema, accessibility, technical 카테고리는 특별 처리 - 실제 데이터를 저장
-          if (key === 'schema' || key === 'accessibility' || key === 'technical') {
+          // schema, accessibility, technical, geo 카테고리는 특별 처리 - 실제 데이터를 저장
+          if (key === 'schema' || key === 'accessibility' || key === 'technical' || key === 'geo') {
             this.categories[key].data = data.data || {};
             console.log(`[DEBUG] ${key} 데이터:`, data.data);
           }
@@ -1130,6 +1130,11 @@
       // 기술적 SEO 카테고리도 특별 처리
       if (categoryKey === 'technical') {
         return this.renderTechnicalCategory(category);
+      }
+      
+      // AI 최적화(GEO) 카테고리 특별 처리
+      if (categoryKey === 'geo') {
+        return this.renderGEOCategory(category);
       }
 
       return `
@@ -3656,6 +3661,1095 @@
       link.href = baseUrl + 'ui.css';
       
       document.head.appendChild(link);
+    }
+
+    renderGEOCategory(category) {
+      const geoData = this.categories.geo?.data || {};
+      
+      // E-E-A-T 스코어 계산
+      const eeatScores = {
+        expertise: geoData.eeat?.expertise?.score || 0,
+        experience: geoData.eeat?.experience?.score || 0,
+        authoritativeness: geoData.eeat?.authoritativeness?.score || 0,
+        trustworthiness: geoData.eeat?.trustworthiness?.score || 0
+      };
+      const eeatAverage = Math.round((eeatScores.expertise + eeatScores.experience + 
+                                      eeatScores.authoritativeness + eeatScores.trustworthiness) / 4);
+      
+      // 대화형 최적화 점수
+      const conversationalScore = geoData.conversational?.voiceSearchOptimized ? 90 : 
+                                 geoData.conversational?.naturalLanguageQuestions > 2 ? 70 : 
+                                 geoData.conversational?.naturalLanguageQuestions > 0 ? 50 :
+                                 geoData.conversational?.conversationalTone > 0 ? 30 : 0;
+      
+      // 지식 그래프 점수
+      const kgScore = geoData.knowledgeGraph?.overallScore || 0;
+      
+      return `
+        <div class="category-detail geo-category">
+          <div class="category-header">
+            <div class="cat-title">
+              <span class="cat-icon-large">${category.icon}</span>
+              <div>
+                <h2>${category.name} <span class="item-count">${category.items.length}개 항목 체크</span></h2>
+              </div>
+            </div>
+            <div class="cat-score">
+              <div class="score-bar">
+                <div class="score-fill" style="width: ${category.score}%; background: ${this.getScoreColor(category.score)}"></div>
+              </div>
+              <span class="score-label">${category.score}/100</span>
+            </div>
+          </div>
+
+          <!-- AI 최적화 대시보드 -->
+          <div class="ai-optimization-dashboard">
+            
+            <!-- 핵심 지표 카드 -->
+            <div class="ai-metrics-grid">
+              <div class="ai-metric-card">
+                <div class="metric-header">
+                  <span class="metric-icon">🎯</span>
+                  <span class="metric-label">E-E-A-T 신호</span>
+                </div>
+                <div class="metric-score ${eeatAverage >= 70 ? 'good' : eeatAverage >= 50 ? 'warning' : 'error'}">
+                  ${eeatAverage}%
+                </div>
+                <div class="metric-details">
+                  <div class="eeat-breakdown">
+                    <div class="eeat-item">
+                      <span>전문성</span>
+                      <span class="eeat-score">${eeatScores.expertise}%</span>
+                    </div>
+                    <div class="eeat-item">
+                      <span>경험</span>
+                      <span class="eeat-score">${eeatScores.experience}%</span>
+                    </div>
+                    <div class="eeat-item">
+                      <span>권위도</span>
+                      <span class="eeat-score">${eeatScores.authoritativeness}%</span>
+                    </div>
+                    <div class="eeat-item">
+                      <span>신뢰도</span>
+                      <span class="eeat-score">${eeatScores.trustworthiness}%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="ai-metric-card">
+                <div class="metric-header">
+                  <span class="metric-icon">💬</span>
+                  <span class="metric-label">대화형 최적화</span>
+                </div>
+                <div class="metric-score ${conversationalScore >= 70 ? 'good' : conversationalScore >= 50 ? 'warning' : 'error'}">
+                  ${conversationalScore}%
+                </div>
+                <div class="metric-details">
+                  <div class="metric-stat">자연어 질문: ${geoData.conversational?.naturalLanguageQuestions || 0}개</div>
+                  <div class="metric-stat">대화체 사용: ${geoData.conversational?.conversationalTone || 0}회</div>
+                  <div class="metric-stat">음성 검색: ${geoData.conversational?.voiceSearchOptimized ? '✅' : '❌'}</div>
+                </div>
+              </div>
+
+              <div class="ai-metric-card">
+                <div class="metric-header">
+                  <span class="metric-icon">📚</span>
+                  <span class="metric-label">지식 그래프</span>
+                </div>
+                <div class="metric-score ${kgScore >= 70 ? 'good' : kgScore >= 50 ? 'warning' : 'error'}">
+                  ${kgScore}%
+                </div>
+                <div class="metric-details">
+                  <div class="metric-stat">구조화 데이터: ${geoData.knowledgeGraph?.structuredData?.score || 0}%</div>
+                  <div class="metric-stat">시맨틱 HTML: ${geoData.knowledgeGraph?.semanticHTML?.score || 0}%</div>
+                  <div class="metric-stat">콘텐츠 관계: ${geoData.knowledgeGraph?.contentRelationships?.score || 0}%</div>
+                </div>
+              </div>
+
+              <div class="ai-metric-card">
+                <div class="metric-header">
+                  <span class="metric-icon">🔍</span>
+                  <span class="metric-label">엔티티 & 비교</span>
+                </div>
+                <div class="metric-score">
+                  ${geoData.entities ? Object.values(geoData.entities).flat().length : 0}
+                </div>
+                <div class="metric-details">
+                  <div class="metric-stat">엔티티: ${geoData.entities ? Object.values(geoData.entities).flat().length : 0}개</div>
+                  <div class="metric-stat">비교 테이블: ${geoData.comparisonContent?.comparisonTables || 0}개</div>
+                  <div class="metric-stat">장단점: ${geoData.comparisonContent?.prosAndConsList ? '✅' : '❌'}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 상세 정보 섹션 -->
+            <div class="ai-details-section">
+              
+              <!-- 저자 및 신뢰도 정보 -->
+              ${geoData.eeat ? `
+              <div class="detail-card">
+                <h3 class="detail-title">📝 저자 및 신뢰도 정보</h3>
+                <div class="detail-content">
+                  <div class="info-row">
+                    <span class="info-label">저자 정보:</span>
+                    <span class="${geoData.eeat.expertise.authorInfo ? 'status-good' : 'status-bad'}">
+                      ${geoData.eeat.expertise.authorInfo ? '있음 ✅' : '없음 ❌'}
+                    </span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">업데이트 날짜:</span>
+                    <span class="${geoData.eeat.trustworthiness.lastUpdated ? 'status-good' : 'status-bad'}">
+                      ${geoData.eeat.trustworthiness.lastUpdated || '표시 안됨 ❌'}
+                    </span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">인용/출처:</span>
+                    <span>${geoData.eeat.authoritativeness.citations}개</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">HTTPS:</span>
+                    <span class="${geoData.eeat.trustworthiness.https ? 'status-good' : 'status-bad'}">
+                      ${geoData.eeat.trustworthiness.https ? '사용 ✅' : '미사용 ❌'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              ` : ''}
+
+              <!-- 구조화 데이터 현황 -->
+              <div class="detail-card">
+                <h3 class="detail-title">📊 구조화 데이터 현황</h3>
+                <div class="detail-content">
+                  <div class="info-row">
+                    <span class="info-label">FAQ 스키마:</span>
+                    <span class="${geoData.faqSchema?.exists ? 'status-good' : 'status-bad'}">
+                      ${geoData.faqSchema?.exists ? `${geoData.faqSchema.count}개 질문 ✅` : '없음 ❌'}
+                    </span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">HowTo 스키마:</span>
+                    <span class="${geoData.howToSchema?.exists ? 'status-good' : 'status-bad'}">
+                      ${geoData.howToSchema?.exists ? `${geoData.howToSchema.steps}단계 ✅` : '없음 ❌'}
+                    </span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">요약 섹션:</span>
+                    <span class="${geoData.summaries?.tldr || geoData.summaries?.keyTakeaways ? 'status-good' : 'status-bad'}">
+                      ${geoData.summaries?.tldr || geoData.summaries?.keyTakeaways ? '있음 ✅' : '없음 ❌'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 식별된 엔티티 -->
+              ${geoData.entities && Object.values(geoData.entities).flat().length > 0 ? `
+              <div class="detail-card">
+                <h3 class="detail-title">🏷️ 식별된 엔티티</h3>
+                <div class="detail-content">
+                  ${geoData.entities.organizations?.length > 0 ? `
+                    <div class="entity-group">
+                      <strong>조직:</strong> ${geoData.entities.organizations.join(', ')}
+                    </div>
+                  ` : ''}
+                  ${geoData.entities.people?.length > 0 ? `
+                    <div class="entity-group">
+                      <strong>인물:</strong> ${geoData.entities.people.join(', ')}
+                    </div>
+                  ` : ''}
+                  ${geoData.entities.concepts?.length > 0 ? `
+                    <div class="entity-group">
+                      <strong>개념:</strong> ${geoData.entities.concepts.join(', ')}
+                    </div>
+                  ` : ''}
+                </div>
+              </div>
+              ` : ''}
+            </div>
+
+            <!-- 체크 항목 목록 -->
+            <div class="check-items">
+              <h3 class="section-title">✅ 체크 항목</h3>
+              ${this.renderSortedGEOItems(category.items, geoData)}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    renderSortedGEOItems(items, geoData) {
+      // 항목들을 스키마 필요 여부에 따라 분류
+      const { schemaItems, nonSchemaItems } = this.categorizeGEOItems(items);
+      
+      // HTML 생성
+      let html = '';
+      
+      // 스키마 필요 항목들 (상단)
+      if (schemaItems.length > 0) {
+        html += `
+          <div class="check-group schema-required">
+            <h4 class="group-header">📋 구조화 데이터 (스키마) 관련</h4>
+            ${schemaItems.map(item => `
+              <div class="check-item ${item.status}">
+                <span class="check-icon">${
+                  item.status === 'success' ? '✓' : 
+                  item.status === 'warning' ? '⚠' : '✗'
+                }</span>
+                <div class="check-content">
+                  <div class="check-title">${item.title}</div>
+                  ${item.current ? `<div class="check-current">현재: ${item.current}</div>` : ''}
+                  ${item.suggestion ? `<div class="check-suggestion">💡 ${item.suggestion}</div>` : ''}
+                  ${this.renderItemCodeExample(item, geoData)}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+      
+      // 스키마가 필요하지 않은 항목들 (하단)
+      if (nonSchemaItems.length > 0) {
+        html += `
+          <div class="check-group content-optimization">
+            <h4 class="group-header">📝 콘텐츠 최적화 관련</h4>
+            ${nonSchemaItems.map(item => `
+              <div class="check-item ${item.status}">
+                <span class="check-icon">${
+                  item.status === 'success' ? '✓' : 
+                  item.status === 'warning' ? '⚠' : '✗'
+                }</span>
+                <div class="check-content">
+                  <div class="check-title">${item.title}</div>
+                  ${item.current ? `<div class="check-current">현재: ${item.current}</div>` : ''}
+                  ${item.suggestion ? `<div class="check-suggestion">💡 ${item.suggestion}</div>` : ''}
+                  ${this.renderItemCodeExample(item, geoData)}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+      
+      return html;
+    }
+
+    categorizeGEOItems(items) {
+      // 스키마가 필요한 항목들을 판별하는 키워드
+      const schemaKeywords = [
+        'FAQ 스키마',
+        'HowTo 스키마',
+        'Q&A 형식',
+        'Organization',
+        '조직',
+        'Person',
+        '저자 정보',
+        'Knowledge Graph',
+        '엔티티',
+        'Article',
+        'Review',
+        'Product',
+        'Breadcrumb',
+        '구조화',
+        '스키마',
+        'JSON-LD',
+        'Microdata',
+        'RDFa'
+      ];
+      
+      // 스키마가 필요하지 않은 항목들의 키워드
+      const nonSchemaKeywords = [
+        'HTTPS',
+        '비교',
+        '자연어',
+        '목록',
+        '테이블',
+        'TL;DR',
+        '요약',
+        '명확한 답변',
+        '인용',
+        '출처',
+        '콘텐츠',
+        '헤딩',
+        '단계',
+        'Step'
+      ];
+      
+      // 항목 분류 함수
+      const isSchemaRequired = (item) => {
+        const title = item.title || '';
+        
+        // 스키마 키워드를 포함하는지 확인
+        for (const keyword of schemaKeywords) {
+          if (title.includes(keyword)) {
+            return true;
+          }
+        }
+        
+        // 명시적으로 스키마가 필요 없는 항목인지 확인
+        for (const keyword of nonSchemaKeywords) {
+          if (title.includes(keyword)) {
+            return false;
+          }
+        }
+        
+        // 기본적으로 스키마가 필요하지 않은 것으로 분류
+        return false;
+      };
+      
+      // 항목들을 두 그룹으로 분리
+      const schemaItems = [];
+      const nonSchemaItems = [];
+      
+      items.forEach(item => {
+        if (isSchemaRequired(item)) {
+          schemaItems.push(item);
+        } else {
+          nonSchemaItems.push(item);
+        }
+      });
+      
+      // 각 그룹 내에서 상태별로 정렬 (success > warning > error)
+      const statusOrder = { 'success': 0, 'warning': 1, 'info': 2, 'error': 3 };
+      
+      schemaItems.sort((a, b) => {
+        const orderA = statusOrder[a.status] || 99;
+        const orderB = statusOrder[b.status] || 99;
+        return orderA - orderB;
+      });
+      
+      nonSchemaItems.sort((a, b) => {
+        const orderA = statusOrder[a.status] || 99;
+        const orderB = statusOrder[b.status] || 99;
+        return orderA - orderB;
+      });
+      
+      return { schemaItems, nonSchemaItems };
+    }
+
+
+    renderItemCodeExample(item, geoData) {
+      // Q&A 형식 관련 항목 (스크린샷에 보이는 항목)
+      if (item.title.includes('Q&A 형식')) {
+        if (item.status === 'success') {
+          // 실제 감지된 FAQ 스키마가 있다면 보여주기
+          const faqSchema = geoData?.structuredData?.schemas?.find(s => 
+            s['@type'] === 'FAQPage' || s['@type'] === 'QAPage'
+          );
+          
+          if (faqSchema) {
+            return `
+              <div class="code-example">
+                <div class="code-label">✅ 발견된 Q&A 스키마</div>
+                <pre><code class="language-json">${JSON.stringify(faqSchema, null, 2)}</code></pre>
+              </div>
+            `;
+          } else {
+            return `
+              <div class="code-example">
+                <div class="code-label">✅ Q&A 형식이 잘 구성되어 있습니다</div>
+                <pre><code class="language-html">&lt;!-- 현재 페이지의 Q&A 구조 --&gt;
+&lt;section class="faq"&gt;
+  &lt;h2&gt;자주 묻는 질문&lt;/h2&gt;
+  &lt;div class="question"&gt;
+    &lt;h3&gt;질문 내용?&lt;/h3&gt;
+    &lt;p&gt;답변 내용입니다.&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/section&gt;</code></pre>
+              </div>
+            `;
+          }
+        } else {
+          return `
+            <div class="code-example suggestion">
+              <div class="code-label">💡 추천: Q&A 스키마 추가하기</div>
+              <pre><code class="language-html">&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "QAPage",
+  "mainEntity": {
+    "@type": "Question",
+    "name": "질문 내용",
+    "text": "상세한 질문 설명",
+    "answerCount": 1,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "답변 내용",
+      "upvoteCount": 10
+    }
+  }
+}
+&lt;/script&gt;</code></pre>
+            </div>
+          `;
+        }
+      }
+      
+      // FAQ 스키마 관련 항목
+      if (item.title.includes('FAQ 스키마')) {
+        if (item.status === 'success') {
+          const faqSchema = geoData?.structuredData?.schemas?.find(s => 
+            s['@type'] === 'FAQPage'
+          );
+          
+          if (faqSchema) {
+            return `
+              <div class="code-example">
+                <div class="code-label">✅ 발견된 FAQ 스키마</div>
+                <pre><code class="language-json">${JSON.stringify(faqSchema, null, 2)}</code></pre>
+              </div>
+            `;
+          } else {
+            return `
+              <div class="code-example">
+                <div class="code-label">✅ 발견된 FAQ 스키마</div>
+                <pre><code class="language-json">{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "질문 내용",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "답변 내용"
+      }
+    }
+  ]
+}</code></pre>
+              </div>
+            `;
+          }
+        } else if (item.status === 'info' || item.status === 'warning') {
+          return `
+            <div class="code-example suggestion">
+              <div class="code-label">💡 추천: FAQ 스키마 추가하기</div>
+              <pre><code class="language-html">&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [{
+    "@type": "Question",
+    "name": "자주 묻는 질문",
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "명확한 답변"
+    }
+  }]
+}
+&lt;/script&gt;</code></pre>
+            </div>
+          `;
+        }
+      }
+      
+      // HowTo 스키마 관련 항목
+      if (item.title.includes('HowTo 스키마')) {
+        if (item.status === 'success') {
+          const howToSchema = geoData?.structuredData?.schemas?.find(s => 
+            s['@type'] === 'HowTo'
+          );
+          
+          if (howToSchema) {
+            return `
+              <div class="code-example">
+                <div class="code-label">✅ 발견된 HowTo 스키마</div>
+                <pre><code class="language-json">${JSON.stringify(howToSchema, null, 2)}</code></pre>
+              </div>
+            `;
+          } else {
+            return `
+              <div class="code-example">
+                <div class="code-label">✅ 발견된 HowTo 스키마</div>
+                <pre><code class="language-json">{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "방법 제목",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "단계 1",
+      "text": "설명"
+    }
+  ]
+}</code></pre>
+              </div>
+            `;
+          }
+        } else if (item.status === 'info' || item.status === 'warning') {
+          return `
+            <div class="code-example suggestion">
+              <div class="code-label">💡 추천: HowTo 스키마 추가하기</div>
+              <pre><code class="language-html">&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "~하는 방법",
+  "step": [{
+    "@type": "HowToStep",
+    "name": "준비하기",
+    "text": "필요한 도구를 준비합니다"
+  }]
+}
+&lt;/script&gt;</code></pre>
+            </div>
+          `;
+        }
+      }
+      
+      // 명확한 답변 관련 항목
+      if (item.title.includes('명확한 답변')) {
+        if (item.status !== 'success') {
+          return `
+            <div class="code-example suggestion">
+              <div class="code-label">💡 추천: 명확한 답변 구조</div>
+              <pre><code class="language-html">&lt;!-- 질문에 대한 명확한 답변 --&gt;
+&lt;div class="answer"&gt;
+  &lt;h3&gt;질문: SEO란 무엇인가요?&lt;/h3&gt;
+  &lt;p&gt;&lt;strong&gt;답변:&lt;/strong&gt; SEO(Search Engine Optimization)는 
+  웹사이트가 검색 엔진 결과에서 더 높은 순위를 얻도록 
+  최적화하는 과정입니다.&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;키워드 최적화&lt;/li&gt;
+    &lt;li&gt;콘텐츠 품질 개선&lt;/li&gt;
+    &lt;li&gt;기술적 최적화&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;</code></pre>
+            </div>
+          `;
+        }
+      }
+      
+      // HTTPS 관련 항목
+      if (item.title.includes('HTTPS')) {
+        if (item.status === 'error' || item.status === 'warning') {
+          return `
+            <div class="code-example suggestion">
+              <div class="code-label">💡 추천: HTTPS 리다이렉트 설정</div>
+              <pre><code class="language-apache"># .htaccess 파일
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+
+# 또는 nginx
+server {
+    listen 80;
+    server_name example.com;
+    return 301 https://$server_name$request_uri;
+}</code></pre>
+            </div>
+          `;
+        }
+      }
+      
+      // 인용/출처 관련 항목
+      if (item.title.includes('인용') || item.title.includes('출처')) {
+        if (item.status !== 'success') {
+          return `
+            <div class="code-example suggestion">
+              <div class="code-label">💡 추천: 인용 및 출처 표시</div>
+              <pre><code class="language-html">&lt;!-- 인용문과 출처 --&gt;
+&lt;blockquote cite="https://example.com/source"&gt;
+  &lt;p&gt;"인용된 내용"&lt;/p&gt;
+  &lt;footer&gt;
+    — &lt;cite&gt;&lt;a href="https://example.com/source"&gt;출처: 저자명&lt;/a&gt;&lt;/cite&gt;
+  &lt;/footer&gt;
+&lt;/blockquote&gt;
+
+&lt;!-- 스키마 마크업 --&gt;
+&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "Quotation",
+  "text": "인용된 내용",
+  "creator": {
+    "@type": "Person",
+    "name": "저자명"
+  }
+}
+&lt;/script&gt;</code></pre>
+            </div>
+          `;
+        }
+      }
+      
+      // 저자 정보 관련 항목
+      if (item.title.includes('저자 정보')) {
+        if (item.status === 'error' || item.status === 'warning') {
+          return `
+            <div class="code-example suggestion">
+              <div class="code-label">💡 추천: Person 스키마 추가하기</div>
+              <pre><code class="language-html">&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "저자 이름",
+  "jobTitle": "직책",
+  "worksFor": {
+    "@type": "Organization",
+    "name": "회사명"
+  }
+}
+&lt;/script&gt;</code></pre>
+            </div>
+          `;
+        }
+      }
+      
+      // 비교 콘텐츠 관련 항목
+      if (item.title.includes('비교')) {
+        const hasComparison = item.status === 'success';
+        if (hasComparison) {
+          return `
+            <div class="code-example">
+              <div class="code-label">✅ 비교 콘텐츠가 잘 구조화되어 있습니다</div>
+              <pre><code class="language-html">&lt;!-- 현재 페이지의 비교 구조 --&gt;
+&lt;div class="comparison"&gt;
+  &lt;h2&gt;제품 A vs 제품 B&lt;/h2&gt;
+  &lt;table&gt;
+    &lt;tr&gt;&lt;th&gt;기능&lt;/th&gt;&lt;th&gt;제품 A&lt;/th&gt;&lt;th&gt;제품 B&lt;/th&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;가격&lt;/td&gt;&lt;td&gt;$10&lt;/td&gt;&lt;td&gt;$20&lt;/td&gt;&lt;/tr&gt;
+  &lt;/table&gt;
+&lt;/div&gt;</code></pre>
+            </div>
+          `;
+        } else {
+          return `
+            <div class="code-example suggestion">
+              <div class="code-label">💡 추천: 비교 테이블 구조</div>
+              <pre><code class="language-html">&lt;table class="comparison-table"&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;요소&lt;/th&gt;
+      &lt;th&gt;옵션 A&lt;/th&gt;
+      &lt;th&gt;옵션 B&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;가격&lt;/td&gt;
+      &lt;td&gt;$10&lt;/td&gt;
+      &lt;td&gt;$20&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+            </div>
+          `;
+        }
+      }
+      
+      // 자연어 헤딩 관련 항목
+      if (item.title.includes('자연어')) {
+        if (item.status !== 'success') {
+          return `
+            <div class="code-example suggestion">
+              <div class="code-label">💡 추천: 자연어 헤딩 예시</div>
+              <pre><code class="language-html">&lt;h2&gt;어떻게 SEO를 개선할 수 있나요?&lt;/h2&gt;
+&lt;h2&gt;왜 AI SEO가 중요한가요?&lt;/h2&gt;
+&lt;h2&gt;무엇이 E-E-A-T인가요?&lt;/h2&gt;
+&lt;h2&gt;언제 스키마를 사용해야 하나요?&lt;/h2&gt;</code></pre>
+            </div>
+          `;
+        }
+      }
+      
+      // 목록과 테이블 관련 항목
+      if (item.title.includes('목록') || item.title.includes('테이블')) {
+        if (item.status !== 'success') {
+          return `
+            <div class="code-example suggestion">
+              <div class="code-label">💡 추천: 구조화된 목록과 테이블</div>
+              <pre><code class="language-html">&lt;!-- 순서 있는 목록 --&gt;
+&lt;ol&gt;
+  &lt;li&gt;첫 번째 단계&lt;/li&gt;
+  &lt;li&gt;두 번째 단계&lt;/li&gt;
+  &lt;li&gt;세 번째 단계&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;!-- 정보 테이블 --&gt;
+&lt;table&gt;
+  &lt;caption&gt;SEO 체크리스트&lt;/caption&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;&lt;th&gt;항목&lt;/th&gt;&lt;th&gt;상태&lt;/th&gt;&lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;&lt;td&gt;메타 태그&lt;/td&gt;&lt;td&gt;✓&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+            </div>
+          `;
+        }
+      }
+      
+      // Organization 스키마 관련
+      if (item.title.includes('Organization') || item.title.includes('조직')) {
+        if (item.status !== 'success') {
+          return `
+            <div class="code-example suggestion">
+              <div class="code-label">💡 추천: Organization 스키마</div>
+              <pre><code class="language-html">&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "회사명",
+  "url": "https://example.com",
+  "logo": "https://example.com/logo.png",
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "telephone": "+82-2-1234-5678",
+    "contactType": "customer service"
+  },
+  "sameAs": [
+    "https://facebook.com/company",
+    "https://twitter.com/company"
+  ]
+}
+&lt;/script&gt;</code></pre>
+            </div>
+          `;
+        }
+      }
+      
+      // Knowledge Graph 관련
+      if (item.title.includes('Knowledge Graph') || item.title.includes('엔티티')) {
+        if (item.status !== 'success') {
+          return `
+            <div class="code-example suggestion">
+              <div class="code-label">💡 추천: Knowledge Graph 연결</div>
+              <pre><code class="language-html">&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "Thing",
+  "name": "브랜드/제품명",
+  "sameAs": [
+    "https://en.wikipedia.org/wiki/Your_Brand",
+    "https://www.wikidata.org/wiki/Q12345",
+    "https://google.com/search?kgmid=/m/12345"
+  ],
+  "description": "브랜드/제품 설명"
+}
+&lt;/script&gt;</code></pre>
+            </div>
+          `;
+        }
+      }
+      
+      // TL;DR 또는 요약 섹션
+      if (item.title.includes('TL;DR') || item.title.includes('요약')) {
+        if (item.status !== 'success') {
+          return `
+            <div class="code-example suggestion">
+              <div class="code-label">💡 추천: TL;DR 섹션 추가</div>
+              <pre><code class="language-html">&lt;section class="tldr" id="tldr"&gt;
+  &lt;h2&gt;TL;DR (요약)&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;핵심 포인트 1&lt;/li&gt;
+    &lt;li&gt;핵심 포인트 2&lt;/li&gt;
+    &lt;li&gt;핵심 포인트 3&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/section&gt;</code></pre>
+            </div>
+          `;
+        }
+      }
+      
+      // 업데이트 날짜 관련 항목
+      if (item.title.includes('업데이트 날짜') || item.title.includes('날짜가 표시')) {
+        if (item.status !== 'success') {
+          return `
+            <div class="code-example suggestion">
+              <div class="code-label">💡 추천: 업데이트 날짜 표시</div>
+              <pre><code class="language-html">&lt;!-- 메타 태그로 수정 날짜 표시 --&gt;
+&lt;meta property="article:modified_time" content="2025-01-22T12:00:00+09:00"&gt;
+&lt;meta property="article:published_time" content="2025-01-20T10:00:00+09:00"&gt;
+&lt;meta name="last-modified" content="2025-01-22"&gt;
+
+&lt;!-- 페이지 내 날짜 표시 --&gt;
+&lt;div class="article-meta"&gt;
+  &lt;time datetime="2025-01-20"&gt;작성일: 2025년 1월 20일&lt;/time&gt;
+  &lt;time datetime="2025-01-22"&gt;수정일: 2025년 1월 22일&lt;/time&gt;
+&lt;/div&gt;
+
+&lt;!-- 스키마 마크업 --&gt;
+&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "datePublished": "2025-01-20",
+  "dateModified": "2025-01-22"
+}
+&lt;/script&gt;</code></pre>
+            </div>
+          `;
+        }
+      }
+      
+      // 내부 링크 관련 항목
+      if (item.title.includes('내부 링크') || item.title.includes('관련 콘텐츠')) {
+        if (item.status !== 'success') {
+          return `
+            <div class="code-example suggestion">
+              <div class="code-label">💡 추천: 내부 링크 및 관련 콘텐츠</div>
+              <pre><code class="language-html">&lt;!-- 관련 콘텐츠 섹션 --&gt;
+&lt;section class="related-content"&gt;
+  &lt;h2&gt;관련 글&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href="/seo-basics"&gt;SEO 기초 가이드&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="/ai-seo-trends"&gt;AI SEO 트렌드 2025&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="/schema-guide"&gt;스키마 마크업 완벽 가이드&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/section&gt;
+
+&lt;!-- 콘텐츠 내 자연스러운 내부 링크 --&gt;
+&lt;p&gt;
+  이 방법에 대한 자세한 내용은 
+  &lt;a href="/detailed-guide"&gt;상세 가이드&lt;/a&gt;를 
+  참조하세요.
+&lt;/p&gt;</code></pre>
+            </div>
+          `;
+        }
+      }
+      
+      // 외부 권위 링크 관련 항목
+      if (item.title.includes('외부 링크') || item.title.includes('권위')) {
+        if (item.status !== 'success') {
+          return `
+            <div class="code-example suggestion">
+              <div class="code-label">💡 추천: 외부 권위 링크</div>
+              <pre><code class="language-html">&lt;!-- 권위 있는 출처 인용 --&gt;
+&lt;p&gt;
+  Google의 
+  &lt;a href="https://developers.google.com/search/docs" 
+     rel="noopener noreferrer" target="_blank"&gt;
+    공식 검색 문서
+  &lt;/a&gt;에 따르면...
+&lt;/p&gt;
+
+&lt;!-- 참고 자료 섹션 --&gt;
+&lt;section class="references"&gt;
+  &lt;h2&gt;참고 자료&lt;/h2&gt;
+  &lt;ol&gt;
+    &lt;li&gt;
+      &lt;cite&gt;
+        &lt;a href="https://www.w3.org/standards/"&gt;
+          W3C Web Standards
+        &lt;/a&gt;
+      &lt;/cite&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+      &lt;cite&gt;
+        &lt;a href="https://schema.org/"&gt;
+          Schema.org Documentation
+        &lt;/a&gt;
+      &lt;/cite&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/section&gt;</code></pre>
+            </div>
+          `;
+        }
+      }
+      
+      // 콘텐츠 깊이 관련 항목
+      if (item.title.includes('콘텐츠 깊이') || item.title.includes('상세한')) {
+        if (item.status !== 'success') {
+          return `
+            <div class="code-example suggestion">
+              <div class="code-label">💡 추천: 깊이 있는 콘텐츠 구조</div>
+              <pre><code class="language-html">&lt;article&gt;
+  &lt;h1&gt;주제에 대한 완벽한 가이드&lt;/h1&gt;
+  
+  &lt;!-- 목차 --&gt;
+  &lt;nav class="table-of-contents"&gt;
+    &lt;h2&gt;목차&lt;/h2&gt;
+    &lt;ol&gt;
+      &lt;li&gt;&lt;a href="#intro"&gt;소개&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#basics"&gt;기초 개념&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#advanced"&gt;고급 기법&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href="#examples"&gt;실제 예시&lt;/a&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/nav&gt;
+  
+  &lt;!-- 상세한 섹션들 --&gt;
+  &lt;section id="basics"&gt;
+    &lt;h2&gt;기초 개념&lt;/h2&gt;
+    &lt;p&gt;[2000+ 단어의 상세한 설명]&lt;/p&gt;
+    
+    &lt;h3&gt;하위 주제 1&lt;/h3&gt;
+    &lt;p&gt;[구체적인 설명과 예시]&lt;/p&gt;
+    
+    &lt;h3&gt;하위 주제 2&lt;/h3&gt;
+    &lt;p&gt;[구체적인 설명과 예시]&lt;/p&gt;
+  &lt;/section&gt;
+&lt;/article&gt;</code></pre>
+            </div>
+          `;
+        }
+      }
+      
+      // 실용적 예시 관련 항목
+      if (item.title.includes('실용적') || item.title.includes('예시')) {
+        if (item.status !== 'success') {
+          return `
+            <div class="code-example suggestion">
+              <div class="code-label">💡 추천: 실용적 예시 제공</div>
+              <pre><code class="language-html">&lt;!-- 실제 사례 --&gt;
+&lt;div class="example-case"&gt;
+  &lt;h3&gt;실제 사례: 전자상거래 사이트 SEO&lt;/h3&gt;
+  &lt;div class="before-after"&gt;
+    &lt;div class="before"&gt;
+      &lt;h4&gt;개선 전&lt;/h4&gt;
+      &lt;pre&gt;&lt;code&gt;
+&lt;title&gt;홈&lt;/title&gt;
+&lt;h1&gt;환영합니다&lt;/h1&gt;
+      &lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+    &lt;div class="after"&gt;
+      &lt;h4&gt;개선 후&lt;/h4&gt;
+      &lt;pre&gt;&lt;code&gt;
+&lt;title&gt;브랜드명 - 카테고리 | 무료배송&lt;/title&gt;
+&lt;h1&gt;2025년 최고의 상품 컬렉션&lt;/h1&gt;
+      &lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;p class="result"&gt;
+    결과: 검색 트래픽 150% 증가, 전환율 45% 향상
+  &lt;/p&gt;
+&lt;/div&gt;</code></pre>
+            </div>
+          `;
+        }
+      }
+      
+      // 사용자 생성 콘텐츠 관련
+      if (item.title.includes('사용자 생성') || item.title.includes('리뷰')) {
+        if (item.status !== 'success') {
+          return `
+            <div class="code-example suggestion">
+              <div class="code-label">💡 추천: 사용자 생성 콘텐츠 및 리뷰</div>
+              <pre><code class="language-html">&lt;!-- 리뷰 섹션 --&gt;
+&lt;section class="reviews" itemscope itemtype="https://schema.org/Review"&gt;
+  &lt;h2&gt;고객 리뷰&lt;/h2&gt;
+  &lt;div class="review" itemprop="review"&gt;
+    &lt;div class="reviewer" itemprop="author"&gt;김철수&lt;/div&gt;
+    &lt;div class="rating" itemprop="reviewRating" itemscope 
+         itemtype="https://schema.org/Rating"&gt;
+      &lt;span itemprop="ratingValue"&gt;5&lt;/span&gt;/
+      &lt;span itemprop="bestRating"&gt;5&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;p itemprop="reviewBody"&gt;
+      정말 유용한 정보였습니다. 실제로 적용해보니 효과가 있었어요!
+    &lt;/p&gt;
+    &lt;time itemprop="datePublished" datetime="2025-01-20"&gt;
+      2025년 1월 20일
+    &lt;/time&gt;
+  &lt;/div&gt;
+&lt;/section&gt;
+
+&lt;!-- 리뷰 스키마 --&gt;
+&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "AggregateRating",
+  "ratingValue": "4.8",
+  "reviewCount": "89",
+  "bestRating": "5"
+}
+&lt;/script&gt;</code></pre>
+            </div>
+          `;
+        }
+      }
+      
+      // 멀티미디어 관련
+      if (item.title.includes('멀티미디어') || item.title.includes('이미지') || item.title.includes('비디오')) {
+        if (item.status !== 'success') {
+          return `
+            <div class="code-example suggestion">
+              <div class="code-label">💡 추천: 멀티미디어 최적화</div>
+              <pre><code class="language-html">&lt;!-- 이미지 최적화 --&gt;
+&lt;figure&gt;
+  &lt;img src="seo-guide.webp" 
+       alt="2025 SEO 완벽 가이드 인포그래픽"
+       width="800" height="600"
+       loading="lazy"
+       srcset="seo-guide-400.webp 400w,
+               seo-guide-800.webp 800w,
+               seo-guide-1200.webp 1200w"
+       sizes="(max-width: 600px) 100vw, 800px"&gt;
+  &lt;figcaption&gt;SEO 최적화 프로세스 다이어그램&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;!-- 비디오 임베드 --&gt;
+&lt;div class="video-container"&gt;
+  &lt;iframe src="https://www.youtube.com/embed/VIDEO_ID"
+          title="SEO 최적화 튜토리얼"
+          loading="lazy"
+          allow="accelerometer; autoplay; encrypted-media"&gt;
+  &lt;/iframe&gt;
+&lt;/div&gt;
+
+&lt;!-- 비디오 스키마 --&gt;
+&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  "name": "SEO 최적화 튜토리얼",
+  "description": "단계별 SEO 최적화 방법",
+  "thumbnailUrl": "thumbnail.jpg",
+  "uploadDate": "2025-01-20"
+}
+&lt;/script&gt;</code></pre>
+            </div>
+          `;
+        }
+      }
+      
+      // 대화형 요소 관련
+      if (item.title.includes('대화형') || item.title.includes('인터랙티브')) {
+        if (item.status !== 'success') {
+          return `
+            <div class="code-example suggestion">
+              <div class="code-label">💡 추천: 대화형 요소 추가</div>
+              <pre><code class="language-html">&lt;!-- SEO 체크리스트 도구 --&gt;
+&lt;div class="interactive-tool"&gt;
+  &lt;h2&gt;SEO 체크리스트&lt;/h2&gt;
+  &lt;form id="seo-checklist"&gt;
+    &lt;label&gt;
+      &lt;input type="checkbox" name="title-tag"&gt;
+      타이틀 태그 최적화 (60자 이내)
+    &lt;/label&gt;
+    &lt;label&gt;
+      &lt;input type="checkbox" name="meta-desc"&gt;
+      메타 설명 작성 (160자 이내)
+    &lt;/label&gt;
+    &lt;label&gt;
+      &lt;input type="checkbox" name="h1-tag"&gt;
+      H1 태그 설정
+    &lt;/label&gt;
+    &lt;div class="progress"&gt;
+      &lt;span id="progress-text"&gt;0% 완료&lt;/span&gt;
+      &lt;div class="progress-bar"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/form&gt;
+&lt;/div&gt;
+
+&lt;!-- 계산기/시뮬레이터 --&gt;
+&lt;div class="calculator"&gt;
+  &lt;h2&gt;SEO 점수 계산기&lt;/h2&gt;
+  &lt;input type="number" id="content-length" 
+         placeholder="콘텐츠 길이 (단어)"&gt;
+  &lt;input type="number" id="keywords" 
+         placeholder="키워드 수"&gt;
+  &lt;button onclick="calculateScore()"&gt;점수 계산&lt;/button&gt;
+  &lt;div id="result"&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+            </div>
+          `;
+        }
+      }
+      
+      return '';
     }
 
     attachEventListeners() {
