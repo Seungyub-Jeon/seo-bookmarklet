@@ -1,106 +1,124 @@
-# 🔍 Zupp SEO Bookmarklet
+# ZuppSEO 북마클릿
 
-웹페이지의 SEO 요소를 실시간으로 분석하는 북마클릿 도구입니다.
+웹페이지의 SEO 요소를 실시간으로 분석하는 브라우저 북마클릿 도구입니다.
 
-## ✨ 주요 기능
+## 🚀 주요 기능
 
-### 📊 13가지 SEO 분석 카테고리
-1. **메타 정보** - 타이틀, 설명, 키워드 분석
-2. **헤딩 구조** - H1-H6 계층 구조 검증
-3. **이미지 최적화** - Alt 텍스트, 크기, 지연 로딩
-4. **링크 분석** - 내부/외부 링크, 앵커 텍스트
-5. **소셜 미디어** - Open Graph, Twitter Cards
-6. **콘텐츠 품질** - 단어 수, 키워드 밀도, 가독성
-7. **시맨틱 HTML** - HTML5 시맨틱 태그 사용
-8. **접근성** - ARIA, 색상 대비, 폼 접근성
-9. **구조화된 데이터** - JSON-LD, Microdata, RDFa
-10. **기술적 SEO** - Core Web Vitals, 크롤링 최적화
-11. **성능** - 페이지 로드 시간, 리소스 최적화
-12. **GEO 최적화** - 지역 SEO, 언어 설정
-13. **모바일 UX** - 반응형 디자인, 터치 타겟
+- **메타정보 분석**: Title, Description, Keywords, Robots 등
+- **헤딩 구조**: H1-H6 계층 구조 검증
+- **이미지 최적화**: Alt 텍스트, 파일 크기, 포맷 확인
+- **링크 분석**: 내부/외부 링크, Nofollow 링크 검사
+- **시맨틱 HTML**: HTML5 시맨틱 요소 사용 확인
+- **접근성**: ARIA 속성, 키보드 접근성 검증
+- **구조화된 데이터**: Schema.org, JSON-LD 검증
+- **기술적 SEO**: 성능, 보안, 모바일 최적화
+- **AI 검색 최적화 (GEO)**: AI 검색엔진 최적화 요소 분석
 
-## 🚀 설치 방법
+## 📦 파일 구조
+
+```
+├── zupp.js                 # 메인 엔진
+├── zupp-bookmarklet.js     # 북마클릿 로더
+├── ui.js                   # UI 컴포넌트
+├── ui.css                  # UI 스타일
+├── analyzers.js            # Sprint 1: 기본 SEO 분석
+├── analyzers-extended.js   # Sprint 2: 확장 SEO 분석
+├── analyzers-technical.js  # Sprint 3: 기술적 SEO 분석
+├── analyzers-geo.js        # Sprint 4: AI 검색 최적화
+├── index.html              # 데모 페이지
+└── update-bookmarklet.html # 북마클릿 설치 가이드
+```
+
+## 🔧 설치 방법
 
 ### 1. 로컬 서버 실행
 ```bash
-# 프로젝트 디렉토리로 이동
-cd seo-bookmarklet
-
-# Python 서버 실행 (포트 8000)
+# Python 3
 python3 -m http.server 8000
+
+# Node.js
+npx http-server -p 8000
+
+# PHP
+php -S localhost:8000
 ```
 
 ### 2. 북마클릿 설치
-1. 브라우저에서 `http://localhost:8000` 접속
-2. 북마클릿 링크를 북마크 바로 드래그
-3. 또는 북마크 관리자에서 직접 추가
+1. 브라우저에서 `http://localhost:8000/update-bookmarklet.html` 열기
+2. "ZuppSEO v2.0" 버튼을 북마크바로 드래그
+3. 또는 우클릭 → "링크를 북마크에 추가"
 
 ## 💻 사용 방법
 
-1. 분석하려는 웹사이트 방문
-2. 북마크 바에서 "Zupp SEO" 클릭
+1. 분석하려는 웹페이지 방문
+2. 북마크바에서 "ZuppSEO" 클릭
 3. 우측에 나타나는 분석 패널 확인
 4. 각 탭을 클릭하여 상세 분석 결과 확인
 
-## 📁 프로젝트 구조
+## 🎯 분석 항목
 
-```
-seo-bookmarklet/
-├── index.html                  # 북마클릿 설치 페이지
-├── zupp-bookmarklet.js        # 북마클릿 로더
-├── zupp.js                    # 메인 엔진 및 기본 분석기
-├── analyzers.js               # Sprint 1 분석기 (메타, 헤딩, 이미지, 링크, 소셜)
-├── analyzers-extended.js      # Sprint 2 분석기 (콘텐츠, 시맨틱, 접근성, 스키마)
-├── analyzers-technical.js     # Sprint 3 분석기 (기술적 SEO, 성능)
-├── analyzers-geo-mobile.js    # Sprint 4 분석기 (GEO, 모바일)
-├── ui.js                      # UI 컴포넌트 및 렌더링
-├── ui.css                     # 스타일시트
-└── test-pages/                # 테스트 페이지 모음
-```
+### 메타정보
+- Title 태그 (길이, 키워드)
+- Meta Description (길이, 키워드)
+- Meta Keywords
+- Robots 지시자
+- Canonical URL
+- 언어 설정
 
-## 🎯 주요 특징
+### 구조화된 데이터
+- JSON-LD
+- Microdata
+- RDFa
+- Open Graph
+- Twitter Cards
 
-- **실시간 분석**: 페이지 로드 후 즉시 분석
-- **시각적 피드백**: 색상 코드로 문제 심각도 표시
-  - 🟢 통과 (Good)
-  - 🟡 경고 (Warning)
-  - 🔴 심각 (Critical)
-  - ℹ️ 정보 (Info)
-- **상세한 권장사항**: 각 문제에 대한 해결 방법 제시
-- **반응형 UI**: 모바일에서도 사용 가능
-- **Shadow DOM 격리**: 웹사이트 스타일과 충돌 방지
+### AI 검색 최적화 (GEO)
+- FAQ 스키마
+- HowTo 스키마
+- Q&A 패턴
+- 정보 계층 구조
+- 명확한 답변 패턴
 
-## 🔧 개발 환경
+## 📊 점수 체계
 
-- **순수 JavaScript**: 외부 라이브러리 의존성 없음
-- **ES6+**: 최신 JavaScript 문법 사용
-- **모듈형 구조**: 기능별로 분리된 분석기
-- **크로스 브라우저**: Chrome, Firefox, Safari, Edge 지원
+- 🟢 **통과**: SEO 최적화 완료
+- 🟡 **경고**: 개선 권장
+- 🔴 **오류**: 즉시 수정 필요
+- ℹ️ **정보**: 추가 최적화 기회
 
-## 📈 Core Web Vitals
+## 🛠️ 개발
 
-기술적 SEO 탭에서 다음 지표를 측정합니다:
-- **LCP** (Largest Contentful Paint): < 2.5초 권장
-- **FCP** (First Contentful Paint): < 1.8초 권장
-- **CLS** (Cumulative Layout Shift): < 0.1 권장
-- **FID** (First Input Delay): < 100ms 권장
-- **TTFB** (Time to First Byte): < 600ms 권장
+### 요구사항
+- 모던 웹 브라우저 (Chrome, Firefox, Safari, Edge)
+- 로컬 웹 서버
+- JavaScript ES6+ 지원
 
-## 🐛 디버깅
+### 아키텍처
+- 순수 JavaScript (의존성 없음)
+- 모듈식 구조 (분석기별 분리)
+- 비침습적 실행 (페이지 수정 없음)
 
-콘솔에서 디버그 모드 활성화:
-```javascript
-window.ZuppSEO.debug = true;
-```
+## 📝 버전 히스토리
 
-## 📝 라이선스
+### v2.0 (2024-08-22)
+- 성능 탭 제거
+- 모바일 탭 제거
+- GEO 분석기 최적화
+- 코드 구조 개선
 
-MIT License
+### v1.0 (2024-08-21)
+- 초기 릴리즈
+- 4개 Sprint 분석기 완성
+- 9개 분석 카테고리
 
-## 🤝 기여
+## 📄 라이선스
 
-버그 리포트 및 기능 제안은 이슈로 등록해주세요.
+Private Project - All Rights Reserved
+
+## 👨‍💻 개발자
+
+SY MacStudio
 
 ---
 
-Made with ❤️ for SEO professionals
+*ZuppSEO - 한 번의 클릭으로 완벽한 SEO 분석*

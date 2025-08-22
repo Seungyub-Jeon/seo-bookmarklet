@@ -22,9 +22,7 @@
         accessibility: { name: '접근성', icon: '♿', items: [] },
         schema: { name: '구조화데이터', icon: '📊', items: [] },
         technical: { name: '기술적SEO', icon: '⚙️', items: [] },
-        performance: { name: '성능', icon: '⚡', items: [] },
-        geo: { name: 'AI최적화', icon: '🤖', items: [] },
-        mobile: { name: '모바일', icon: '📱', items: [] }
+        geo: { name: 'AI최적화', icon: '🤖', items: [] }
       };
     }
 

@@ -24,7 +24,7 @@ javascript:(function(){
     'analyzers.js',      // 2. Sprint 1 분석기
     'analyzers-extended.js', // 3. Sprint 2 분석기
     'analyzers-technical.js', // 4. Sprint 3 분석기
-    'analyzers-geo-mobile.js', // 5. Sprint 4 분석기
+    'analyzers-geo.js',  // 5. Sprint 4 분석기 (GEO만)
     'ui.js'              // 6. UI (마지막)
   ];
   
