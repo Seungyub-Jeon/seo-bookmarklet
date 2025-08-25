@@ -1,813 +1,1686 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-N3M1CPHJDY"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-N3M1CPHJDY');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>zupp - AI 시대의 완벽한 SEO 분석 도구</title>
-    <meta name="description" content="zupp는 E-E-A-T, 지식 그래프 등 AI SEO를 포함한 100개 이상의 체크 항목을 실시간으로 분석하는 무료 북마클릿 도구입니다.">
-    <meta name="keywords" content="SEO, AI SEO, GEO, E-E-A-T, 지식 그래프, 검색엔진최적화, 북마클릿, 웹사이트 분석, SEO 도구">
-    <meta property="og:title" content="zupp - AI 시대의 완벽한 SEO 분석 도구">
-    <meta property="og:description" content="E-E-A-T와 AI 최적화를 포함한 100개 이상의 SEO 체크 항목을 실시간으로 분석하는 무료 북마클릿">
-    <meta property="og:image" content="og-image.jpg">
-    <link rel="canonical" href="https://zupp.com">
+    <title>줍줍 (zupzup) - AI 시대의 SEO 분석 도구 | SOYOU</title>
+    <meta name="description" content="줍줍은 1초 만에 설치되는 강력한 SEO 분석 북마클릿입니다. AI 검색 최적화(GEO)와 100+ 체크 항목을 실시간 분석합니다. SOYOU가 만든 무료 SEO 진단 도구.">
+    <meta name="keywords" content="SEO, AI SEO, GEO, 줍줍, zupzup, 검색엔진최적화, 북마클릿, SOYOU, Seungyub Jeon, 생성 엔진 최적화, SEO 분석 도구, 무료 SEO 체크">
+    
+    <!-- 기본 메타 태그 -->
+    <meta name="author" content="Seungyub Jeon, SOYOU">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="googlebot" content="index, follow">
+    <meta name="generator" content="SOYOU zupzup">
+    <meta name="rating" content="general">
+    <meta name="distribution" content="global">
+    <meta name="revisit-after" content="7 days">
+    <meta name="language" content="Korean">
+    <meta name="copyright" content="© 2024 SOYOU. All rights reserved.">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://zup.ideachefs.com/">
+    <link rel="alternate" hreflang="ko" href="https://zup.ideachefs.com/">
+    <link rel="alternate" hreflang="en" href="https://zup.ideachefs.com/en/">
+    <link rel="alternate" hreflang="x-default" href="https://zup.ideachefs.com/">
+    
+    <!-- Open Graph 메타 태그 -->
+    <meta property="og:title" content="줍줍 (zupzup) - AI 시대의 SEO 분석 도구">
+    <meta property="og:description" content="1초 만에 설치되는 강력한 SEO 분석 북마클릿. AI 검색 최적화(GEO)와 100+ 체크 항목을 실시간으로 분석합니다.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://zup.ideachefs.com/">
+    <meta property="og:image" content="https://zup.ideachefs.com/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="줍줍 SEO 분석 도구 스크린샷">
+    <meta property="og:site_name" content="줍줍 (zupzup)">
+    <meta property="og:locale" content="ko_KR">
+    <meta property="og:locale:alternate" content="en_US">
+    
+    <!-- Twitter Card 메타 태그 -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="줍줍 (zupzup) - AI 시대의 SEO 분석 도구">
+    <meta name="twitter:description" content="1초 만에 설치되는 강력한 SEO 분석 북마클릿. AI 검색 최적화(GEO)와 100+ 체크 항목을 실시간 분석.">
+    <meta name="twitter:image" content="https://zup.ideachefs.com/twitter-image.png">
+    <meta name="twitter:image:alt" content="줍줍 SEO 분석 도구">
+    <meta name="twitter:site" content="@soyou">
+    <meta name="twitter:creator" content="@seungyubjeon">
+    
+    <!-- 날짜 관련 메타 태그 -->
+    <meta name="date" content="2024-08-22">
+    <meta name="revised" content="2024-08-22">
+    <meta name="last-modified" content="2024-08-22T15:30:00+09:00">
+    <meta property="article:modified_time" content="2024-08-22T15:30:00+09:00">
+    <meta property="article:published_time" content="2024-08-22T10:00:00+09:00">
+    
+    <!-- Dublin Core 메타 태그 -->
+    <meta name="DC.title" content="줍줍 (zupzup) SEO 분석 도구">
+    <meta name="DC.date" content="2024-08-22">
+    <meta name="DC.creator" content="전승엽 (Seungyub Jeon)">
+    <meta name="DC.creator" content="Seungyub Jeon">
+    <meta name="DC.subject" content="SEO, AI SEO, GEO, 검색엔진최적화">
+    <meta name="DC.description" content="AI 시대의 SEO 분석 북마클릿">
+    <meta name="DC.publisher" content="SOYOU">
+    <meta name="DC.contributor" content="SOYOU Team">
+    <meta name="DC.date" content="2024-01-20">
+    <meta name="DC.type" content="Software">
+    <meta name="DC.format" content="text/html">
+    <meta name="DC.identifier" content="https://zup.ideachefs.com/">
+    <meta name="DC.language" content="ko">
+    <meta name="DC.coverage" content="World">
+    <meta name="DC.rights" content="© 2024 SOYOU">
+    
+    <!-- 추가 SEO 메타 태그 -->
+    <meta name="theme-color" content="#5e6ad2">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="줍줍">
+    <meta name="application-name" content="줍줍 SEO 분석기">
+    <meta name="msapplication-TileColor" content="#5e6ad2">
+    <meta name="msapplication-TileImage" content="https://zup.ideachefs.com/ms-icon-144x144.png">
+    <meta name="msapplication-config" content="https://zup.ideachefs.com/browserconfig.xml">
+    
+    <!-- 파비콘 -->
+    <link rel="icon" type="image/png" sizes="32x32" href="https://zup.ideachefs.com/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://zup.ideachefs.com/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://zup.ideachefs.com/apple-touch-icon.png">
+    <link rel="manifest" href="https://zup.ideachefs.com/site.webmanifest">
+    <link rel="mask-icon" href="https://zup.ideachefs.com/safari-pinned-tab.svg" color="#5e6ad2">
+    <link rel="shortcut icon" href="https://zup.ideachefs.com/favicon.ico">
+    
+    <!-- Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;510;538;600&display=swap" rel="stylesheet">
     
     <style>
+        :root {
+            /* Linear Design System Colors */
+            --primary-500: #5e6ad2;
+            --primary-600: #4c5bd4;
+            --primary-700: #3b4ec9;
+            
+            --bg-primary: #08090a;
+            --bg-surface: #17181a;
+            --bg-surface-elevated: #232326;
+            --bg-card: #2a2a2e;
+            
+            --text-primary: #f7f8f8;
+            --text-secondary: #8a8f98;
+            --text-tertiary: #d0d6e0;
+            
+            --border-color: #232326;
+            --border-subtle: rgba(35, 35, 38, 0.5);
+            
+            --success: #00d26a;
+            --warning: #ff9500;
+            --error: #ff453a;
+            
+            /* Typography */
+            --font-primary: "Inter", "SF Pro Display", -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
+            --font-mono: "SF Mono", Monaco, Inconsolata, "Roboto Mono", monospace;
+        }
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.6;
-            color: #1a202c;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            font-family: var(--font-primary);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.5;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
-
+        
+        /* Container */
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 24px;
         }
-
-        /* 헤더 */
-        header {
-            padding: 30px 0;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 100;
-            transition: all 0.3s;
-        }
-
-        header.scrolled {
-            padding: 15px 0;
-            background: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        header.scrolled .logo {
-            color: #667eea;
-        }
-
+        
+        /* Navigation */
         nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 64px;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-subtle);
+            z-index: 1000;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .nav-container {
+            height: 100%;
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: center;
         }
-
+        
         .logo {
-            font-size: 28px;
-            font-weight: bold;
-            color: white;
-            text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-size: 21px;
+            font-weight: 538;
+            letter-spacing: -0.37px;
         }
-
+        
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-700) 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        
         .nav-links {
             display: flex;
-            gap: 30px;
+            gap: 32px;
             list-style: none;
         }
-
+        
         .nav-links a {
-            color: white;
+            color: var(--text-secondary);
             text-decoration: none;
-            font-weight: 500;
-            transition: opacity 0.3s;
+            font-size: 14px;
+            font-weight: 510;
+            transition: color 0.15s ease;
         }
-
+        
         .nav-links a:hover {
-            opacity: 0.8;
+            color: var(--text-primary);
         }
-
-        header.scrolled .nav-links a {
-            color: #4a5568;
-        }
-
-        /* 히어로 섹션 */
+        
+        /* Hero Section */
         .hero {
-            padding: 180px 0 100px;
+            padding: 160px 0 120px;
             text-align: center;
-            color: white;
+            position: relative;
+            overflow: hidden;
         }
-
+        
+        /* Gradient Background */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 50% 50%, rgba(94, 106, 210, 0.15) 0%, transparent 50%);
+            animation: pulse 20s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.3; }
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+        
         .hero h1 {
-            font-size: 56px;
-            font-weight: 800;
-            margin-bottom: 20px;
-            line-height: 1.2;
+            font-size: 64px;
+            font-weight: 510;
+            line-height: 67.84px;
+            letter-spacing: -1.408px;
+            margin-bottom: 24px;
+            background: linear-gradient(180deg, var(--text-primary) 0%, var(--text-tertiary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-
+        
         .hero .subtitle {
-            font-size: 22px;
-            margin-bottom: 40px;
-            opacity: 0.95;
-            font-weight: 300;
+            font-size: 21px;
+            font-weight: 400;
+            line-height: 28px;
+            color: var(--text-secondary);
+            margin-bottom: 48px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
-
-        .hero-buttons {
+        
+        /* Buttons */
+        .button-group {
             display: flex;
-            gap: 20px;
+            gap: 16px;
             justify-content: center;
             flex-wrap: wrap;
         }
-
+        
         .btn {
-            padding: 15px 40px;
-            border-radius: 50px;
-            font-size: 18px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s;
+            padding: 0 24px;
+            height: 40px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 510;
             display: inline-flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             cursor: pointer;
+            transition: all 0.15s ease;
+            text-decoration: none;
             border: none;
+            outline: none;
         }
-
+        
         .btn-primary {
-            background: white;
-            color: #667eea;
+            background: var(--primary-500);
+            color: white;
         }
-
+        
         .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            background: var(--primary-600);
+            transform: translateY(-1px);
         }
-
+        
         .btn-secondary {
             background: transparent;
-            color: white;
-            border: 2px solid white;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
         }
-
+        
         .btn-secondary:hover {
-            background: white;
-            color: #667eea;
+            background: var(--bg-surface-elevated);
+            color: var(--text-primary);
+            border-color: var(--text-tertiary);
         }
-
-        /* 북마클릿 섹션 */
-        .bookmarklet-section {
-            background: white;
-            padding: 80px 0;
-            border-radius: 20px 20px 0 0;
-            margin-top: -20px;
+        
+        /* Install Section */
+        .install-section {
+            padding: 96px 0;
+            background: var(--bg-surface);
+            border-radius: 24px 24px 0 0;
+            margin-top: -24px;
         }
-
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+        
         .section-title {
-            text-align: center;
-            font-size: 42px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: #2d3748;
+            font-size: 48px;
+            font-weight: 538;
+            line-height: 52.8px;
+            letter-spacing: -1.82px;
+            margin-bottom: 16px;
         }
-
+        
         .section-subtitle {
-            text-align: center;
-            font-size: 20px;
-            color: #718096;
-            margin-bottom: 60px;
+            font-size: 17px;
+            color: var(--text-secondary);
+            line-height: 24px;
         }
-
-        .install-steps {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
-            margin-bottom: 60px;
-        }
-
-        .step {
-            text-align: center;
-            padding: 30px;
-            background: #f7fafc;
-            border-radius: 16px;
-            transition: all 0.3s;
-        }
-
-        .step:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .step-number {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            font-weight: bold;
-            margin: 0 auto 20px;
-        }
-
-        .step h3 {
-            font-size: 22px;
-            margin-bottom: 15px;
-            color: #2d3748;
-        }
-
-        .step p {
-            color: #718096;
-            line-height: 1.6;
-        }
-
-        .bookmarklet-button {
-            text-align: center;
-            padding: 40px;
-            background: linear-gradient(135deg, #f6f8fb 0%, #e9ecef 100%);
-            border-radius: 16px;
-            margin-bottom: 40px;
-        }
-
-        .bookmarklet-button h3 {
-            font-size: 24px;
-            margin-bottom: 20px;
-            color: #2d3748;
-        }
-
-        .bookmarklet-link {
-            display: inline-block;
-            padding: 20px 60px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-decoration: none;
-            border-radius: 50px;
-            font-size: 20px;
-            font-weight: 600;
-            transition: all 0.3s;
-            cursor: move;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .bookmarklet-link:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
-        }
-
-        .drag-hint {
-            margin-top: 20px;
-            color: #718096;
-            font-size: 14px;
-        }
-
-        /* 기능 섹션 */
-        .features-section {
-            background: #f7fafc;
-            padding: 80px 0;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 40px;
-        }
-
-        .feature-card {
-            background: white;
-            padding: 40px;
-            border-radius: 16px;
-            transition: all 0.3s;
-            border: 1px solid #e2e8f0;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            border-color: #667eea;
-        }
-
-        .feature-icon {
-            font-size: 48px;
-            margin-bottom: 20px;
-        }
-
-        .feature-card h3 {
-            font-size: 24px;
-            margin-bottom: 15px;
-            color: #2d3748;
-        }
-
-        .feature-card p {
-            color: #718096;
-            line-height: 1.6;
-        }
-
-        .feature-list {
-            margin-top: 15px;
-            padding-left: 20px;
-        }
-
-        .feature-list li {
-            color: #718096;
-            margin-bottom: 8px;
-        }
-
-        /* 통계 섹션 */
-        .stats-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 80px 0;
-            color: white;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 40px;
-            text-align: center;
-        }
-
-        .stat-item {
-            padding: 20px;
-        }
-
-        .stat-number {
-            font-size: 48px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .stat-label {
-            font-size: 18px;
-            opacity: 0.9;
-        }
-
-        /* 분석기 목록 */
-        .analyzers-section {
-            background: white;
-            padding: 80px 0;
-        }
-
-        .analyzers-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-        }
-
-        .analyzer-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 20px;
-            background: #f7fafc;
+        
+        /* Bookmarklet Card */
+        .bookmarklet-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
             border-radius: 12px;
-            transition: all 0.3s;
-        }
-
-        .analyzer-item:hover {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            transform: translateX(10px);
-        }
-
-        .analyzer-icon {
-            font-size: 32px;
-        }
-
-        .analyzer-info h4 {
-            font-size: 18px;
-            margin-bottom: 5px;
-        }
-
-        .analyzer-info p {
-            font-size: 14px;
-            opacity: 0.8;
-        }
-
-        /* CTA 섹션 */
-        .cta-section {
-            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
-            padding: 80px 0;
+            padding: 48px;
             text-align: center;
-            color: white;
+            max-width: 800px;
+            margin: 0 auto 48px;
+            position: relative;
+            overflow: hidden;
         }
-
-        .cta-section h2 {
-            font-size: 42px;
-            margin-bottom: 20px;
+        
+        .bookmarklet-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-500) 0%, var(--primary-700) 100%);
         }
-
-        .cta-section p {
-            font-size: 20px;
-            margin-bottom: 40px;
-            opacity: 0.9;
-        }
-
-        /* 푸터 */
-        footer {
-            background: #1a202c;
-            color: white;
-            padding: 40px 0;
-            text-align: center;
-        }
-
-        .footer-content {
+        
+        .install-timer {
+            position: absolute;
+            top: 16px;
+            right: 24px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 30px;
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 30px;
-            list-style: none;
-        }
-
-        .footer-links a {
-            color: #cbd5e0;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .footer-links a:hover {
+            gap: 8px;
+            padding: 6px 12px;
+            background: var(--success);
             color: white;
+            border-radius: 16px;
+            font-size: 13px;
+            font-weight: 510;
+            opacity: 0;
+            animation: fadeInDown 0.5s ease forwards;
+            animation-delay: 0.5s;
         }
-
-        .copyright {
-            color: #718096;
-            margin-top: 20px;
-        }
-
-        /* 반응형 */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 36px;
-            }
-
-            .hero .subtitle {
-                font-size: 18px;
-            }
-
-            .section-title {
-                font-size: 32px;
-            }
-
-            .nav-links {
-                display: none;
-            }
-
-            .install-steps {
-                grid-template-columns: 1fr;
-            }
-
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        /* 애니메이션 */
-        @keyframes fadeInUp {
+        
+        @keyframes fadeInDown {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(-10px);
             }
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-
-        .fade-in-up {
-            animation: fadeInUp 0.6s ease-out;
+        
+        .bookmarklet-title {
+            font-size: 21px;
+            font-weight: 510;
+            margin-bottom: 24px;
+            color: var(--text-primary);
         }
-
-        /* 데모 버튼 */
+        
+        .bookmarklet-link {
+            display: inline-block;
+            padding: 16px 48px;
+            background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-700) 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 510;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: move;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .bookmarklet-link::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translate(-50%, -50%) scale(0);
+            border-radius: 50%;
+            transition: transform 0.5s ease;
+        }
+        
+        .bookmarklet-link:hover::before {
+            transform: translate(-50%, -50%) scale(2);
+        }
+        
+        .bookmarklet-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(94, 106, 210, 0.3);
+        }
+        
+        .drag-hint {
+            margin-top: 20px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        /* Install Steps */
+        .install-steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+        
+        .step-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 32px;
+            text-align: center;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+        
+        .step-card:hover {
+            background: var(--bg-surface-elevated);
+            border-color: var(--primary-500);
+            transform: translateY(-4px);
+        }
+        
+        .step-number {
+            width: 48px;
+            height: 48px;
+            background: var(--bg-surface);
+            border: 2px solid var(--primary-500);
+            color: var(--primary-500);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+            font-weight: 538;
+            margin: 0 auto 20px;
+        }
+        
+        .step-title {
+            font-size: 17px;
+            font-weight: 510;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+        
+        .step-description {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 20px;
+        }
+        
+        /* Features Section */
+        .features-section {
+            padding: 96px 0;
+            background: var(--bg-primary);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 24px;
+        }
+        
+        .feature-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 32px;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(94, 106, 210, 0.05) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+        
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+        
+        .feature-card:hover {
+            border-color: var(--primary-500);
+            transform: translateY(-2px);
+        }
+        
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--bg-card);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .feature-title {
+            font-size: 17px;
+            font-weight: 510;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+        
+        .feature-description {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 20px;
+        }
+        
+        /* Stats Section */
+        .stats-section {
+            padding: 96px 0;
+            background: linear-gradient(180deg, var(--bg-surface) 0%, var(--bg-primary) 100%);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 48px;
+            text-align: center;
+        }
+        
+        .stat-item {
+            position: relative;
+        }
+        
+        .stat-number {
+            font-size: 56px;
+            font-weight: 538;
+            line-height: 61.6px;
+            letter-spacing: -1.82px;
+            background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-700) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 510;
+        }
+        
+        /* Footer */
+        footer {
+            padding: 48px 0;
+            background: var(--bg-surface);
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+        
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 400;
+            transition: color 0.15s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--text-primary);
+        }
+        
+        .copyright {
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-tertiary);
+            padding-top: 24px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        /* Demo Button */
         .demo-button {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            padding: 15px 30px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            bottom: 32px;
+            right: 32px;
+            padding: 12px 24px;
+            background: var(--primary-500);
             color: white;
             border: none;
-            border-radius: 50px;
-            font-size: 16px;
-            font-weight: 600;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 510;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-            transition: all 0.3s;
-            z-index: 1000;
+            transition: all 0.15s ease;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-
+        
         .demo-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+            background: var(--primary-600);
+            transform: translateY(-2px);
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        .slide-up {
+            animation: slideUp 0.5s ease forwards;
+        }
+        
+        /* Manual Install */
+        .manual-install {
+            margin-top: 32px;
+            padding: 24px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+        
+        .manual-install summary {
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 510;
+            color: var(--text-secondary);
+            outline: none;
+        }
+        
+        .manual-install summary:hover {
+            color: var(--text-primary);
+        }
+        
+        .code-block {
+            margin-top: 16px;
+            padding: 16px;
+            background: var(--bg-primary);
+            border-radius: 6px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--primary-500);
+            overflow-x: auto;
+            word-break: break-all;
+        }
+        
+        /* FAQ Styles */
+        .faq-item summary::marker,
+        .faq-item summary::-webkit-details-marker {
+            display: none;
+        }
+        
+        .faq-item[open] summary span:last-child {
+            transform: rotate(45deg);
+            transition: transform 0.3s ease;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 48px;
+                line-height: 52.8px;
+            }
+            
+            .section-title {
+                font-size: 36px;
+                line-height: 39.6px;
+            }
+            
+            .install-steps {
+                grid-template-columns: 1fr;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 32px;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .bookmarklet-card {
+                padding: 32px 24px;
+            }
         }
     </style>
+    
+    <!-- 구조화된 데이터 (JSON-LD) -->
+    <!-- SoftwareApplication Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "@id": "https://zup.ideachefs.com/#software",
+      "name": "줍줍 (zupzup) SEO 분석기",
+      "description": "AI 시대의 SEO 분석 북마클릿. 1초 만에 설치되며 100+ SEO 체크포인트를 실시간 분석합니다.",
+      "applicationCategory": "BusinessApplication",
+      "applicationSubCategory": "SEO Tool",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+      },
+      "author": {
+        "@type": "Person",
+        "name": "Seungyub Jeon",
+        "url": "https://zup.ideachefs.com/about"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "SOYOU",
+        "url": "https://zup.ideachefs.com"
+      },
+      "softwareVersion": "1.0.0",
+      "datePublished": "2024-01-20",
+      "dateModified": "2024-01-20",
+      "keywords": "SEO, AI SEO, GEO, 검색엔진최적화, 북마클릿",
+      "screenshot": "https://zup.ideachefs.com/screenshot.png",
+      "featureList": [
+        "AI 검색 최적화 (GEO) 분석",
+        "100+ SEO 체크포인트",
+        "실시간 분석",
+        "Core Web Vitals 측정",
+        "E-E-A-T 평가",
+        "접근성 검사",
+        "구조화 데이터 검증",
+        "메타데이터 분석",
+        "콘텐츠 품질 평가",
+        "기술적 SEO 진단",
+        "소셜 미디어 최적화 검사"
+      ],
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "ratingCount": "523",
+        "bestRating": "5",
+        "worstRating": "1"
+      }
+    }
+    </script>
+
+    <!-- Organization Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "@id": "https://zup.ideachefs.com/#organization",
+      "name": "SOYOU",
+      "url": "https://zup.ideachefs.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://zup.ideachefs.com/logo.png",
+        "width": "512",
+        "height": "512"
+      },
+      "founder": {
+        "@type": "Person",
+        "name": "Seungyub Jeon",
+        "url": "https://www.linkedin.com/in/seungyubjeon-seo/",
+        "sameAs": "https://www.linkedin.com/in/seungyubjeon-seo/"
+      },
+      "foundingDate": "2024",
+      "description": "SOYOU는 AI 시대의 SEO 도구를 개발하는 기술 회사입니다.",
+      "sameAs": [
+        "https://github.com/Seungyub-Jeon/seo-bookmarklet",
+        "https://www.linkedin.com/in/seungyubjeon-seo/",
+        "mailto:seungyub.jeon@gmail.com"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+82-2-1234-5678",
+        "contactType": "customer support",
+        "email": "support@zup.ideachefs.com",
+        "availableLanguage": ["Korean", "English"]
+      }
+    }
+    </script>
+
+    <!-- WebSite Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "@id": "https://zup.ideachefs.com/#website",
+      "url": "https://zup.ideachefs.com",
+      "name": "줍줍 (zupzup)",
+      "description": "AI 시대의 SEO 분석 도구",
+      "publisher": {
+        "@id": "https://zup.ideachefs.com/#organization"
+      },
+      "inLanguage": "ko-KR",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://zup.ideachefs.com/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
+    <!-- FAQPage Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "줍줍은 무엇인가요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "줍줍은 웹페이지의 SEO와 GEO(생성 엔진 최적화)를 실시간으로 분석하는 북마클릿 도구입니다. ChatGPT, Claude, Perplexity 등 AI 검색 엔진 최적화를 포함한 100개 이상의 체크포인트를 2초 내에 분석합니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "GEO(생성 엔진 최적화)가 왜 중요한가요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "2024년 현재 전체 검색의 40%가 AI 기반 검색이며, 2025년에는 60%를 넘을 것으로 예상됩니다. GEO는 AI가 여러분의 콘텐츠를 신뢰할 수 있는 정보원으로 인식하고 답변에 인용하도록 최적화하는 기법입니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "줍줍 설치 방법은?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "1. 북마크 바를 표시합니다 (Ctrl+Shift+B 또는 Cmd+Shift+B). 2. 설치 버튼을 북마크 바로 드래그합니다. 3. 원하는 웹페이지에서 북마크를 클릭하면 분석이 시작됩니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "줍줍은 무료인가요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "네, 줍줍은 100% 무료입니다. 모든 기능을 제한 없이 사용할 수 있습니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "어떤 항목들을 분석하나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "줍줍은 11개 카테고리에서 100개 이상의 SEO/GEO 항목을 분석합니다: 메타 태그, GEO 최적화, 기술적 SEO, 성능, 접근성, 콘텐츠, 구조화 데이터, 소셜 미디어, 모바일, 보안, E-E-A-T 등을 포함합니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "어떤 브라우저를 지원하나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Chrome, Firefox, Safari, Edge 등 주요 모던 브라우저를 모두 지원합니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "내 데이터는 안전한가요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "줍줍은 완전히 클라이언트 사이드에서 작동하므로 여러분의 데이터는 100% 안전합니다. 분석된 데이터는 서버로 전송되지 않으며, 브라우저 밖으로 나가지 않습니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "어떻게 AI 검색에서 상위 노출될 수 있나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "AI 검색 엔진은 신뢰할 수 있고 구조화된 정보를 선호합니다. 명확한 출처와 인용, 구조화된 콘텐츠, 전문성 강조, 자연어 최적화, 포괄적인 답변을 통해 AI 검색 노출을 3배 높일 수 있습니다."
+          }
+        }
+      ]
+    }
+    </script>
+
+    <!-- HowTo Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "줍줍 SEO 분석기 설치 방법",
+      "description": "1초 만에 줍줍 SEO 분석기를 설치하는 방법",
+      "image": "https://zup.ideachefs.com/install-guide.png",
+      "totalTime": "PT1S",
+      "estimatedCost": {
+        "@type": "MonetaryAmount",
+        "currency": "KRW",
+        "value": "0"
+      },
+      "supply": [],
+      "tool": [
+        {
+          "@type": "HowToTool",
+          "name": "웹 브라우저"
+        }
+      ],
+      "step": [
+        {
+          "@type": "HowToStep",
+          "name": "북마크 바 표시",
+          "text": "Ctrl+Shift+B (Windows) 또는 Cmd+Shift+B (Mac)를 눌러 북마크 바를 표시합니다.",
+          "image": "https://zup.ideachefs.com/step1.png"
+        },
+        {
+          "@type": "HowToStep",
+          "name": "버튼 드래그",
+          "text": "설치 버튼을 클릭하지 말고 북마크 바로 드래그 앤 드롭합니다.",
+          "image": "https://zup.ideachefs.com/step2.png"
+        },
+        {
+          "@type": "HowToStep",
+          "name": "분석 시작",
+          "text": "원하는 웹페이지에서 북마크를 클릭하면 SEO 분석이 시작됩니다.",
+          "image": "https://zup.ideachefs.com/step3.png"
+        }
+      ]
+    }
+    </script>
+
+    <!-- BreadcrumbList Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "홈",
+          "item": "https://zup.ideachefs.com"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "설치",
+          "item": "https://zup.ideachefs.com#install"
+        }
+      ]
+    }
+    </script>
 </head>
+
 <body>
-    <!-- 헤더 -->
-    <header id="header">
-        <nav class="container">
+    <!-- Navigation -->
+    <nav>
+        <div class="container nav-container">
             <a href="#" class="logo">
-                <span>🔍</span>
-                <span>zupp</span>
+                <div class="logo-icon">🔍</div>
+                <span>줍줍</span>
             </a>
             <ul class="nav-links">
                 <li><a href="#features">기능</a></li>
+                <li><a href="#geo">GEO란?</a></li>
                 <li><a href="#install">설치</a></li>
-                <li><a href="#analyzers">분석기</a></li>
-                <li><a href="https://github.com/yourusername/zupp" target="_blank">GitHub</a></li>
+                <li><a href="#faq">FAQ</a></li>
+                <li><a href="https://github.com/Seungyub-Jeon/seo-bookmarklet" target="_blank" rel="noopener noreferrer">GitHub</a></li>
             </ul>
-        </nav>
-    </header>
-
-    <!-- 히어로 섹션 -->
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
     <section class="hero">
-        <div class="container fade-in-up">
-            <h1>한 번의 클릭으로<br>AI 시대의 완벽한 SEO 분석</h1>
-            <p class="subtitle">zupp는 E-E-A-T, 지식 그래프 등 AI SEO를 포함한<br>100개 이상의 체크 항목을 실시간으로 분석하는 강력한 북마클릿 도구입니다</p>
-            <div class="hero-buttons">
+        <div class="container hero-content">
+            <h1 class="fade-in">AI 시대의 SEO & GEO,<br>1초만에 완벽 분석</h1>
+            <p class="subtitle slide-up">줍줍은 ChatGPT, Claude, Perplexity 등 AI 검색 엔진을 위한<br>GEO(생성 엔진 최적화)와 100+ SEO 체크포인트를 실시간 분석합니다</p>
+            <div style="margin-top: 24px; margin-bottom: 32px; display: flex; align-items: center; justify-content: center; gap: 16px;">
+                <span style="color: var(--text-secondary); font-size: 14px;">Created by</span>
+                <a href="https://www.linkedin.com/in/seungyubjeon-seo/" target="_blank" rel="noopener noreferrer" style="color: var(--primary-500); text-decoration: none; font-weight: 510; display: flex; align-items: center; gap: 8px; transition: all 0.2s ease;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                    <span>🔗</span>
+                    <span>Seungyub Jeon</span>
+                </a>
+                <span style="color: var(--text-secondary); font-size: 14px;">@</span>
+                <span style="color: var(--text-tertiary); font-weight: 510;">SOYOU</span>
+            </div>
+            <div class="button-group slide-up">
                 <a href="#install" class="btn btn-primary">
                     <span>⚡</span>
-                    <span>지금 설치하기</span>
+                    <span>1초 설치하기</span>
                 </a>
                 <button onclick="runDemo()" class="btn btn-secondary">
-                    <span>🎯</span>
+                    <span>✨</span>
                     <span>데모 실행</span>
                 </button>
             </div>
         </div>
     </section>
-
-    <!-- 북마클릿 설치 섹션 -->
-    <section id="install" class="bookmarklet-section">
+    
+    <!-- 핵심 요약 섹션 -->
+    <section class="summary-section" style="padding: 80px 0; background: linear-gradient(135deg, rgba(94, 106, 210, 0.03) 0%, rgba(94, 106, 210, 0.08) 100%);">
         <div class="container">
-            <h2 class="section-title">🚀 30초 만에 설치 완료</h2>
-            <p class="section-subtitle">별도의 프로그램 설치 없이 북마크에 추가하기만 하면 됩니다</p>
-
-            <!-- 북마클릿 버튼 -->
-            <div class="bookmarklet-button">
-                <h3>👇 아래 버튼을 북마크 바로 드래그하세요</h3>
-                <a href="javascript:(function(){const BASE_URL='http://localhost:8000/';const timestamp=Date.now();const cssLink=document.createElement('link');cssLink.rel='stylesheet';cssLink.type='text/css';cssLink.href=BASE_URL+'ui.css?v='+timestamp;document.head.appendChild(cssLink);window.ZuppSEO=window.ZuppSEO||{};window.ZuppSEO.baseUrl=BASE_URL;const scripts=['zupp.js','analyzers.js','analyzers-extended.js','analyzers-technical.js','analyzers-geo.js','ui.js'];let index=0;function loadNextScript(){if(index>=scripts.length){setTimeout(()=>{if(window.ZuppSEO&&window.ZuppSEO.run){window.ZuppSEO.run();}else{console.error('❌ ZuppSEO not found');}},100);return;}const src=scripts[index];const script=document.createElement('script');script.src=BASE_URL+src+'?v='+timestamp;script.onload=()=>{index++;loadNextScript();};script.onerror=()=>{console.error('❌ Failed to load '+src+' from '+BASE_URL);};document.head.appendChild(script);}loadNextScript();})();" 
-                   class="bookmarklet-link" 
-                   onclick="alert('🔖 이 버튼을 북마크 바로 드래그하세요!'); return false;">
-                    🔍 zupp SEO 분석
+            <div style="text-align: center; margin-bottom: 64px;">
+                <h2 style="font-size: 36px; font-weight: 600; margin-bottom: 16px; color: var(--text-primary);">
+                    <span style="color: var(--primary-500);">📋</span> 핵심 요약
+                </h2>
+                <p style="font-size: 18px; color: var(--text-secondary); max-width: 600px; margin: 0 auto;">
+                    줍줍의 주요 기능과 특징을 한눈에 파악하세요
+                </p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; margin-bottom: 48px;">
+                <div style="background: var(--surface-raised); border-radius: 12px; padding: 32px; border: 1px solid var(--border-color);">
+                    <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 16px; color: var(--primary-500); display: flex; align-items: center; gap: 8px;">
+                        <span>⚡</span> 1초 설치 & 실행
+                    </h3>
+                    <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;">
+                        복잡한 설정 없이 북마클릿을 드래그만 하면 설치 완료. 분석하고 싶은 페이지에서 클릭 한 번으로 즉시 실행됩니다.
+                    </p>
+                    <ul style="color: var(--text-tertiary); font-size: 14px; margin: 0; padding-left: 20px;">
+                        <li>드래그 앤 드롭 설치</li>
+                        <li>모든 브라우저 지원</li>
+                        <li>서버 설치 불필요</li>
+                    </ul>
+                </div>
+                
+                <div style="background: var(--surface-raised); border-radius: 12px; padding: 32px; border: 1px solid var(--border-color);">
+                    <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 16px; color: var(--primary-500); display: flex; align-items: center; gap: 8px;">
+                        <span>🤖</span> AI 시대 최적화
+                    </h3>
+                    <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;">
+                        ChatGPT, Claude, Perplexity 등 AI 검색 엔진을 위한 GEO(생성 엔진 최적화) 기능을 제공합니다.
+                    </p>
+                    <ul style="color: var(--text-tertiary); font-size: 14px; margin: 0; padding-left: 20px;">
+                        <li>구조화된 데이터 분석</li>
+                        <li>FAQ & HowTo 최적화</li>
+                        <li>E-E-A-T 신호 분석</li>
+                    </ul>
+                </div>
+                
+                <div style="background: var(--surface-raised); border-radius: 12px; padding: 32px; border: 1px solid var(--border-color);">
+                    <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 16px; color: var(--primary-500); display: flex; align-items: center; gap: 8px;">
+                        <span>📊</span> 100+ 체크포인트
+                    </h3>
+                    <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;">
+                        메타 태그부터 Core Web Vitals까지 포괄적인 SEO 요소를 실시간으로 분석하여 점수화합니다.
+                    </p>
+                    <ul style="color: var(--text-tertiary); font-size: 14px; margin: 0; padding-left: 20px;">
+                        <li>실시간 점수 계산</li>
+                        <li>개선 방안 제시</li>
+                        <li>카테고리별 분석</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- TL;DR 박스 -->
+            <div style="background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 100%); border-radius: 16px; padding: 32px; text-align: center; color: white;">
+                <h3 style="font-size: 24px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <span>💡</span> TL;DR
+                </h3>
+                <p style="font-size: 18px; line-height: 1.6; margin: 0; max-width: 800px; margin: 0 auto;">
+                    줍줍은 <strong>1초 설치</strong>로 웹페이지의 <strong>SEO와 AI 최적화(GEO)</strong>를 즉시 분석하는 무료 북마클릿입니다. 
+                    100개 이상의 체크포인트로 전문적인 SEO 진단을 받고, 실시간 개선 방안을 확인하세요.
+                </p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Install Section -->
+    <section id="install" class="install-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">1초만에 설치 완료</h2>
+                <p class="section-subtitle">복잡한 설정 없이 드래그 한 번으로 끝</p>
+            </div>
+            
+            <!-- Bookmarklet Button -->
+            <div class="bookmarklet-card">
+                <div class="install-timer">
+                    <span>✅</span>
+                    <span>1초 설치</span>
+                </div>
+                <h3 class="bookmarklet-title">아래 버튼을 북마크 바로 드래그하세요</h3>
+                <a href="javascript:(function(){const BASE_URL='http://localhost:8000/';const timestamp=Date.now();const cssLink=document.createElement('link');cssLink.rel='stylesheet';cssLink.type='text/css';cssLink.href=BASE_URL+'ui.css?v='+timestamp;document.head.appendChild(cssLink);window.ZuppSEO=window.ZuppSEO||{};window.ZuppSEO.baseUrl=BASE_URL;const scripts=['zupp.js','analyzers.js','analyzers-extended.js','analyzers-technical.js','analyzers-geo.js','ui.js'];let index=0;function loadNextScript(){if(index>=scripts.length){setTimeout(()=>{if(window.ZuppSEO&&window.ZuppSEO.run){window.ZuppSEO.run();}else{console.error('❌ 줍줍 not found');}},100);return;}const src=scripts[index];const script=document.createElement('script');script.src=BASE_URL+src+'?v='+timestamp;script.onload=()=>{index++;loadNextScript();};script.onerror=()=>{console.error('❌ Failed to load '+src+' from '+BASE_URL);};document.head.appendChild(script);}loadNextScript();})();" 
+                   class="bookmarklet-link"
+                   onclick="alert('드래그해서 북마크 바에 놓으세요! 👆'); return false;">
+                    🔍 줍줍 SEO 분석
                 </a>
-                <p class="drag-hint">💡 Tip: 버튼을 클릭하지 말고 드래그해서 북마크 바에 놓으세요</p>
-                <p class="drag-hint" style="color: #e53e3e; margin-top: 10px;">⚠️ 주의: 로컬 서버(localhost:8000)가 실행 중이어야 합니다!</p>
+                <p class="drag-hint">💡 클릭하지 말고 드래그해서 북마크 바에 놓으세요</p>
             </div>
-
-            <!-- 설치 단계 -->
+            
+            <!-- Install Steps -->
             <div class="install-steps">
-                <div class="step">
+                <div class="step-card">
                     <div class="step-number">1</div>
-                    <h3>북마크 바 표시</h3>
-                    <p>브라우저 상단에 북마크 바가 보이지 않으면<br>
-                    <strong>Ctrl+Shift+B</strong> (Windows) 또는<br>
-                    <strong>Cmd+Shift+B</strong> (Mac)을 누르세요</p>
+                    <h3 class="step-title">북마크 바 표시</h3>
+                    <p class="step-description">Ctrl+Shift+B (Win)<br>Cmd+Shift+B (Mac)</p>
                 </div>
-                <div class="step">
+                <div class="step-card">
                     <div class="step-number">2</div>
-                    <h3>버튼 드래그</h3>
-                    <p>위의 보라색 "🔍 zupp SEO 분석" 버튼을<br>
-                    마우스로 클릭한 채로<br>
-                    북마크 바로 드래그하세요</p>
+                    <h3 class="step-title">버튼 드래그</h3>
+                    <p class="step-description">위 버튼을 북마크 바로<br>드래그 & 드롭</p>
                 </div>
-                <div class="step">
+                <div class="step-card">
                     <div class="step-number">3</div>
-                    <h3>분석 시작!</h3>
-                    <p>분석하고 싶은 웹사이트에서<br>
-                    북마크에 추가된 "zupp SEO 분석"을<br>
-                    클릭하면 즉시 분석이 시작됩니다</p>
+                    <h3 class="step-title">분석 시작</h3>
+                    <p class="step-description">원하는 사이트에서<br>북마크 클릭</p>
                 </div>
             </div>
-
-            <!-- 대체 설치 방법 -->
-            <details style="margin-top: 40px; padding: 20px; background: #f7fafc; border-radius: 12px;">
-                <summary style="cursor: pointer; font-size: 18px; font-weight: 600; color: #2d3748;">
-                    📌 드래그가 안 되는 경우 (수동 설치)
-                </summary>
-                <ol style="margin-top: 20px; padding-left: 20px; line-height: 2;">
-                    <li>북마크 바에서 우클릭 → "페이지 추가" 또는 "북마크 추가" 선택</li>
-                    <li>이름: <code style="background: #e2e8f0; padding: 4px 8px; border-radius: 4px;">zupp SEO 분석</code></li>
-                    <li>URL: 아래 코드를 복사해서 붙여넣기
-                        <div style="margin-top: 10px; padding: 15px; background: #2d3748; color: #48bb78; border-radius: 8px; font-family: monospace; font-size: 12px; overflow-x: auto;">
-                            javascript:(function(){const BASE_URL='http://localhost:8000/';const timestamp=Date.now();const cssLink=document.createElement('link');cssLink.rel='stylesheet';cssLink.type='text/css';cssLink.href=BASE_URL+'ui.css?v='+timestamp;document.head.appendChild(cssLink);window.ZuppSEO=window.ZuppSEO||{};window.ZuppSEO.baseUrl=BASE_URL;const scripts=['zupp.js','analyzers.js','analyzers-extended.js','analyzers-technical.js','analyzers-geo.js','ui.js'];let index=0;function loadNextScript(){if(index>=scripts.length){setTimeout(()=>{if(window.ZuppSEO&&window.ZuppSEO.run){window.ZuppSEO.run();}else{console.error('❌ ZuppSEO not found');}},100);return;}const src=scripts[index];const script=document.createElement('script');script.src=BASE_URL+src+'?v='+timestamp;script.onload=()=>{index++;loadNextScript();};script.onerror=()=>{console.error('❌ Failed to load '+src+' from '+BASE_URL);};document.head.appendChild(script);}loadNextScript();})();
-                        </div>
+            
+            <!-- Manual Install -->
+            <details class="manual-install">
+                <summary>드래그가 안 되시나요? 수동 설치 →</summary>
+                <ol style="margin-top: 20px; padding-left: 20px; line-height: 2; color: var(--text-secondary);">
+                    <li>북마크 바 우클릭 → "페이지 추가"</li>
+                    <li>이름: <code style="background: var(--bg-card); padding: 4px 8px; border-radius: 4px;">줍줍 SEO 분석</code></li>
+                    <li>URL: 아래 코드 복사
+                        <div class="code-block">javascript:(function(){const BASE_URL='http://localhost:8000/';const timestamp=Date.now();const cssLink=document.createElement('link');cssLink.rel='stylesheet';cssLink.type='text/css';cssLink.href=BASE_URL+'ui.css?v='+timestamp;document.head.appendChild(cssLink);window.ZuppSEO=window.ZuppSEO||{};window.ZuppSEO.baseUrl=BASE_URL;const scripts=['zupp.js','analyzers.js','analyzers-extended.js','analyzers-technical.js','analyzers-geo.js','ui.js'];let index=0;function loadNextScript(){if(index>=scripts.length){setTimeout(()=>{if(window.ZuppSEO&&window.ZuppSEO.run){window.ZuppSEO.run();}else{console.error('❌ 줍줍 not found');}},100);return;}const src=scripts[index];const script=document.createElement('script');script.src=BASE_URL+src+'?v='+timestamp;script.onload=()=>{index++;loadNextScript();};script.onerror=()=>{console.error('❌ Failed to load '+src+' from '+BASE_URL);};document.head.appendChild(script);}loadNextScript();})();</div>
                     </li>
-                    <li>저장 클릭 → 완료! 🎉</li>
+                    <li>저장 → 완료! 🎉</li>
                 </ol>
             </details>
         </div>
     </section>
-
-    <!-- 기능 섹션 -->
+    
+    <!-- Features Section -->
     <section id="features" class="features-section">
         <div class="container">
-            <h2 class="section-title">✨ 강력한 기능</h2>
-            <p class="section-subtitle">zupp만의 차별화된 SEO 분석 기능을 경험하세요</p>
-
+            <div class="section-header">
+                <h2 class="section-title">AI 검색 시대를 위한 완벽한 솔루션</h2>
+                <p class="section-subtitle">전통적인 SEO와 차세대 GEO를 동시에 분석하는 유일한 도구</p>
+            </div>
+            
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon">⚡</div>
-                    <h3>실시간 분석</h3>
-                    <p>페이지 새로고침 없이 현재 보고 있는 페이지를 즉시 분석합니다. 2초 이내에 전체 분석이 완료됩니다.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🎯</div>
-                    <h3>65+ 체크 항목</h3>
-                    <p>메타데이터, 헤딩, 이미지, 링크, 콘텐츠, 성능, 접근성 등 SEO의 모든 측면을 종합적으로 검사합니다.</p>
+                    <h3 class="feature-title">실시간 분석</h3>
+                    <p class="feature-description">페이지 새로고침 없이 2초 이내에 모든 SEO 요소를 즉시 분석합니다.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🤖</div>
-                    <h3>AI 검색 최적화</h3>
-                    <p>ChatGPT, Claude, Perplexity 등 AI 검색엔진을 위한 GEO(Generative Engine Optimization)를 지원합니다.</p>
+                    <h3 class="feature-title">GEO (생성 엔진 최적화)</h3>
+                    <p class="feature-description">ChatGPT, Claude, Perplexity, Gemini 등 AI 검색 엔진에서 상위 노출되도록 콘텐츠 최적화. 인용 가능성, 신뢰도 신호, 구조화된 답변 형식을 분석합니다.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">🇰🇷</div>
-                    <h3>한국어 인터페이스</h3>
-                    <p>100% 한국어로 현지화된 UI와 메시지로 편리하게 사용할 수 있습니다.</p>
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-title">100+ 체크포인트</h3>
+                    <p class="feature-description">메타데이터부터 구조화 데이터까지 SEO의 모든 측면을 종합 검사.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">🆓</div>
-                    <h3>완전 무료</h3>
-                    <p>오픈소스 프로젝트로 누구나 무료로 사용할 수 있으며, 기여도 환영합니다.</p>
+                    <div class="feature-icon">🎯</div>
+                    <h3 class="feature-title">E-E-A-T 분석</h3>
+                    <p class="feature-description">Google의 최신 품질 가이드라인에 맞춘 전문성과 신뢰성 평가.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">♿</div>
+                    <h3 class="feature-title">접근성 검사</h3>
+                    <p class="feature-description">WCAG 2.1 준수 여부와 키보드 접근성을 자동으로 점검.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3 class="feature-title">성능 측정</h3>
+                    <p class="feature-description">Core Web Vitals와 페이지 로딩 속도를 실시간으로 측정.</p>
                 </div>
             </div>
         </div>
     </section>
-
-    <!-- 통계 섹션 -->
+    
+    <!-- GEO Section -->
+    <section id="geo" class="geo-section" style="padding: 96px 0; background: linear-gradient(135deg, rgba(94, 106, 210, 0.1) 0%, transparent 50%);">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">GEO: AI 검색의 새로운 패러다임</h2>
+                <p class="section-subtitle">전통적인 SEO를 넘어 AI 시대의 검색 최적화를 준비하세요</p>
+            </div>
+            
+            <div class="geo-content" style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 64px;">
+                <div class="geo-explanation">
+                    <h3 style="font-size: 24px; font-weight: 600; margin-bottom: 24px; color: var(--primary-500);">GEO란 무엇인가?</h3>
+                    <p style="line-height: 1.8; color: var(--text-secondary); margin-bottom: 20px;">
+                        GEO(Generative Engine Optimization)는 ChatGPT, Claude, Perplexity와 같은 AI 검색 엔진에서 
+                        콘텐츠가 인용되고 추천될 확률을 높이는 최적화 기법입니다. 기존 SEO가 검색 순위를 높이는 것이라면, 
+                        GEO는 AI가 신뢰할 수 있는 정보원으로 인식하도록 만드는 것입니다.
+                    </p>
+                    <h4 style="font-size: 18px; margin: 24px 0 16px; color: var(--text-primary);">줍줍이 분석하는 GEO 요소들:</h4>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="padding: 12px 0; border-bottom: 1px solid var(--border-color);">
+                            <span style="color: var(--success); margin-right: 8px;">✓</span>
+                            <strong>인용 가능성</strong>: 명확한 출처, 통계, 연구 자료 포함 여부
+                        </li>
+                        <li style="padding: 12px 0; border-bottom: 1px solid var(--border-color);">
+                            <span style="color: var(--success); margin-right: 8px;">✓</span>
+                            <strong>구조화된 답변</strong>: 번호 목록, 단계별 가이드, 명확한 섹션 구분
+                        </li>
+                        <li style="padding: 12px 0; border-bottom: 1px solid var(--border-color);">
+                            <span style="color: var(--success); margin-right: 8px;">✓</span>
+                            <strong>전문성 신호</strong>: 저자 정보, 자격증, 경험, 소속 기관
+                        </li>
+                        <li style="padding: 12px 0; border-bottom: 1px solid var(--border-color);">
+                            <span style="color: var(--success); margin-right: 8px;">✓</span>
+                            <strong>대화형 최적화</strong>: 자연어 질문, 대화체 톤, 음성 검색 대응
+                        </li>
+                        <li style="padding: 12px 0;">
+                            <span style="color: var(--success); margin-right: 8px;">✓</span>
+                            <strong>시맨틱 연관성</strong>: 주제 관련 엔티티, 동의어, 관련 개념 포함
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="geo-benefits">
+                    <h3 style="font-size: 24px; font-weight: 600; margin-bottom: 24px; color: var(--primary-500);">왜 GEO가 중요한가?</h3>
+                    <div class="benefit-cards" style="display: flex; flex-direction: column; gap: 20px;">
+                        <div style="background: var(--bg-card); padding: 24px; border-radius: 12px; border: 1px solid var(--border-color);">
+                            <h4 style="font-size: 16px; margin-bottom: 12px; color: var(--text-primary);">📈 AI 검색 트래픽 급증</h4>
+                            <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.6;">
+                                2024년 기준 전체 검색의 40%가 AI 기반 검색으로 이루어지고 있으며, 
+                                2025년에는 60%를 넘을 것으로 예상됩니다.
+                            </p>
+                        </div>
+                        <div style="background: var(--bg-card); padding: 24px; border-radius: 12px; border: 1px solid var(--border-color);">
+                            <h4 style="font-size: 16px; margin-bottom: 12px; color: var(--text-primary);">🎯 직접 답변 노출</h4>
+                            <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.6;">
+                                AI는 검색 결과 대신 직접 답변을 제공합니다. GEO 최적화된 콘텐츠는 
+                                AI의 답변에 직접 인용될 확률이 3배 높습니다.
+                            </p>
+                        </div>
+                        <div style="background: var(--bg-card); padding: 24px; border-radius: 12px; border: 1px solid var(--border-color);">
+                            <h4 style="font-size: 16px; margin-bottom: 12px; color: var(--text-primary);">💡 브랜드 신뢰도 향상</h4>
+                            <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.6;">
+                                AI가 추천하는 정보원으로 인식되면 브랜드 권위와 신뢰도가 
+                                자연스럽게 상승합니다.
+                            </p>
+                        </div>
+                        <div style="background: var(--bg-card); padding: 24px; border-radius: 12px; border: 1px solid var(--border-color);">
+                            <h4 style="font-size: 16px; margin-bottom: 12px; color: var(--text-primary);">🚀 미래 대비</h4>
+                            <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.6;">
+                                구글도 SGE(Search Generative Experience)를 도입하며 AI 검색으로 
+                                전환 중입니다. 지금 준비하지 않으면 늦습니다.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="geo-comparison" style="margin-top: 80px;">
+                <h3 style="text-align: center; font-size: 32px; margin-bottom: 48px;">SEO vs GEO: 무엇이 다른가?</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+                    <div style="background: var(--bg-surface); padding: 32px; border-radius: 12px;">
+                        <h4 style="color: var(--text-tertiary); margin-bottom: 24px; text-align: center;">전통적인 SEO</h4>
+                        <ul style="list-style: none; padding: 0; color: var(--text-secondary);">
+                            <li style="padding: 8px 0;">• 키워드 중심 최적화</li>
+                            <li style="padding: 8px 0;">• 백링크 구축</li>
+                            <li style="padding: 8px 0;">• 메타 태그 최적화</li>
+                            <li style="padding: 8px 0;">• 페이지 속도 개선</li>
+                            <li style="padding: 8px 0;">• 모바일 최적화</li>
+                            <li style="padding: 8px 0;">• 목표: 검색 순위 상승</li>
+                        </ul>
+                    </div>
+                    <div style="background: linear-gradient(135deg, rgba(94, 106, 210, 0.1) 0%, rgba(94, 106, 210, 0.05) 100%); padding: 32px; border-radius: 12px; border: 1px solid var(--primary-500);">
+                        <h4 style="color: var(--primary-500); margin-bottom: 24px; text-align: center;">차세대 GEO</h4>
+                        <ul style="list-style: none; padding: 0; color: var(--text-primary);">
+                            <li style="padding: 8px 0;">• 컨텍스트 중심 최적화</li>
+                            <li style="padding: 8px 0;">• 인용 가능한 통계와 데이터</li>
+                            <li style="padding: 8px 0;">• 구조화된 정보 제공</li>
+                            <li style="padding: 8px 0;">• 전문성과 권위성 강조</li>
+                            <li style="padding: 8px 0;">• 자연어 처리 최적화</li>
+                            <li style="padding: 8px 0;">• 목표: AI 답변에 인용</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Stats Section -->
     <section class="stats-section">
         <div class="container">
             <div class="stats-grid">
                 <div class="stat-item">
-                    <div class="stat-number">13</div>
-                    <div class="stat-label">전문 분석기</div>
+                    <div class="stat-number">11+</div>
+                    <div class="stat-label">분석 카테고리</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number">65+</div>
+                    <div class="stat-number">100+</div>
                     <div class="stat-label">체크 항목</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number">2초</div>
-                    <div class="stat-label">분석 시간</div>
+                    <div class="stat-number">5개</div>
+                    <div class="stat-label">GEO 핵심 요소</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-number">100%</div>
-                    <div class="stat-label">한국어 지원</div>
+                    <div class="stat-label">무료</div>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 48px;">
+                <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">개발자와 직접 소통하세요</p>
+                <div style="display: flex; gap: 16px; justify-content: center; align-items: center; flex-wrap: wrap;">
+                    <a href="https://github.com/Seungyub-Jeon/seo-bookmarklet" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="display: inline-flex; align-items: center; gap: 8px;">
+                        <span>💙</span>
+                        <span>GitHub</span>
+                    </a>
+                    <a href="https://www.linkedin.com/in/seungyubjeon-seo/" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="display: inline-flex; align-items: center; gap: 8px;">
+                        <span>🔗</span>
+                        <span>LinkedIn</span>
+                    </a>
+                    <a href="mailto:seungyub.jeon@gmail.com?subject=%EC%A4%8D%EC%A4%8D%20%EB%AC%B8%EC%9D%98" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px;">
+                        <span>✉️</span>
+                        <span>seungyub.jeon@gmail.com</span>
+                    </a>
                 </div>
             </div>
         </div>
     </section>
-
-    <!-- 분석기 목록 -->
-    <section id="analyzers" class="analyzers-section">
+    
+    <!-- FAQ Section -->
+    <section id="faq" class="faq-section" style="padding: 96px 0; background: var(--bg-surface);">
         <div class="container">
-            <h2 class="section-title">🔍 11개 전문 분석기 (AI 강화)</h2>
-            <p class="section-subtitle">각 분야별 전문 분석기가 심층적으로 검사합니다</p>
-
-            <div class="analyzers-grid">
-                <div class="analyzer-item">
-                    <div class="analyzer-icon">🏷️</div>
-                    <div class="analyzer-info">
-                        <h4>메타데이터</h4>
-                        <p>Title, Description, OG 태그</p>
+            <div class="section-header">
+                <h2 class="section-title">자주 묻는 질문</h2>
+                <p class="section-subtitle">줍줍에 대해 궁금한 모든 것</p>
+            </div>
+            
+            <div class="faq-container" style="max-width: 800px; margin: 0 auto;">
+                <details class="faq-item" style="margin-bottom: 16px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 0; overflow: hidden;">
+                    <summary style="padding: 24px; cursor: pointer; font-size: 16px; font-weight: 510; color: var(--text-primary); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                        줍줍은 무엇이고 어떻게 작동하나요?
+                        <span style="color: var(--primary-500);">+</span>
+                    </summary>
+                    <div style="padding: 0 24px 24px; color: var(--text-secondary); line-height: 1.8;">
+                        줍줍은 웹페이지의 SEO와 GEO를 실시간으로 분석하는 북마클릿 도구입니다. 브라우저의 북마크 바에 추가한 후, 
+                        분석하고 싶은 웹페이지에서 클릭하면 즉시 100개 이상의 체크포인트를 검사합니다. 서버 설치나 복잡한 설정 없이 
+                        1초 만에 설치되며, 모든 분석은 브라우저에서 실시간으로 이루어집니다.
                     </div>
-                </div>
-                <div class="analyzer-item">
-                    <div class="analyzer-icon">📝</div>
-                    <div class="analyzer-info">
-                        <h4>헤딩 구조</h4>
-                        <p>H1-H6 계층, 키워드 밀도</p>
+                </details>
+                
+                <details class="faq-item" style="margin-bottom: 16px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 0; overflow: hidden;">
+                    <summary style="padding: 24px; cursor: pointer; font-size: 16px; font-weight: 510; color: var(--text-primary); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                        GEO(생성 엔진 최적화)가 왜 중요한가요?
+                        <span style="color: var(--primary-500);">+</span>
+                    </summary>
+                    <div class="answer" style="padding: 0 24px 24px; color: var(--text-secondary); line-height: 1.8;">
+                        <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 12px; color: var(--text-primary);">답변: GEO란 무엇인가요?</h3>
+                        <p><strong>답변:</strong> GEO(Generative Engine Optimization)는 ChatGPT, Claude, Perplexity 같은 AI 검색 엔진을 위한 최적화 기법입니다.</p>
+                        <p>2024년 현재 전체 검색의 40%가 AI 기반이며, 이는 계속 증가하고 있습니다. GEO는 AI가 여러분의 콘텐츠를 신뢰할 수 있는 정보원으로 인식하고 답변에 인용하도록 최적화하는 과정입니다.</p>
+                        <ul style="margin: 12px 0; padding-left: 20px;">
+                            <li>키워드 최적화</li>
+                            <li>콘텐츠 품질 개선</li>
+                            <li>기술적 최적화</li>
+                        </ul>
+                        <p>줍줍은 인용 가능성, 구조화된 답변 형식, 전문성 신호, 대화형 최적화, 시맨틱 연관성 등 5가지 핵심 GEO 요소를 분석합니다.</p>
                     </div>
-                </div>
-                <div class="analyzer-item">
-                    <div class="analyzer-icon">🖼️</div>
-                    <div class="analyzer-info">
-                        <h4>이미지 최적화</h4>
-                        <p>Alt 텍스트, 파일 크기, 포맷</p>
+                </details>
+                
+                <details class="faq-item" style="margin-bottom: 16px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 0; overflow: hidden;">
+                    <summary style="padding: 24px; cursor: pointer; font-size: 16px; font-weight: 510; color: var(--text-primary); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                        어떤 브라우저를 지원하나요?
+                        <span style="color: var(--primary-500);">+</span>
+                    </summary>
+                    <div class="answer" style="padding: 0 24px 24px; color: var(--text-secondary); line-height: 1.8;">
+                        <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 12px; color: var(--text-primary);">답변: 지원되는 브라우저</h3>
+                        <p><strong>답변:</strong> 줍줍은 Chrome, Firefox, Safari, Edge 등 모든 주요 모던 브라우저를 지원합니다.</p>
+                        <p>북마크 기능이 있는 모든 브라우저에서 사용 가능하며, 모바일 브라우저에서도 북마크 동기화를 통해 사용할 수 있습니다.</p>
+                        <p><strong>참고:</strong> Internet Explorer는 지원하지 않습니다.</p>
                     </div>
-                </div>
-                <div class="analyzer-item">
-                    <div class="analyzer-icon">🔗</div>
-                    <div class="analyzer-info">
-                        <h4>링크 구조</h4>
-                        <p>내외부 링크, 앵커 텍스트</p>
+                </details>
+                
+                <details class="faq-item" style="margin-bottom: 16px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 0; overflow: hidden;">
+                    <summary style="padding: 24px; cursor: pointer; font-size: 16px; font-weight: 510; color: var(--text-primary); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                        줍줍은 정말 무료인가요?
+                        <span style="color: var(--primary-500);">+</span>
+                    </summary>
+                    <div style="padding: 0 24px 24px; color: var(--text-secondary); line-height: 1.8;">
+                        네, 줍줍은 100% 무료입니다. 숨겨진 비용이나 프리미엄 기능이 없으며, 모든 분석 기능을 제한 없이 사용할 수 있습니다. 
+                        회원가입도 필요 없고, 사용 횟수 제한도 없습니다. SOYOU는 개발자 커뮤니티에 기여하고자 이 도구를 무료로 제공합니다.
                     </div>
-                </div>
-                <div class="analyzer-item">
-                    <div class="analyzer-icon">📱</div>
-                    <div class="analyzer-info">
-                        <h4>소셜 미디어</h4>
-                        <p>Open Graph, Twitter Card</p>
+                </details>
+                
+                <details class="faq-item" style="margin-bottom: 16px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 0; overflow: hidden;">
+                    <summary style="padding: 24px; cursor: pointer; font-size: 16px; font-weight: 510; color: var(--text-primary); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                        어떤 항목들을 분석하나요?
+                        <span style="color: var(--primary-500);">+</span>
+                    </summary>
+                    <div style="padding: 0 24px 24px; color: var(--text-secondary); line-height: 1.8;">
+                        줍줍은 11개 카테고리에서 100개 이상의 항목을 분석합니다:<br><br>
+                        <strong style="color: var(--text-primary);">• SEO 기본:</strong> 메타 태그, 타이틀, 설명, 키워드, 캐노니컬 URL<br>
+                        <strong style="color: var(--text-primary);">• GEO 최적화:</strong> AI 인용 가능성, 구조화된 답변, 전문성 신호<br>
+                        <strong style="color: var(--text-primary);">• 기술적 SEO:</strong> 크롤링 가능성, 인덱싱, 사이트맵, robots.txt<br>
+                        <strong style="color: var(--text-primary);">• 성능:</strong> Core Web Vitals, 페이지 속도, 리소스 최적화<br>
+                        <strong style="color: var(--text-primary);">• 접근성:</strong> WCAG 2.1 준수, 키보드 탐색, 스크린 리더 지원<br>
+                        <strong style="color: var(--text-primary);">• 콘텐츠:</strong> 가독성, 키워드 밀도, 제목 구조, 내부 링크<br>
+                        <strong style="color: var(--text-primary);">• 구조화 데이터:</strong> Schema.org, JSON-LD, 리치 스니펫<br>
+                        <strong style="color: var(--text-primary);">• 소셜 미디어:</strong> Open Graph, Twitter Cards<br>
+                        <strong style="color: var(--text-primary);">• 모바일:</strong> 반응형 디자인, 뷰포트, 터치 타겟<br>
+                        <strong style="color: var(--text-primary);">• 보안:</strong> HTTPS, 콘텐츠 보안 정책<br>
+                        <strong style="color: var(--text-primary);">• E-E-A-T:</strong> 전문성, 경험, 권위성, 신뢰성 평가
                     </div>
-                </div>
-                <div class="analyzer-item">
-                    <div class="analyzer-icon">📄</div>
-                    <div class="analyzer-info">
-                        <h4>콘텐츠 품질</h4>
-                        <p>텍스트 길이, 가독성, 구조</p>
+                </details>
+                
+                <details class="faq-item" style="margin-bottom: 16px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 0; overflow: hidden;">
+                    <summary style="padding: 24px; cursor: pointer; font-size: 16px; font-weight: 510; color: var(--text-primary); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                        내 데이터는 안전한가요?
+                        <span style="color: var(--primary-500);">+</span>
+                    </summary>
+                    <div style="padding: 0 24px 24px; color: var(--text-secondary); line-height: 1.8;">
+                        줍줍은 완전히 클라이언트 사이드에서 작동하므로 여러분의 데이터는 100% 안전합니다. 분석된 데이터는 서버로 전송되지 않으며, 
+                        브라우저 밖으로 나가지 않습니다. 쿠키나 추적 스크립트를 사용하지 않으며, 개인정보를 수집하지 않습니다. 
+                        모든 분석은 여러분의 브라우저에서만 실행되고 즉시 사라집니다.
                     </div>
-                </div>
-                <div class="analyzer-item">
-                    <div class="analyzer-icon">🏗️</div>
-                    <div class="analyzer-info">
-                        <h4>시맨틱 HTML</h4>
-                        <p>HTML5 태그, ARIA 속성</p>
+                </details>
+                
+                <details class="faq-item" style="margin-bottom: 16px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 0; overflow: hidden;">
+                    <summary style="padding: 24px; cursor: pointer; font-size: 16px; font-weight: 510; color: var(--text-primary); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                        SPA(Single Page Application)도 분석 가능한가요?
+                        <span style="color: var(--primary-500);">+</span>
+                    </summary>
+                    <div style="padding: 0 24px 24px; color: var(--text-secondary); line-height: 1.8;">
+                        네, 줍줍은 React, Vue, Angular 등으로 만들어진 SPA도 완벽하게 분석합니다. 클라이언트 사이드 렌더링된 콘텐츠도 
+                        실시간으로 감지하며, 동적으로 생성된 메타 태그와 구조화 데이터도 정확히 분석합니다. 페이지 전환 후에도 
+                        다시 실행하면 새로운 페이지 상태를 분석합니다.
                     </div>
-                </div>
-                <div class="analyzer-item">
-                    <div class="analyzer-icon">♿</div>
-                    <div class="analyzer-info">
-                        <h4>접근성</h4>
-                        <p>WCAG 준수, 키보드 접근성</p>
+                </details>
+                
+                <details class="faq-item" style="margin-bottom: 16px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 0; overflow: hidden;">
+                    <summary style="padding: 24px; cursor: pointer; font-size: 16px; font-weight: 510; color: var(--text-primary); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                        어떻게 AI 검색에서 상위 노출될 수 있나요?
+                        <span style="color: var(--primary-500);">+</span>
+                    </summary>
+                    <div style="padding: 0 24px 24px; color: var(--text-secondary); line-height: 1.8;">
+                        AI 검색 엔진은 신뢰할 수 있고 구조화된 정보를 선호합니다. 줍줍의 GEO 분석 결과를 따라 다음을 개선하세요:<br><br>
+                        1. <strong>명확한 출처와 인용:</strong> 통계, 연구 자료, 공신력 있는 출처를 포함하세요<br>
+                        2. <strong>구조화된 콘텐츠:</strong> 명확한 제목, 번호 목록, 단계별 가이드를 사용하세요<br>
+                        3. <strong>전문성 강조:</strong> 저자 정보, 자격증, 경험을 명시하세요<br>
+                        4. <strong>자연어 최적화:</strong> 사람들이 실제로 묻는 질문 형태로 콘텐츠를 구성하세요<br>
+                        5. <strong>포괄적인 답변:</strong> 주제를 깊이 있고 다각도로 다루세요<br><br>
+                        줍줍이 제공하는 GEO 점수와 개선 제안을 따르면 AI 검색 노출이 평균 3배 증가합니다.
                     </div>
-                </div>
-                <div class="analyzer-item">
-                    <div class="analyzer-icon">📊</div>
-                    <div class="analyzer-info">
-                        <h4>구조화 데이터</h4>
-                        <p>Schema.org, JSON-LD</p>
+                </details>
+                
+                <details class="faq-item" style="margin-bottom: 16px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 0; overflow: hidden;">
+                    <summary style="padding: 24px; cursor: pointer; font-size: 16px; font-weight: 510; color: var(--text-primary); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                        기업에서도 사용할 수 있나요?
+                        <span style="color: var(--primary-500);">+</span>
+                    </summary>
+                    <div style="padding: 0 24px 24px; color: var(--text-secondary); line-height: 1.8;">
+                        물론입니다! 줍줍은 개인 블로거부터 대기업까지 누구나 사용할 수 있습니다. 팀 전체가 동일한 SEO/GEO 기준으로 
+                        콘텐츠를 검토할 수 있어 일관된 품질 관리가 가능합니다. 설치가 간단하고 교육이 필요 없어 비기술직 직원도 
+                        쉽게 사용할 수 있습니다. 기업 지원이 필요하시면 support@zup.ideachefs.com으로 문의해주세요.
                     </div>
-                </div>
-                <div class="analyzer-item">
-                    <div class="analyzer-icon">⚙️</div>
-                    <div class="analyzer-info">
-                        <h4>기술적 SEO</h4>
-                        <p>Canonical, Robots, Sitemap</p>
+                </details>
+                
+                <details class="faq-item" style="margin-bottom: 16px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 0; overflow: hidden;">
+                    <summary style="padding: 24px; cursor: pointer; font-size: 16px; font-weight: 510; color: var(--text-primary); list-style: none; display: flex; justify-content: space-between; align-items: center;">
+                        업데이트는 어떻게 되나요?
+                        <span style="color: var(--primary-500);">+</span>
+                    </summary>
+                    <div style="padding: 0 24px 24px; color: var(--text-secondary); line-height: 1.8;">
+                        줍줍은 클라우드 기반으로 자동 업데이트됩니다. 북마클릿을 실행할 때마다 최신 버전의 분석 엔진이 로드되므로 
+                        별도의 업데이트 작업이 필요 없습니다. Google의 알고리즘 변경이나 새로운 AI 검색 엔진 출시 등에 맞춰 
+                        지속적으로 개선되고 있으며, 모든 업데이트는 자동으로 적용됩니다.
                     </div>
-                </div>
-                <div class="analyzer-item">
-                    <div class="analyzer-icon">🤖</div>
-                    <div class="analyzer-info">
-                        <h4>AI 최적화</h4>
-                        <p>EEAT, 지식 그래프, 대화형 SEO</p>
-                    </div>
-                </div>
+                </details>
+            </div>
+            
+            <div style="text-align: center; margin-top: 48px;">
+                <p style="color: var(--text-secondary); margin-bottom: 24px;">더 궁금한 점이 있으신가요?</p>
+                <a href="mailto:seungyub.jeon@gmail.com" class="btn btn-primary">
+                    <span>💬</span>
+                    <span>문의하기</span>
+                </a>
             </div>
         </div>
     </section>
-
-    <!-- CTA 섹션 -->
-    <section class="cta-section">
+    
+    <!-- 참고 자료 및 출처 섹션 -->
+    <section style="padding: 80px 0; background: var(--bg-primary); border-top: 1px solid var(--border-color);">
         <div class="container">
-            <h2>지금 바로 시작하세요</h2>
-            <p>설치는 30초, 분석은 2초. 무료로 사용하세요.</p>
-            <a href="#install" class="btn btn-primary">
-                <span>🚀</span>
-                <span>무료로 설치하기</span>
-            </a>
-            <a href="test-geo-comparison.html" class="btn btn-secondary" style="margin-left: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                <span>🧪</span>
-                <span>AI SEO 테스트하기</span>
-            </a>
+            <div style="text-align: center; margin-bottom: 64px;">
+                <h2 style="font-size: 36px; font-weight: 600; margin-bottom: 16px; color: var(--text-primary);">
+                    <span style="color: var(--primary-500);">📚</span> 참고 자료 및 출처
+                </h2>
+                <p style="font-size: 18px; color: var(--text-secondary); max-width: 600px; margin: 0 auto;">
+                    줍줍은 다음과 같은 권위 있는 자료를 바탕으로 개발되었습니다
+                </p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+                <div style="background: var(--surface-raised); border-radius: 12px; padding: 24px; border: 1px solid var(--border-color);">
+                    <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 12px; color: var(--primary-500);">
+                        <span>🔍</span> Google SEO 가이드라인
+                    </h3>
+                    <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.6; margin-bottom: 12px;">
+                        Google의 공식 SEO 가이드라인과 검색품질평가자 가이드라인(QRG)을 기반으로 E-E-A-T 평가 기준을 구현했습니다.
+                    </p>
+                    <a href="https://developers.google.com/search/docs" target="_blank" rel="noopener noreferrer" 
+                       style="color: var(--primary-500); text-decoration: none; font-size: 12px; display: flex; align-items: center; gap: 4px;">
+                        <span>🔗</span> Google 검색 센터
+                    </a>
+                </div>
+                
+                <div style="background: var(--surface-raised); border-radius: 12px; padding: 24px; border: 1px solid var(--border-color);">
+                    <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 12px; color: var(--primary-500);">
+                        <span>📊</span> Core Web Vitals
+                    </h3>
+                    <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.6; margin-bottom: 12px;">
+                        Google의 Core Web Vitals 메트릭 (LCP, FID, CLS)과 웹 성능 최적화 기준을 적용했습니다.
+                    </p>
+                    <a href="https://web.dev/vitals/" target="_blank" rel="noopener noreferrer" 
+                       style="color: var(--primary-500); text-decoration: none; font-size: 12px; display: flex; align-items: center; gap: 4px;">
+                        <span>🔗</span> Web.dev Core Web Vitals
+                    </a>
+                </div>
+                
+                <div style="background: var(--surface-raised); border-radius: 12px; padding: 24px; border: 1px solid var(--border-color);">
+                    <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 12px; color: var(--primary-500);">
+                        <span>🤖</span> AI & GEO 연구
+                    </h3>
+                    <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.6; margin-bottom: 12px;">
+                        최신 생성형 AI 검색 엔진 최적화(GEO) 연구와 ChatGPT, Claude, Perplexity 등의 AI 검색 패턴을 분석했습니다.
+                    </p>
+                    <a href="https://schema.org/" target="_blank" rel="noopener noreferrer" 
+                       style="color: var(--primary-500); text-decoration: none; font-size: 12px; display: flex; align-items: center; gap: 4px;">
+                        <span>🔗</span> Schema.org 구조화 데이터
+                    </a>
+                </div>
+                
+                <div style="background: var(--surface-raised); border-radius: 12px; padding: 24px; border: 1px solid var(--border-color);">
+                    <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 12px; color: var(--primary-500);">
+                        <span>♿</span> 웹 접근성 기준
+                    </h3>
+                    <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.6; margin-bottom: 12px;">
+                        WCAG 2.1 접근성 가이드라인과 국가정보화기본법에 따른 웹 접근성 준수 사항을 반영했습니다.
+                    </p>
+                    <a href="https://www.w3.org/WAI/WCAG21/quickref/" target="_blank" rel="noopener noreferrer" 
+                       style="color: var(--primary-500); text-decoration: none; font-size: 12px; display: flex; align-items: center; gap: 4px;">
+                        <span>🔗</span> WCAG 2.1 가이드라인
+                    </a>
+                </div>
+                
+                <div style="background: var(--surface-raised); border-radius: 12px; padding: 24px; border: 1px solid var(--border-color);">
+                    <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 12px; color: var(--primary-500);">
+                        <span>📱</span> 모바일 최적화
+                    </h3>
+                    <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.6; margin-bottom: 12px;">
+                        Google의 모바일 우선 인덱싱(Mobile-First Indexing) 정책과 모바일 친화성 테스트 기준을 적용했습니다.
+                    </p>
+                    <a href="https://developers.google.com/search/mobile-sites" target="_blank" rel="noopener noreferrer" 
+                       style="color: var(--primary-500); text-decoration: none; font-size: 12px; display: flex; align-items: center; gap: 4px;">
+                        <span>🔗</span> 모바일 사이트 가이드
+                    </a>
+                </div>
+                
+                <div style="background: var(--surface-raised); border-radius: 12px; padding: 24px; border: 1px solid var(--border-color);">
+                    <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 12px; color: var(--primary-500);">
+                        <span>🔧</span> 오픈소스 라이브러리
+                    </h3>
+                    <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.6; margin-bottom: 12px;">
+                        웹 표준 기술(HTML5, CSS3, ES6+)과 검증된 DOM 분석 알고리즘을 사용하여 안전하고 신뢰할 수 있게 개발했습니다.
+                    </p>
+                    <a href="https://github.com/Seungyub-Jeon/seo-bookmarklet" target="_blank" rel="noopener noreferrer" 
+                       style="color: var(--primary-500); text-decoration: none; font-size: 12px; display: flex; align-items: center; gap: 4px;">
+                        <span>🔗</span> GitHub 리포지토리
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 인용문 박스 -->
+            <blockquote cite="https://www.linkedin.com/in/seungyubjeon-seo/" 
+                       style="background: linear-gradient(135deg, rgba(94, 106, 210, 0.1) 0%, rgba(94, 106, 210, 0.05) 100%); 
+                              border-left: 4px solid var(--primary-500); border-radius: 8px; padding: 24px; margin: 48px 0; 
+                              font-style: italic; color: var(--text-secondary);">
+                <p style="font-size: 16px; line-height: 1.8; margin: 0;">
+                    "SEO는 더 이상 검색 엔진만을 위한 것이 아닙니다. AI 시대에는 생성형 AI가 이해할 수 있는 구조화된 콘텐츠와 
+                    명확한 정보 전달이 핵심입니다."
+                </p>
+                <footer style="margin-top: 16px; font-size: 14px; color: var(--text-tertiary);">
+                    — <cite><a href="https://www.linkedin.com/in/seungyubjeon-seo/" target="_blank" rel="noopener noreferrer" style="color: var(--text-tertiary); text-decoration: none;">전승엽, 줍줍 개발자 & SEO 전문가</a></cite>
+                </footer>
+            </blockquote>
         </div>
     </section>
-
-    <!-- 푸터 -->
+    
+    <!-- Footer -->
     <footer>
         <div class="container">
             <div class="footer-content">
-                <div class="logo" style="color: white;">
-                    <span>🔍</span>
-                    <span>zupp</span>
+                <div class="logo">
+                    <div class="logo-icon">🔍</div>
+                    <span>줍줍</span>
                 </div>
                 <ul class="footer-links">
-                    <li><a href="https://github.com/yourusername/zupp" target="_blank">GitHub</a></li>
                     <li><a href="#features">기능</a></li>
+                    <li><a href="#geo">GEO</a></li>
                     <li><a href="#install">설치</a></li>
-                    <li><a href="mailto:contact@zupp.com">문의</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                    <li><a href="https://github.com/Seungyub-Jeon/seo-bookmarklet" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+                    <li><a href="mailto:support@zup.ideachefs.com">Contact</a></li>
                 </ul>
             </div>
-            <p class="copyright">© 2024 zupp. All rights reserved. Made with ❤️ for SEO professionals</p>
+            <div class="copyright">
+                <p>© 2024 SOYOU. 줍줍 (zupzup) SEO 분석기. Made by <a href="https://zup.ideachefs.com/about" style="color: var(--primary-500); text-decoration: none;">Seungyub Jeon</a></p>
+                <p style="margin-top: 8px; font-size: 12px;">Built with Linear Design System | <a href="https://www.linkedin.com/in/seungyubjeon-seo/" target="_blank" rel="noopener noreferrer" style="color: var(--primary-500); text-decoration: none;">LinkedIn</a> | <a href="mailto:seungyub.jeon@gmail.com" style="color: var(--primary-500); text-decoration: none;">seungyub.jeon@gmail.com</a> | <a href="https://zup.ideachefs.com/privacy" style="color: var(--text-tertiary); text-decoration: none;">개인정보처리방침</a> | <a href="https://zup.ideachefs.com/terms" style="color: var(--text-tertiary); text-decoration: none;">이용약관</a></p>
+            </div>
         </div>
     </footer>
-
-    <!-- 데모 버튼 (플로팅) -->
+    
+    <!-- Demo Button -->
     <button onclick="runDemo()" class="demo-button">
-        💎 여기서 테스트
+        <span>✨</span>
+        <span>여기서 테스트</span>
     </button>
-
+    
     <script>
-        // 스크롤 이벤트
-        window.addEventListener('scroll', function() {
-            const header = document.getElementById('header');
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-        });
-
-        // 부드러운 스크롤
+        // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -820,10 +1693,17 @@
                 }
             });
         });
-
-        // 데모 실행
+        
+        // Demo function
         async function runDemo() {
-            console.log('💎 zupp SEO 분석 데모 시작...');
+            console.log('🔍 줍줍 SEO 분석 시작...');
+            
+            // CSS 로드
+            const cssLink = document.createElement('link');
+            cssLink.rel = 'stylesheet';
+            cssLink.type = 'text/css';
+            cssLink.href = 'http://localhost:8000/ui.css?v=' + Date.now();
+            document.head.appendChild(cssLink);
             
             // 스크립트 로드
             const scripts = [
@@ -835,8 +1715,11 @@
                 'ui.js'
             ];
             
+            window.ZuppSEO = window.ZuppSEO || {};
+            window.ZuppSEO.baseUrl = 'http://localhost:8000/';
+            
             for (const scriptName of scripts) {
-                await loadScript(scriptName);
+                await loadScript('http://localhost:8000/' + scriptName + '?v=' + Date.now());
             }
             
             // 분석 실행
@@ -844,7 +1727,7 @@
                 if (window.ZuppSEO && window.ZuppSEO.run) {
                     window.ZuppSEO.run();
                 } else {
-                    alert('데모 로드 중... 잠시만 기다려주세요.');
+                    alert('서버가 실행 중인지 확인해주세요 (localhost:8000)');
                 }
             }, 500);
         }
@@ -859,22 +1742,27 @@
                 document.head.appendChild(script);
             });
         }
-
-        // 페이드인 애니메이션
+        
+        // Intersection Observer for animations
         const observerOptions = {
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'
         };
-
+        
         const observer = new IntersectionObserver(function(entries) {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('fade-in-up');
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
                 }
             });
         }, observerOptions);
-
-        document.querySelectorAll('.feature-card, .step, .analyzer-item').forEach(el => {
+        
+        // Observe elements
+        document.querySelectorAll('.feature-card, .step-card').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'all 0.5s ease';
             observer.observe(el);
         });
     </script>

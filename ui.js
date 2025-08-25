@@ -61,7 +61,9 @@
             items.push({
               status: 'success',
               title: pass.message,
-              current: pass.details?.value || '정상'
+              current: pass.details?.value || '정상',
+              // details 객체의 모든 속성을 item에 추가 (code 등)
+              ...pass.details
             });
           });
           
@@ -409,7 +411,7 @@
             <div class="brand-logo">
               <span class="logo-icon">🔍</span>
               <div class="brand-text">
-                <h1>줄줄분석기</h1>
+                <h1>줍줍분석기</h1>
                 <p>SEO/GEO Analyzer</p>
               </div>
             </div>
@@ -818,7 +820,7 @@
               <div class="brand-logo">
                 <span class="logo-icon">🔍</span>
                 <div class="brand-text">
-                  <h1 class="service-name">줄줄분석기</h1>
+                  <h1 class="service-name">줍줍분석기</h1>
                   <p class="service-desc">SEO/GEO Analyzer</p>
                 </div>
               </div>
@@ -895,7 +897,7 @@
             </div>
             <div class="footer-branding">
               <div class="brand-info">
-                <span class="brand-name">줄줄분석기</span>
+                <span class="brand-name">줍줍분석기</span>
                 <span class="brand-by">by</span>
                 <a href="https://soyoyu.com" target="_blank" class="company-link">SOYOYU</a>
               </div>
@@ -3205,143 +3207,654 @@
 
     renderTechnicalCategory(category) {
       const technicalData = category.data || {};
-      const coreWebVitals = technicalData.coreWebVitals || {};
-      const crawlability = technicalData.crawlability || {};
-      const resources = technicalData.resources || {};
       
-      const categoryHTML = [];
+      // 점수 계산
+      const scores = this.calculateTechnicalScores(technicalData);
       
-      // 카테고리 헤더
-      categoryHTML.push(`
-        <div class="category-detail">
-          <div class="category-header">
-            <div class="cat-title">
-              <span class="cat-icon-large">${category.icon || '⚙️'}</span>
-              <div>
-                <h2>${category.name} <span class="item-count">${category.items?.length || 0}개 항목 체크</span></h2>
-              </div>
-            </div>
-            ${category.description ? `<p class="category-description">${category.description}</p>` : ''}
-          </div>
-      `);
-      
-      // Core Web Vitals 섹션
-      if (coreWebVitals) {
-        categoryHTML.push(`
-          <div class="core-web-vitals-section">
-            <h3 class="section-title">📊 Core Web Vitals</h3>
-            <div class="vitals-grid">
-              ${this.renderVitalGauge('LCP', coreWebVitals.lcp, 2500, 4000, 'Largest Contentful Paint')}
-              ${this.renderVitalGauge('FCP', coreWebVitals.fcp, 1800, 3000, 'First Contentful Paint')}
-              ${this.renderVitalGauge('CLS', coreWebVitals.cls, 0.1, 0.25, 'Cumulative Layout Shift', true)}
-              ${this.renderVitalGauge('FID', coreWebVitals.fid, 100, 300, 'First Input Delay')}
-              ${this.renderVitalGauge('TTFB', coreWebVitals.ttfb, 600, 1800, 'Time to First Byte')}
-            </div>
-            <div class="vitals-note">
-              <p>💡 Core Web Vitals는 실제 사용자 경험을 측정하는 중요한 지표입니다.</p>
-            </div>
-          </div>
-        `);
-      }
-      
-      // 크롤링 최적화 섹션
-      if (crawlability) {
-        categoryHTML.push(`
-          <div class="crawlability-section">
-            <h3 class="section-title">🤖 크롤링 & 인덱싱</h3>
-            <div class="crawl-grid">
-              ${this.renderCrawlItem('Canonical URL', crawlability.canonical)}
-              ${this.renderCrawlItem('Meta Robots', crawlability.metaRobots)}
-              ${this.renderCrawlItem('Hreflang', crawlability.hreflang)}
-              ${this.renderCrawlItem('Alternate Links', crawlability.alternateLinks)}
-              ${this.renderCrawlItem('Pagination', crawlability.pagination)}
-            </div>
-          </div>
-        `);
-      }
-      
-      // 리소스 최적화 섹션
-      if (technicalData.scripts || technicalData.stylesheets) {
-        categoryHTML.push(`
-          <div class="resource-section">
-            <h3 class="section-title">⚡ 리소스 최적화</h3>
-            <div class="resource-stats">
-              <div class="resource-card">
-                <div class="resource-icon">📜</div>
-                <div class="resource-info">
-                  <h4>JavaScript</h4>
-                  <p>총 ${technicalData.scripts?.total || 0}개</p>
-                  <p class="resource-detail">
-                    Async: ${technicalData.scripts?.async || 0}, 
-                    Defer: ${technicalData.scripts?.defer || 0}
-                  </p>
-                </div>
-              </div>
-              <div class="resource-card">
-                <div class="resource-icon">🎨</div>
-                <div class="resource-info">
-                  <h4>CSS</h4>
-                  <p>총 ${technicalData.stylesheets?.total || 0}개</p>
-                  <p class="resource-detail">
-                    Critical: ${technicalData.stylesheets?.critical || 0},
-                    Preload: ${technicalData.stylesheets?.preload || 0}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        `);
-      }
-      
-      // 보안 섹션
-      if (technicalData.security) {
-        categoryHTML.push(`
-          <div class="security-section">
-            <h3 class="section-title">🔒 보안 & 신뢰도</h3>
-            <div class="security-checks">
-              <div class="security-item ${technicalData.security.httpsLinks > technicalData.security.httpLinks ? 'secure' : 'warning'}">
-                <span class="security-icon">${technicalData.security.httpsLinks > technicalData.security.httpLinks ? '✅' : '⚠️'}</span>
-                <span>HTTPS 링크: ${technicalData.security.httpsLinks}개 / HTTP 링크: ${technicalData.security.httpLinks}개</span>
-              </div>
-              ${technicalData.security.mixedContent > 0 ? `
-                <div class="security-item warning">
-                  <span class="security-icon">⚠️</span>
-                  <span>Mixed Content 문제: ${technicalData.security.mixedContent}개 리소스</span>
-                </div>
-              ` : ''}
-            </div>
-          </div>
-        `);
-      }
-      
-      // 체크리스트
-      categoryHTML.push(`
-        <div class="check-list category-checks">
-          ${category.items.map(item => `
-            <div class="check-item ${item.status}">
-              <div class="check-indicator">
-                ${item.status === 'success' ? '✓' : item.status === 'warning' ? '!' : item.status === 'info' ? 'ℹ' : '×'}
-              </div>
-              <div class="check-content">
-                <div class="check-title">${item.title}</div>
-                ${item.current ? `
-                  <div class="check-current">
-                    <span class="label">현재:</span>
-                    <code>${this.escapeHtml(item.current)}</code>
-                  </div>
-                ` : ''}
-                ${item.suggestion && item.status !== 'success' ? `
-                  <div class="check-suggestion">${item.suggestion}</div>
-                ` : ''}
-              </div>
-            </div>
-          `).join('')}
+      return `
+        <div class="category-detail tech-category">
+          ${this.renderTechHeader(category, scores.overall)}
+          ${this.renderTechDashboard(technicalData, scores)}
+          ${this.renderTechDetails(technicalData)}
+          ${this.renderTechChecklist(category.items)}
         </div>
-      `);
+      `;
+    }
+    
+    // 기술적 SEO 점수 계산 시스템
+    calculateTechnicalScores(data) {
+      // Core Web Vitals 점수 (40% 가중치)
+      const cwvScore = this.calculateCWVScore(data.coreWebVitals);
       
-      categoryHTML.push('</div>');
+      // 크롤링 점수 (30% 가중치)
+      const crawlScore = this.calculateCrawlScore(data.crawlability);
       
-      return categoryHTML.join('');
+      // 보안 점수 (20% 가중치)
+      const securityScore = this.calculateSecurityScore(data.security);
+      
+      // 리소스 최적화 점수 (10% 가중치)
+      const resourceScore = this.calculateResourceScore(data.scripts, data.stylesheets);
+      
+      return {
+        cwv: cwvScore,
+        crawl: crawlScore,
+        security: securityScore,
+        resource: resourceScore,
+        overall: Math.round(
+          cwvScore * 0.4 + 
+          crawlScore * 0.3 + 
+          securityScore * 0.2 + 
+          resourceScore * 0.1
+        )
+      };
+    }
+    
+    calculateCWVScore(cwv) {
+      if (!cwv) return 0;
+      
+      let score = 100;
+      
+      // LCP 평가 (좋음: <2.5s, 개선필요: <4s, 나쁨: >=4s)
+      if (cwv.lcp) {
+        if (cwv.lcp < 2500) score -= 0;
+        else if (cwv.lcp < 4000) score -= 15;
+        else score -= 30;
+      }
+      
+      // FID 평가 (좋음: <100ms, 개선필요: <300ms, 나쁨: >=300ms)
+      if (cwv.fid !== undefined) {
+        if (cwv.fid < 100) score -= 0;
+        else if (cwv.fid < 300) score -= 15;
+        else score -= 30;
+      }
+      
+      // CLS 평가 (좋음: <0.1, 개선필요: <0.25, 나쁨: >=0.25)
+      if (cwv.cls !== undefined) {
+        if (cwv.cls < 0.1) score -= 0;
+        else if (cwv.cls < 0.25) score -= 15;
+        else score -= 30;
+      }
+      
+      return Math.max(0, score);
+    }
+    
+    calculateCrawlScore(crawl) {
+      if (!crawl) return 0;
+      
+      let score = 0;
+      
+      // Canonical URL (30점)
+      if (crawl.canonical?.exists) score += 30;
+      
+      // Meta Robots (20점)
+      if (crawl.metaRobots?.exists && !crawl.metaRobots?.content?.includes('noindex')) score += 20;
+      
+      // Sitemap (20점)
+      if (crawl.sitemap?.exists) score += 20;
+      
+      // Hreflang (15점)
+      if (crawl.hreflang?.exists) score += 15;
+      
+      // Pagination (15점)
+      if (crawl.pagination?.exists) score += 15;
+      
+      return Math.min(100, score);
+    }
+    
+    calculateSecurityScore(security) {
+      if (!security) return 100; // 보안 데이터 없으면 기본 100점
+      
+      let score = 100;
+      
+      // HTTP 링크가 있으면 감점
+      if (security.httpLinks > 0) {
+        score -= Math.min(30, security.httpLinks * 5);
+      }
+      
+      // Mixed Content 문제
+      if (security.mixedContent > 0) {
+        score -= Math.min(40, security.mixedContent * 10);
+      }
+      
+      return Math.max(0, score);
+    }
+    
+    calculateResourceScore(scripts, stylesheets) {
+      let score = 100;
+      
+      // 스크립트 최적화
+      if (scripts) {
+        const asyncRatio = scripts.total > 0 ? (scripts.async || 0) / scripts.total : 0;
+        const deferRatio = scripts.total > 0 ? (scripts.defer || 0) / scripts.total : 0;
+        
+        if (asyncRatio + deferRatio < 0.5) score -= 25;
+      }
+      
+      // 스타일시트 최적화
+      if (stylesheets) {
+        if (stylesheets.total > 10) score -= 15;
+        if (!stylesheets.critical) score -= 10;
+      }
+      
+      return Math.max(0, score);
+    }
+    
+    // 기술적 SEO 헤더 렌더링
+    renderTechHeader(category, overallScore) {
+      return `
+        <div class="category-header">
+          <div class="cat-title">
+            <span class="cat-icon-large">${category.icon || '⚙️'}</span>
+            <div>
+              <h2>${category.name} <span class="item-count">${category.items?.length || 0}개 항목 체크</span></h2>
+            </div>
+          </div>
+          <div class="cat-score">
+            <div class="score-bar">
+              <div class="score-fill" style="width: ${overallScore}%; background: ${this.getScoreColor(overallScore)}"></div>
+            </div>
+            <span class="score-label">${overallScore}/100</span>
+          </div>
+        </div>
+      `;
+    }
+    
+    // 기술적 SEO 대시보드 렌더링
+    renderTechDashboard(data, scores) {
+      return `
+        <div class="tech-dashboard">
+          <h3 class="dashboard-title">📊 기술적 SEO 성과 지표</h3>
+          
+          <div class="tech-metrics-grid">
+            <!-- 종합 점수 카드 -->
+            <div class="tech-metric-card overall-card">
+              <div class="metric-header">
+                <span class="metric-icon">🎯</span>
+                <span class="metric-label">기술적 건강도</span>
+              </div>
+              <div class="metric-score ${this.getScoreClass(scores.overall)}">
+                ${scores.overall}%
+              </div>
+              <div class="metric-breakdown">
+                <div class="breakdown-item">
+                  <span class="breakdown-label">성능</span>
+                  <div class="mini-bar">
+                    <div class="mini-fill" style="width: ${scores.cwv}%; background: ${this.getScoreColor(scores.cwv)}"></div>
+                  </div>
+                  <span class="breakdown-value">${scores.cwv}%</span>
+                </div>
+                <div class="breakdown-item">
+                  <span class="breakdown-label">크롤링</span>
+                  <div class="mini-bar">
+                    <div class="mini-fill" style="width: ${scores.crawl}%; background: ${this.getScoreColor(scores.crawl)}"></div>
+                  </div>
+                  <span class="breakdown-value">${scores.crawl}%</span>
+                </div>
+                <div class="breakdown-item">
+                  <span class="breakdown-label">보안</span>
+                  <div class="mini-bar">
+                    <div class="mini-fill" style="width: ${scores.security}%; background: ${this.getScoreColor(scores.security)}"></div>
+                  </div>
+                  <span class="breakdown-value">${scores.security}%</span>
+                </div>
+                <div class="breakdown-item">
+                  <span class="breakdown-label">리소스</span>
+                  <div class="mini-bar">
+                    <div class="mini-fill" style="width: ${scores.resource}%; background: ${this.getScoreColor(scores.resource)}"></div>
+                  </div>
+                  <span class="breakdown-value">${scores.resource}%</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Core Web Vitals 카드 -->
+            ${this.renderCWVCard(data.coreWebVitals)}
+            
+            <!-- 크롤링 카드 -->
+            ${this.renderCrawlCard(data.crawlability, scores.crawl)}
+            
+            <!-- 보안 카드 -->
+            ${this.renderSecurityCard(data.security, scores.security)}
+          </div>
+        </div>
+      `;
+    }
+    
+    // Core Web Vitals 카드 렌더링
+    renderCWVCard(cwv) {
+      const lcpStatus = this.getCWVStatus(cwv?.lcp, 2500, 4000);
+      const fidStatus = this.getCWVStatus(cwv?.fid, 100, 300);
+      const clsStatus = this.getCWVStatus(cwv?.cls * 1000, 100, 250); // CLS는 소수점이므로 1000 곱함
+      
+      return `
+        <div class="tech-metric-card cwv-card">
+          <div class="metric-header">
+            <span class="metric-icon">⚡</span>
+            <span class="metric-label">Core Web Vitals</span>
+          </div>
+          <div class="cwv-mini-gauges">
+            <div class="mini-gauge ${lcpStatus}">
+              <div class="gauge-label">LCP</div>
+              <div class="gauge-value">${cwv?.lcp ? (cwv.lcp/1000).toFixed(1) + 's' : 'N/A'}</div>
+            </div>
+            <div class="mini-gauge ${fidStatus}">
+              <div class="gauge-label">FID</div>
+              <div class="gauge-value">${cwv?.fid ? cwv.fid + 'ms' : 'N/A'}</div>
+            </div>
+            <div class="mini-gauge ${clsStatus}">
+              <div class="gauge-label">CLS</div>
+              <div class="gauge-value">${cwv?.cls ? cwv.cls.toFixed(2) : 'N/A'}</div>
+            </div>
+          </div>
+          <div class="cwv-message">
+            ${this.getCWVMessage(lcpStatus, fidStatus, clsStatus)}
+          </div>
+        </div>
+      `;
+    }
+    
+    // CWV 상태 판단
+    getCWVStatus(value, goodThreshold, poorThreshold) {
+      if (value === null || value === undefined) return 'unknown';
+      if (value < goodThreshold) return 'good';
+      if (value < poorThreshold) return 'warning';
+      return 'error';
+    }
+    
+    // CWV 메시지 생성
+    getCWVMessage(lcp, fid, cls) {
+      const issues = [];
+      if (lcp === 'error') issues.push('LCP');
+      if (fid === 'error') issues.push('FID');
+      if (cls === 'error') issues.push('CLS');
+      
+      if (issues.length === 0) {
+        return '<span class="status-good">✅ 모든 지표 양호</span>';
+      } else if (issues.length === 1) {
+        return `<span class="status-warning">⚠️ ${issues[0]} 개선 필요</span>`;
+      } else {
+        return `<span class="status-error">🚨 ${issues.join(', ')} 개선 필요</span>`;
+      }
+    }
+    
+    // 크롤링 카드 렌더링
+    renderCrawlCard(crawl, score) {
+      const items = [];
+      
+      if (crawl?.canonical?.exists) {
+        items.push({ status: 'good', text: 'Canonical 설정됨' });
+      } else {
+        items.push({ status: 'error', text: 'Canonical 미설정' });
+      }
+      
+      if (crawl?.metaRobots?.exists) {
+        items.push({ status: 'good', text: 'Robots 메타 태그' });
+      }
+      
+      if (crawl?.sitemap?.exists) {
+        items.push({ status: 'good', text: 'Sitemap 확인' });
+      } else {
+        items.push({ status: 'warning', text: 'Sitemap 미확인' });
+      }
+      
+      return `
+        <div class="tech-metric-card crawl-card">
+          <div class="metric-header">
+            <span class="metric-icon">🤖</span>
+            <span class="metric-label">크롤링 & 인덱싱</span>
+          </div>
+          <div class="metric-score ${this.getScoreClass(score)}">
+            ${score}%
+          </div>
+          <div class="metric-highlights">
+            ${items.map(item => `
+              <div class="highlight-item">
+                <span class="status-dot ${item.status}"></span>
+                <span>${item.text}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+    
+    // 보안 카드 렌더링
+    renderSecurityCard(security, score) {
+      const badges = [];
+      
+      if (!security?.httpLinks || security.httpLinks === 0) {
+        badges.push({ class: 'https', text: 'HTTPS ✓' });
+      }
+      
+      if (!security?.mixedContent || security.mixedContent === 0) {
+        badges.push({ class: 'mixed', text: '혼합 콘텐츠 없음' });
+      }
+      
+      return `
+        <div class="tech-metric-card security-card">
+          <div class="metric-header">
+            <span class="metric-icon">🔒</span>
+            <span class="metric-label">보안 & 신뢰도</span>
+          </div>
+          <div class="metric-score ${this.getScoreClass(score)}">
+            ${score}%
+          </div>
+          <div class="security-badges">
+            ${badges.map(badge => `
+              <span class="badge ${badge.class}">${badge.text}</span>
+            `).join('')}
+            ${security?.httpLinks > 0 ? `
+              <span class="badge warning">HTTP 링크 ${security.httpLinks}개</span>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }
+    
+    // 점수 클래스 결정
+    getScoreClass(score) {
+      if (score >= 70) return 'good';
+      if (score >= 50) return 'warning';
+      return 'error';
+    }
+    
+    // 기술적 SEO 상세 섹션 (아코디언)
+    renderTechDetails(data) {
+      return `
+        <div class="tech-details-section">
+          <!-- 성능 상세 -->
+          <div class="detail-accordion">
+            <button class="accordion-header" onclick="window.ZuppUI.toggleAccordion(this)">
+              <span class="accordion-icon">📊</span>
+              <span class="accordion-title">성능 지표 상세</span>
+              <span class="accordion-toggle">▶</span>
+            </button>
+            <div class="accordion-content collapsed">
+              ${this.renderPerformanceDetails(data)}
+            </div>
+          </div>
+          
+          <!-- 크롤링 상세 -->
+          <div class="detail-accordion">
+            <button class="accordion-header" onclick="window.ZuppUI.toggleAccordion(this)">
+              <span class="accordion-icon">🤖</span>
+              <span class="accordion-title">크롤링 & 인덱싱 상세</span>
+              <span class="accordion-toggle">▶</span>
+            </button>
+            <div class="accordion-content collapsed">
+              ${this.renderCrawlDetails(data.crawlability)}
+            </div>
+          </div>
+          
+          <!-- 리소스 상세 -->
+          <div class="detail-accordion">
+            <button class="accordion-header" onclick="window.ZuppUI.toggleAccordion(this)">
+              <span class="accordion-icon">⚡</span>
+              <span class="accordion-title">리소스 최적화 상세</span>
+              <span class="accordion-toggle">▶</span>
+            </button>
+            <div class="accordion-content collapsed">
+              ${this.renderResourceDetails(data)}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+    
+    // 아코디언 토글 함수
+    toggleAccordion(button) {
+      const content = button.nextElementSibling;
+      const toggle = button.querySelector('.accordion-toggle');
+      
+      if (content.classList.contains('collapsed')) {
+        content.classList.remove('collapsed');
+        toggle.textContent = '▼';
+        button.classList.add('active');
+      } else {
+        content.classList.add('collapsed');
+        toggle.textContent = '▶';
+        button.classList.remove('active');
+      }
+    }
+    
+    // 성능 상세 렌더링
+    renderPerformanceDetails(data) {
+      const cwv = data.coreWebVitals || {};
+      
+      return `
+        <div class="performance-details">
+          <h4>Core Web Vitals 상세 분석</h4>
+          <div class="cwv-detailed-grid">
+            ${this.renderDetailedMetric('LCP', cwv.lcp, 2500, 4000, 'ms', '최대 콘텐츠 렌더링 시간')}
+            ${this.renderDetailedMetric('FID', cwv.fid, 100, 300, 'ms', '최초 입력 지연 시간')}
+            ${this.renderDetailedMetric('CLS', cwv.cls, 0.1, 0.25, '', '누적 레이아웃 이동')}
+            ${this.renderDetailedMetric('FCP', cwv.fcp, 1800, 3000, 'ms', '최초 콘텐츠 렌더링')}
+            ${this.renderDetailedMetric('TTFB', cwv.ttfb, 600, 1800, 'ms', '최초 바이트 수신 시간')}
+          </div>
+          
+          <div class="performance-recommendations">
+            <h5>💡 개선 권장사항</h5>
+            <ul>
+              ${cwv.lcp > 4000 ? '<li>LCP: 이미지 최적화 및 서버 응답 속도 개선</li>' : ''}
+              ${cwv.fid > 300 ? '<li>FID: JavaScript 실행 최적화 필요</li>' : ''}
+              ${cwv.cls > 0.25 ? '<li>CLS: 레이아웃 이동 방지를 위한 크기 예약</li>' : ''}
+            </ul>
+          </div>
+        </div>
+      `;
+    }
+    
+    // 상세 메트릭 렌더링
+    renderDetailedMetric(name, value, goodThreshold, poorThreshold, unit, description) {
+      const status = this.getCWVStatus(value, goodThreshold, poorThreshold);
+      const displayValue = value !== null && value !== undefined ? 
+        (unit === 'ms' ? value : value.toFixed(2)) + unit : 'N/A';
+      
+      return `
+        <div class="detailed-metric ${status}">
+          <div class="metric-name">${name}</div>
+          <div class="metric-value">${displayValue}</div>
+          <div class="metric-desc">${description}</div>
+        </div>
+      `;
+    }
+    
+    // 크롤링 상세 렌더링
+    renderCrawlDetails(crawl) {
+      if (!crawl) return '<p>크롤링 데이터가 없습니다.</p>';
+      
+      return `
+        <div class="crawl-details">
+          <h4>크롤링 및 인덱싱 상태</h4>
+          <div class="crawl-items">
+            ${this.renderCrawlDetailItem('Canonical URL', crawl.canonical)}
+            ${this.renderCrawlDetailItem('Meta Robots', crawl.metaRobots)}
+            ${this.renderCrawlDetailItem('Sitemap', crawl.sitemap)}
+            ${this.renderCrawlDetailItem('Hreflang', crawl.hreflang)}
+            ${this.renderCrawlDetailItem('Pagination', crawl.pagination)}
+          </div>
+        </div>
+      `;
+    }
+    
+    // 크롤링 상세 항목 렌더링
+    renderCrawlDetailItem(name, data) {
+      const exists = data?.exists || false;
+      const content = data?.content || data?.url || '';
+      
+      return `
+        <div class="crawl-detail-item">
+          <div class="item-header">
+            <span class="item-name">${name}</span>
+            <span class="item-status ${exists ? 'exists' : 'missing'}">
+              ${exists ? '✅ 설정됨' : '❌ 미설정'}
+            </span>
+          </div>
+          ${content ? `
+            <div class="item-content">
+              <code>${this.escapeHtml(content)}</code>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+    
+    // 리소스 상세 렌더링
+    renderResourceDetails(data) {
+      const scripts = data.scripts || {};
+      const stylesheets = data.stylesheets || {};
+      
+      return `
+        <div class="resource-details">
+          <h4>리소스 최적화 상태</h4>
+          
+          <div class="resource-grid">
+            <div class="resource-block">
+              <h5>📜 JavaScript</h5>
+              <div class="resource-stats">
+                <div class="stat">총 개수: ${scripts.total || 0}</div>
+                <div class="stat">Async: ${scripts.async || 0}</div>
+                <div class="stat">Defer: ${scripts.defer || 0}</div>
+                <div class="stat">Inline: ${scripts.inline || 0}</div>
+              </div>
+            </div>
+            
+            <div class="resource-block">
+              <h5>🎨 CSS</h5>
+              <div class="resource-stats">
+                <div class="stat">총 개수: ${stylesheets.total || 0}</div>
+                <div class="stat">Critical: ${stylesheets.critical || 0}</div>
+                <div class="stat">Preload: ${stylesheets.preload || 0}</div>
+                <div class="stat">Inline: ${stylesheets.inline || 0}</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="resource-recommendations">
+            <h5>💡 최적화 팁</h5>
+            <ul>
+              ${scripts.total > 10 ? '<li>JavaScript 파일이 너무 많습니다. 번들링을 고려하세요.</li>' : ''}
+              ${(scripts.async || 0) + (scripts.defer || 0) < scripts.total / 2 ? '<li>비동기 로딩(async/defer)을 활용하세요.</li>' : ''}
+              ${!stylesheets.critical ? '<li>Critical CSS를 적용하여 초기 렌더링을 개선하세요.</li>' : ''}
+            </ul>
+          </div>
+        </div>
+      `;
+    }
+    
+    // 기술적 SEO 체크리스트 렌더링
+    renderTechChecklist(items) {
+      if (!items || items.length === 0) return '';
+      
+      // 우선순위별로 항목 분류
+      const prioritized = this.prioritizeTechItems(items);
+      
+      return `
+        <div class="tech-checklist-section">
+          ${prioritized.critical.length > 0 ? `
+            <div class="priority-group critical">
+              <h3 class="group-header">
+                <span class="priority-icon">🚨</span>
+                긴급 개선 필요 (${prioritized.critical.length}개)
+              </h3>
+              <div class="check-items">
+                ${this.renderCheckItems(prioritized.critical)}
+              </div>
+            </div>
+          ` : ''}
+          
+          ${prioritized.recommended.length > 0 ? `
+            <div class="priority-group recommended">
+              <h3 class="group-header">
+                <span class="priority-icon">⚠️</span>
+                권장 개선 사항 (${prioritized.recommended.length}개)
+              </h3>
+              <div class="check-items">
+                ${this.renderCheckItems(prioritized.recommended)}
+              </div>
+            </div>
+          ` : ''}
+          
+          ${prioritized.optional.length > 0 ? `
+            <div class="priority-group optional">
+              <h3 class="group-header" onclick="window.ZuppUI.togglePriorityGroup(this)">
+                <span class="priority-icon">💡</span>
+                추가 최적화 (${prioritized.optional.length}개)
+                <span class="group-toggle">▶</span>
+              </h3>
+              <div class="check-items collapsed">
+                ${this.renderCheckItems(prioritized.optional)}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+    
+    // 기술적 SEO 항목 우선순위 분류
+    prioritizeTechItems(items) {
+      const critical = [];
+      const recommended = [];
+      const optional = [];
+      
+      items.forEach(item => {
+        // 긴급: HTTPS, Core Web Vitals 실패, 크롤링 차단
+        if (item.title.includes('HTTPS') && item.status === 'error' ||
+            item.title.includes('LCP') && item.status === 'error' ||
+            item.title.includes('FID') && item.status === 'error' ||
+            item.title.includes('CLS') && item.status === 'error' ||
+            item.title.includes('크롤링') && item.status === 'error' ||
+            item.title.includes('Canonical') && item.status === 'error') {
+          critical.push(item);
+        }
+        // 권장: 성능 경고, 메타 태그 누락
+        else if (item.status === 'warning') {
+          recommended.push(item);
+        }
+        // 선택: 정보성 제안
+        else if (item.status === 'info') {
+          optional.push(item);
+        }
+      });
+      
+      return { critical, recommended, optional };
+    }
+    
+    // 체크 항목 렌더링
+    renderCheckItems(items) {
+      return items.map(item => `
+        <div class="check-item ${item.status}">
+          <div class="check-indicator">
+            ${item.status === 'success' ? '✓' : item.status === 'warning' ? '!' : item.status === 'info' ? 'ℹ' : '×'}
+          </div>
+          <div class="check-content">
+            <div class="check-title">${item.title}</div>
+            ${item.current ? `
+              <div class="check-current">
+                <span class="label">현재:</span>
+                <code>${this.escapeHtml(item.current)}</code>
+              </div>
+            ` : ''}
+            ${item.suggestion && item.status !== 'success' ? `
+              <div class="check-suggestion">${item.suggestion}</div>
+            ` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    // 우선순위 그룹 토글
+    togglePriorityGroup(header) {
+      const items = header.nextElementSibling;
+      const toggle = header.querySelector('.group-toggle');
+      
+      if (items.classList.contains('collapsed')) {
+        items.classList.remove('collapsed');
+        toggle.textContent = '▼';
+      } else {
+        items.classList.add('collapsed');
+        toggle.textContent = '▶';
+      }
     }
     
     renderVitalGauge(metric, value, goodThreshold, poorThreshold, label, isDecimal = false) {
@@ -4087,18 +4600,16 @@
       // FAQ 스키마 관련 항목
       if (item.title.includes('FAQ 스키마')) {
         if (item.status === 'success') {
-          const faqSchema = geoData?.structuredData?.schemas?.find(s => 
-            s['@type'] === 'FAQPage'
-          );
-          
-          if (faqSchema) {
+          // item.code에 실제 스키마 코드가 있으면 표시
+          if (item.code) {
             return `
               <div class="code-example">
                 <div class="code-label">✅ 발견된 FAQ 스키마</div>
-                <pre><code class="language-json">${JSON.stringify(faqSchema, null, 2)}</code></pre>
+                <pre><code class="language-json">${this.escapeHtml(item.code)}</code></pre>
               </div>
             `;
           } else {
+            // 코드가 없으면 기본 템플릿 표시
             return `
               <div class="code-example">
                 <div class="code-label">✅ 발견된 FAQ 스키마</div>
@@ -4145,18 +4656,16 @@
       // HowTo 스키마 관련 항목
       if (item.title.includes('HowTo 스키마')) {
         if (item.status === 'success') {
-          const howToSchema = geoData?.structuredData?.schemas?.find(s => 
-            s['@type'] === 'HowTo'
-          );
-          
-          if (howToSchema) {
+          // item.code에 실제 스키마 코드가 있으면 표시
+          if (item.code) {
             return `
               <div class="code-example">
                 <div class="code-label">✅ 발견된 HowTo 스키마</div>
-                <pre><code class="language-json">${JSON.stringify(howToSchema, null, 2)}</code></pre>
+                <pre><code class="language-json">${this.escapeHtml(item.code)}</code></pre>
               </div>
             `;
           } else {
+            // 코드가 없으면 기본 템플릿 표시
             return `
               <div class="code-example">
                 <div class="code-label">✅ 발견된 HowTo 스키마</div>

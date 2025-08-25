@@ -30,7 +30,8 @@
   // ZuppSEO가 준비될 때까지 대기
   waitForZuppSEO(function() {
 
-  const { BaseAnalyzer, utils, optimizer, config } = window.ZuppSEO;
+  const { BaseAnalyzer, utils, config } = window.ZuppSEO;
+  const optimizer = document; // DOM 분석을 위해 document 사용
 
   // ============================
   // GEO (Generative Engine Optimization) 분석기
@@ -99,48 +100,84 @@
     }
 
     checkFAQSchema() {
-      // JSON-LD에서 FAQ 스키마 찾기
+      // JSON-LD에서 FAQ 스키마 찾기 (@graph 구조 지원)
       const scripts = optimizer.querySelectorAll('script[type="application/ld+json"]');
       let faqFound = false;
       let faqCount = 0;
+      let faqSchemaCode = null;
       
       scripts.forEach(script => {
         try {
           const data = JSON.parse(script.textContent || '{}');
-          if (data['@type'] === 'FAQPage' || data['@type'] === 'Question') {
+          
+          // @graph 구조 처리
+          if (data['@graph'] && Array.isArray(data['@graph'])) {
+            data['@graph'].forEach(item => {
+              if (item['@type'] === 'FAQPage') {
+                faqFound = true;
+                if (item.mainEntity) {
+                  faqCount = Array.isArray(item.mainEntity) ? item.mainEntity.length : 1;
+                }
+                // FAQ 스키마 코드 저장
+                faqSchemaCode = JSON.stringify(item, null, 2);
+              }
+            });
+          } 
+          // 일반 스키마 처리
+          else if (data['@type'] === 'FAQPage' || data['@type'] === 'Question') {
             faqFound = true;
             if (data.mainEntity) {
               faqCount = Array.isArray(data.mainEntity) ? data.mainEntity.length : 1;
             }
+            // FAQ 스키마 코드 저장
+            faqSchemaCode = JSON.stringify(data, null, 2);
           }
         } catch (e) {
           // Invalid JSON
         }
       });
       
-      return { exists: faqFound, count: faqCount };
+      return { exists: faqFound, count: faqCount, code: faqSchemaCode };
     }
 
     checkHowToSchema() {
       const scripts = optimizer.querySelectorAll('script[type="application/ld+json"]');
       let howToFound = false;
       let steps = 0;
+      let howToSchemaCode = null;
       
       scripts.forEach(script => {
         try {
           const data = JSON.parse(script.textContent || '{}');
-          if (data['@type'] === 'HowTo') {
+          
+          // @graph 구조 처리
+          if (data['@graph'] && Array.isArray(data['@graph'])) {
+            data['@graph'].forEach(item => {
+              if (item['@type'] === 'HowTo') {
+                howToFound = true;
+                if (item.step) {
+                  steps = Array.isArray(item.step) ? item.step.length : 1;
+                }
+                // HowTo 스키마 코드 저장
+                howToSchemaCode = JSON.stringify(item, null, 2);
+              }
+            });
+          }
+          // 일반 스키마 처리
+          else if (data['@type'] === 'HowTo') {
             howToFound = true;
             if (data.step) {
               steps = Array.isArray(data.step) ? data.step.length : 1;
             }
+            // HowTo 스키마 코드 저장
+            howToSchemaCode = JSON.stringify(data, null, 2);
           }
         } catch (e) {
           // Invalid JSON
         }
       });
       
-      return { exists: howToFound, steps: steps };
+      return { exists: howToFound, steps: steps, code: howToSchemaCode };
     }
 
     findQAPatterns() {
@@ -152,8 +189,8 @@
       };
       
       // 질문 형태의 헤딩
-      const headings = optimizer.querySelectorAll('h1, h2, h3, h4, h5, h6');
-      headings.forEach(h => {
+      const questionHeadings = optimizer.querySelectorAll('h1, h2, h3, h4, h5, h6');
+      questionHeadings.forEach(h => {
         const text = h.textContent?.toLowerCase() || '';
         if (text.includes('?') || 
             text.match(/^(what|how|why|when|where|who|which|can|should|is|are|do|does)/i)) {
@@ -161,14 +198,26 @@
         }
       });
       
-      // FAQ 섹션 존재
+      // FAQ 섹션 존재 (개선된 선택자)
       const faqIndicators = optimizer.querySelectorAll(
-        '[class*="faq"], [id*="faq"], [class*="question"], [id*="question"], .accordion'
+        '[class*="faq"], [id*="faq"], [class*="question"], [id*="question"], .accordion, .faq-section, .faq-container, details, details.faq-item, section details'
       );
       patterns.faqSection = faqIndicators.length > 0;
       
-      // Q&A 형식 (DL, 아코디언 등)
-      patterns.qaFormat = optimizer.querySelectorAll('dl dt, details summary, .accordion-header').length;
+      // FAQ 텍스트 패턴도 확인
+      const faqTextPattern = /FAQ|자주.*질문|질문.*답변|Q&A|궁금한.*점/i;
+      const faqHeadings = optimizer.querySelectorAll('h1, h2, h3, h4, h5, h6');
+      let hasFaqHeading = false;
+      faqHeadings.forEach(heading => {
+        if (faqTextPattern.test(heading.textContent)) {
+          hasFaqHeading = true;
+        }
+      });
+      
+      patterns.faqSection = patterns.faqSection || hasFaqHeading;
+      
+      // Q&A 형식 (DL, 아코디언, details 등)
+      patterns.qaFormat = optimizer.querySelectorAll('dl dt, details summary, .accordion-header, .faq-item summary').length;
       
       // 의문문 사용 빈도
       const bodyText = document.body.innerText || '';
@@ -238,9 +287,12 @@
         optimizer.querySelector('.lead, .intro, .summary, [class*="lead"], [class*="intro"]')
       );
       
-      // 요약 섹션
+      // 요약 섹션 (다양한 패턴 지원)
       position.hasSummarySection = !!(
-        optimizer.querySelector('.summary, .tldr, .overview, #summary, #overview')
+        optimizer.querySelector('.summary, .tldr, .overview, #summary, #overview') ||
+        optimizer.querySelector('[class*="핵심"], [class*="주요"], [class*="포인트"]') ||
+        optimizer.querySelector('h2, h3, h4').textContent?.match(/(요약|핵심|주요|개요|summary|overview|highlights|key points)/i) ||
+        optimizer.querySelector('.hero .subtitle, .description, .intro-text')
       );
       
       // 하이라이트/핵심 포인트
@@ -309,8 +361,8 @@
       });
       
       // 헤딩에서 "결론" 텍스트 검사
-      const headings = optimizer.querySelectorAll('h1, h2, h3, h4, h5, h6');
-      headings.forEach(heading => {
+      const conclusionHeadings = optimizer.querySelectorAll('h1, h2, h3, h4, h5, h6');
+      conclusionHeadings.forEach(heading => {
         const text = heading.textContent?.toLowerCase() || '';
         if (text.includes('결론') || text.includes('conclusion')) {
           conclusionSection = true;
@@ -359,8 +411,8 @@
       );
       
       // 번호가 있는 헤딩
-      const headings = optimizer.querySelectorAll('h2, h3, h4');
-      headings.forEach(h => {
+      const numberedHeadings = optimizer.querySelectorAll('h2, h3, h4');
+      numberedHeadings.forEach(h => {
         if (h.textContent?.match(/^\d+\.|^Step \d|^단계 \d/)) {
           steps.numberedHeadings++;
         }
@@ -375,7 +427,9 @@
         tldr: false,
         abstract: false,
         keyTakeaways: false,
-        bulletPoints: 0
+        bulletPoints: 0,
+        faqSection: false,
+        summaryTags: 0
       };
       
       // TL;DR
@@ -394,6 +448,28 @@
         optimizer.querySelector('.takeaways, .key-points, .highlights, [class*="takeaway"]')
       );
       
+      // FAQ 섹션 (요약의 한 형태로 인식)
+      summaries.faqSection = !!(
+        optimizer.querySelector('.faq-section, .faq-container, #faq, [class*="faq"], [id*="faq"]') ||
+        optimizer.querySelector('details.faq-item, details, section details') ||
+        optimizer.querySelector('section[id="faq"]')
+      );
+      
+      // FAQ 헤딩 확인
+      if (!summaries.faqSection) {
+        const faqTextPattern = /FAQ|자주.*질문|질문.*답변|Q&A|궁금한.*점/i;
+        const summaryHeadings = optimizer.querySelectorAll('h1, h2, h3, h4, h5, h6');
+        summaryHeadings.forEach(heading => {
+          if (faqTextPattern.test(heading.textContent)) {
+            summaries.faqSection = true;
+          }
+        });
+      }
+      
+      // HTML5 summary 태그 (details 요소의 요약)
+      const summaryTags = optimizer.querySelectorAll('summary');
+      summaries.summaryTags = summaryTags.length;
+      
       // Bullet points in lists
       const lists = optimizer.querySelectorAll('ul');
       lists.forEach(list => {
@@ -409,7 +485,8 @@
       // FAQ 스키마
       if (this.data.faqSchema && this.data.faqSchema.exists) {
         this.addPassed(`FAQ 스키마 발견 (${this.data.faqSchema.count}개 질문)`, {
-          impact: 'AI 검색엔진이 Q&A를 쉽게 추출할 수 있습니다'
+          impact: 'AI 검색엔진이 Q&A를 쉽게 추출할 수 있습니다',
+          code: this.data.faqSchema.code
         });
       } else if (this.data.qaPatterns && this.data.qaPatterns.questionHeadings > 3) {
         this.addIssue('info', 'FAQ 스키마 추가를 고려하세요', {
@@ -420,7 +497,10 @@
 
       // HowTo 스키마
       if (this.data.howToSchema && this.data.howToSchema.exists) {
-        this.addPassed(`HowTo 스키마 발견 (${this.data.howToSchema.steps}단계)`);
+        this.addPassed(`HowTo 스키마 발견 (${this.data.howToSchema.steps}단계)`, {
+          impact: '단계별 가이드로 AI가 쉽게 이해할 수 있습니다',
+          code: this.data.howToSchema.code
+        });
       } else if (this.data.stepByStep && this.data.stepByStep.stepPatterns > 3) {
         this.addIssue('info', 'HowTo 스키마 추가를 고려하세요', {
           current: '단계별 콘텐츠가 있습니다'
@@ -436,7 +516,38 @@
       ) : 0;
       
       if (qaScore >= 75) {
-        this.addPassed('Q&A 형식이 잘 구성되어 있습니다 (GEO 최적화)');
+        // Q&A 형식 감지된 요소들 정보 수집
+        const qaElements = optimizer.querySelectorAll('details.faq-item, .faq-section, [class*="faq"]');
+        let qaHtml = '';
+        
+        if (qaElements.length > 0) {
+          // 처음 3개의 Q&A 요소만 예시로 가져오기
+          const examples = Array.from(qaElements).slice(0, 3);
+          qaHtml = examples.map(el => {
+            // 요소의 HTML 구조를 간단히 정리
+            const tagName = el.tagName.toLowerCase();
+            const className = el.className || '';
+            const hasQuestion = el.querySelector('summary, h3, .question') ? true : false;
+            
+            return `<${tagName}${className ? ` class="${className}"` : ''}>
+  ${hasQuestion ? '<summary>질문 예시</summary>' : '<h3>질문 예시</h3>'}
+  <div>답변 내용...</div>
+</${tagName}>`;
+          }).join('\n');
+        }
+        
+        this.addPassed('Q&A 형식이 잘 구성되어 있습니다 (GEO 최적화)', {
+          qaScore: qaScore,
+          questionHeadings: this.data.qaPatterns.questionHeadings,
+          faqSection: this.data.qaPatterns.faqSection,
+          qaFormat: this.data.qaPatterns.qaFormat,
+          code: qaHtml || `<!-- 현재 페이지의 Q&A 구조 -->
+<section class="faq">
+  <h2>자주 묻는 질문</h2>
+  ${this.data.qaPatterns.questionHeadings}개의 질문 형태 헤딩
+  ${this.data.qaPatterns.qaFormat}개의 Q&A 형식 요소
+</section>`
+        });
       } else if (qaScore >= 50) {
         this.addIssue('info', 'Q&A 형식을 더 강화하면 AI 검색에 유리합니다');
       }
@@ -499,10 +610,27 @@
       }
 
       // 요약
-      if (this.data.summaries.tldr || this.data.summaries.keyTakeaways) {
-        this.addPassed('요약/핵심 포인트가 제공되고 있습니다');
+      if (this.data.summaries.tldr || this.data.summaries.keyTakeaways || 
+          this.data.summaries.faqSection || this.data.summaries.summaryTags > 0) {
+        const summaryTypes = [];
+        if (this.data.summaries.tldr) summaryTypes.push('TL;DR');
+        if (this.data.summaries.keyTakeaways) summaryTypes.push('핵심 포인트');
+        if (this.data.summaries.faqSection) summaryTypes.push('FAQ 섹션');
+        if (this.data.summaries.summaryTags > 0) summaryTypes.push(`요약 태그 ${this.data.summaries.summaryTags}개`);
+        
+        this.addPassed(`요약 콘텐츠가 제공되고 있습니다: ${summaryTypes.join(', ')}`, {
+          impact: 'AI가 핵심 정보를 빠르게 파악할 수 있습니다'
+        });
       } else if (this.data.summaries.bulletPoints > 10) {
-        this.addIssue('info', '핵심 포인트 요약 섹션 추가를 고려하세요');
+        this.addIssue('info', '핵심 포인트 요약 섹션 추가를 고려하세요', {
+          current: `${this.data.summaries.bulletPoints}개의 불릿 포인트가 있습니다`,
+          suggestion: 'FAQ 섹션이나 핵심 요약 섹션을 추가하세요'
+        });
+      } else {
+        this.addIssue('warning', '요약 섹션이 없습니다', {
+          suggestion: 'FAQ, TL;DR, 또는 핵심 포인트 섹션을 추가하세요',
+          impact: 'AI가 콘텐츠를 요약하는데 어려움을 겪을 수 있습니다'
+        });
       }
       
       // === 새로운 AI SEO 속성 체크 ===
@@ -511,7 +639,21 @@
       if (this.data.eeat) {
         // 전문성
         if (this.data.eeat.expertise.authorInfo) {
-          this.addPassed('저자 정보가 명시되어 있습니다 (E-E-A-T)');
+          // 저자 정보가 있는 요소 찾기
+          const authorElement = optimizer.querySelector('[rel="author"], .author, .by-author, [itemprop="author"], .author-info');
+          let authorDetails = '';
+          
+          if (authorElement) {
+            const authorText = authorElement.textContent?.trim() || '';
+            const authorMeta = optimizer.querySelector('meta[name="author"]');
+            authorDetails = `저자: ${authorText || authorMeta?.content || '확인됨'}`;
+          }
+          
+          this.addPassed('저자 정보가 명시되어 있습니다 (E-E-A-T)', {
+            authorInfo: authorDetails,
+            authorSchema: this.data.eeat.expertise.authorSchema,
+            credentials: this.data.eeat.expertise.credentials
+          });
         } else {
           this.addIssue('warning', '저자 정보가 없습니다', {
             suggestion: '저자 프로필과 자격 정보를 추가하세요',
@@ -551,7 +693,25 @@
           this.data.entities.concepts.length;
         
         if (totalEntities > 0) {
-          this.addPassed(`${totalEntities}개의 엔티티 식별 (지식 그래프 연결 가능)`);
+          // 엔티티 목록 정리
+          const entityList = [];
+          if (this.data.entities.organizations.length > 0) {
+            entityList.push(`조직: ${this.data.entities.organizations.join(', ')}`);
+          }
+          if (this.data.entities.people.length > 0) {
+            entityList.push(`인물: ${this.data.entities.people.join(', ')}`);
+          }
+          if (this.data.entities.concepts.length > 0) {
+            entityList.push(`개념: ${this.data.entities.concepts.join(', ')}`);
+          }
+          
+          this.addPassed(`${totalEntities}개의 엔티티 식별 (지식 그래프 연결 가능)`, {
+            entityCount: totalEntities,
+            entities: entityList.join('\n'),
+            organizations: this.data.entities.organizations,
+            people: this.data.entities.people,
+            concepts: this.data.entities.concepts
+          });
         }
       }
       
@@ -679,7 +839,12 @@
         '.by-author',
         '.post-author',
         '[itemprop="author"]',
-        '.author-bio'
+        '.author-bio',
+        '.author-info',
+        '.byline',
+        '.written-by',
+        '[class*="author"]',
+        '[id*="author"]'
       ];
       
       authorSelectors.forEach(selector => {
@@ -687,13 +852,37 @@
           eeat.expertise.authorInfo = true;
         }
       });
+
+      // 메타 태그에서도 저자 정보 확인
+      const authorMeta = optimizer.querySelector('meta[name="author"]');
+      if (authorMeta && authorMeta.content) {
+        eeat.expertise.authorInfo = true;
+      }
+
+      // 연락처 정보가 저자 정보로 간주될 수 있는 경우
+      const contactInfo = optimizer.querySelector('[href^="mailto:"]');
+      if (contactInfo && contactInfo.textContent.includes('@')) {
+        eeat.expertise.authorInfo = true;
+      }
       
-      // 저자 스키마 체크
+      // 저자 스키마 체크 (@graph 구조 지원)
       const scripts = optimizer.querySelectorAll('script[type="application/ld+json"]');
       scripts.forEach(script => {
         try {
           const data = JSON.parse(script.textContent || '{}');
-          if (data.author || data['@type'] === 'Person') {
+          
+          // @graph 구조 처리
+          if (data['@graph'] && Array.isArray(data['@graph'])) {
+            data['@graph'].forEach(item => {
+              if (item.author || item['@type'] === 'Person' || 
+                  (item['@type'] === 'SoftwareApplication' && item.author) ||
+                  (item.founder && item.founder['@type'] === 'Person')) {
+                eeat.expertise.authorSchema = true;
+              }
+            });
+          }
+          // 일반 스키마 처리
+          else if (data.author || data['@type'] === 'Person') {
             eeat.expertise.authorSchema = true;
           }
         } catch (e) {}
@@ -835,8 +1024,8 @@
       };
       
       // 자연어 질문 헤딩
-      const headings = optimizer.querySelectorAll('h1, h2, h3, h4, h5, h6');
-      headings.forEach(h => {
+      const conversationalHeadings = optimizer.querySelectorAll('h1, h2, h3, h4, h5, h6');
+      conversationalHeadings.forEach(h => {
         const text = h.textContent || '';
         if (text.match(/^(what|how|why|when|where|who|which|can|should|is|are|do|does|무엇|어떻게|왜|언제|어디|누가)/i)) {
           conversational.naturalLanguageQuestions++;
@@ -891,12 +1080,22 @@
       kg.structuredData.hasJsonLd = !!optimizer.querySelector('script[type="application/ld+json"]');
       kg.structuredData.hasMicrodata = !!optimizer.querySelector('[itemscope]');
       
-      // 스키마 타입 수집
+      // 스키마 타입 수집 (@graph 구조 지원)
       const scripts = optimizer.querySelectorAll('script[type="application/ld+json"]');
       scripts.forEach(script => {
         try {
           const data = JSON.parse(script.textContent || '{}');
-          if (data['@type']) {
+          
+          // @graph 구조 처리
+          if (data['@graph'] && Array.isArray(data['@graph'])) {
+            data['@graph'].forEach(item => {
+              if (item['@type']) {
+                kg.structuredData.schemaTypes.push(item['@type']);
+              }
+            });
+          }
+          // 일반 스키마 처리
+          else if (data['@type']) {
             kg.structuredData.schemaTypes.push(data['@type']);
           }
         } catch (e) {}

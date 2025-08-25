@@ -500,7 +500,7 @@
     
     // 분석기 등록 함수
     registerAnalyzer(name, AnalyzerClass) {
-      console.log(`[ZuppSEO] Registering analyzer: ${name}`);
+      console.log(`[줍줍] Registering analyzer: ${name}`);
       this.analyzers[name] = AnalyzerClass;
     },
     

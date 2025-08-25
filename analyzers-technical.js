@@ -486,20 +486,68 @@
           breadcrumb: false,
           localBusiness: false,
           website: false,
-          searchAction: false
+          searchAction: false,
+          softwareApplication: false,
+          aggregateRating: false,
+          offer: false,
+          webPage: false,
+          imageObject: false,
+          contactPoint: false
         };
 
-        // JSON-LD에서 스키마 타입 찾기
+        // JSON-LD에서 스키마 타입 찾기 (개선된 버전)
         this.data.jsonld.forEach(schema => {
-          if (schema['@type']) {
-            const type = schema['@type'].toLowerCase();
-            Object.keys(this.data.schemaTypes).forEach(key => {
-              if (type.includes(key.toLowerCase())) {
-                this.data.schemaTypes[key] = true;
-              }
+          // @graph 구조 처리
+          if (schema['@graph'] && Array.isArray(schema['@graph'])) {
+            schema['@graph'].forEach(item => {
+              this.checkSchemaType(item);
             });
+          } else {
+            // 일반 스키마 처리
+            this.checkSchemaType(schema);
           }
         });
+      }
+
+      checkSchemaType(schema) {
+        if (schema['@type']) {
+          const type = schema['@type'].toLowerCase();
+          Object.keys(this.data.schemaTypes).forEach(key => {
+            // 정확한 매칭을 위해 개선
+            const searchKey = key.toLowerCase();
+            
+            // 다양한 매칭 패턴 지원
+            let isMatch = false;
+            
+            // 직접 매칭
+            if (type === searchKey || type === 'schema:' + searchKey || type.includes('/' + searchKey)) {
+              isMatch = true;
+            }
+            
+            // 특별한 케이스들 - 다양한 회사의 구현 패턴 지원
+            if (searchKey === 'faq' && (type.includes('faqpage') || type === 'faqpage')) isMatch = true;
+            if (searchKey === 'howto' && type === 'howto') isMatch = true;
+            if (searchKey === 'localbusiness' && type.includes('local')) isMatch = true;
+            if (searchKey === 'searchaction' && type === 'searchaction') isMatch = true;
+            if (searchKey === 'softwareapplication' && type === 'softwareapplication') isMatch = true;
+            if (searchKey === 'organization' && type === 'organization') isMatch = true;
+            if (searchKey === 'website' && type === 'website') isMatch = true;
+            if (searchKey === 'person' && type === 'person') isMatch = true;
+            if (searchKey === 'aggregaterating' && type === 'aggregaterating') isMatch = true;
+            if (searchKey === 'offer' && type === 'offer') isMatch = true;
+            if (searchKey === 'breadcrumb' && (type.includes('breadcrumb') || type === 'breadcrumblist')) isMatch = true;
+            if (searchKey === 'webpage' && (type === 'webpage' || type === 'web page')) isMatch = true;
+            if (searchKey === 'imageobject' && (type === 'imageobject' || type === 'image')) isMatch = true;
+            if (searchKey === 'contactpoint' && (type === 'contactpoint' || type.includes('contact'))) isMatch = true;
+            
+            if (isMatch) {
+              this.data.schemaTypes[key] = true;
+              if (window.ZuppSEO?.debug) {
+                console.log(`[Schema] 매칭됨: ${type} → ${key}`);
+              }
+            }
+          });
+        }
 
         // Microdata에서 스키마 타입 찾기
         this.data.microdata.items.forEach(item => {
@@ -527,16 +575,31 @@
           this.addPassed('구조화 데이터가 발견되었습니다');
         }
 
-        // JSON-LD 검증
+        // JSON-LD 검증 (개선된 버전)
         if (this.data.jsonld.length > 0) {
           let validCount = 0;
           let errorCount = 0;
+          let totalSchemas = 0;
           
           this.data.jsonld.forEach(schema => {
             if (schema.error) {
               errorCount++;
-            } else if (schema['@context'] && schema['@type']) {
-              validCount++;
+            } else if (schema['@context']) {
+              // @graph 구조 처리
+              if (schema['@graph'] && Array.isArray(schema['@graph'])) {
+                validCount++;
+                totalSchemas += schema['@graph'].length;
+                // 디버깅을 위한 로그
+                if (window.ZuppSEO?.debug) {
+                  console.log(`[Schema] @graph 구조 발견: ${schema['@graph'].length}개 항목`, schema['@graph'].map(item => item['@type']));
+                }
+              } else if (schema['@type']) {
+                validCount++;
+                totalSchemas++;
+                if (window.ZuppSEO?.debug) {
+                  console.log(`[Schema] 개별 스키마 발견:`, schema['@type']);
+                }
+              }
             }
           });
 
@@ -547,7 +610,11 @@
           }
 
           if (validCount > 0) {
-            this.addPassed(`유효한 JSON-LD ${validCount}개 발견`);
+            if (totalSchemas > 1) {
+              this.addPassed(`✅ 구조화된 데이터 ${totalSchemas}개 스키마 발견 (JSON-LD ${validCount}개)`);
+            } else {
+              this.addPassed(`✅ 구조화된 데이터 발견 (JSON-LD ${validCount}개)`);
+            }
           }
         }
 
@@ -578,12 +645,42 @@
 
         // FAQ 스키마 (GEO 중요)
         if (this.data.schemaTypes.faq) {
-          this.addPassed('FAQ 스키마 발견 (AI 검색엔진 최적화에 유리)');
+          this.addPassed('✅ FAQPage 스키마 발견 (AI 검색엔진 최적화에 유리)');
         }
 
         // HowTo 스키마
         if (this.data.schemaTypes.howTo) {
-          this.addPassed('HowTo 스키마 발견 (단계별 가이드에 최적)');
+          this.addPassed('✅ HowTo 스키마 발견 (단계별 가이드에 최적)');
+        }
+
+        // SoftwareApplication 스키마
+        if (this.data.schemaTypes.softwareApplication) {
+          this.addPassed('✅ SoftwareApplication 스키마 발견 (앱/도구 정보 제공)');
+        }
+        
+        // Organization 스키마
+        if (this.data.schemaTypes.organization) {
+          this.addPassed('✅ Organization 스키마 발견 (회사/기관 정보)');
+        }
+        
+        // AggregateRating 스키마
+        if (this.data.schemaTypes.aggregateRating) {
+          this.addPassed('✅ AggregateRating 스키마 발견 (평점 정보)');
+        }
+        
+        // Offer 스키마
+        if (this.data.schemaTypes.offer) {
+          this.addPassed('✅ Offer 스키마 발견 (제품/서비스 제공 정보)');
+        }
+        
+        // Person 스키마  
+        if (this.data.schemaTypes.person) {
+          this.addPassed('✅ Person 스키마 발견 (인물 정보)');
+        }
+
+        // BreadcrumbList 스키마
+        if (this.data.schemaTypes.breadcrumb) {
+          this.addPassed('✅ BreadcrumbList 스키마 발견 (탐색 경로 표시)');
         }
 
         // 구조화 데이터 완성도
