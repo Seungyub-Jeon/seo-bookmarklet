@@ -475,7 +475,7 @@
           
           nav {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            grid-template-columns: repeat(6, 1fr);
             gap: 8px;
             padding: 16px 24px;
             background: linear-gradient(to bottom, #fafbff, #f5f6fa);
@@ -543,9 +543,9 @@
           @media (max-width: 768px) {
             nav {
               padding: 12px 16px;
-              grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+              grid-template-columns: repeat(3, 1fr);
               gap: 6px;
-              max-height: 140px;
+              max-height: 180px;
             }
             
             .cat-btn {
@@ -564,12 +564,50 @@
             <span class="cat-icon">📊</span>
             <span class="cat-name">전체</span>
           </button>
-          ${Object.entries(this.categories).map(([key, cat]) => `
-            <button class="cat-btn ${this.activeCategory === key ? 'active' : ''}" data-cat="${key}">
-              <span class="cat-icon">${cat.icon}</span>
-              <span class="cat-name">${cat.name}</span>
-            </button>
-          `).join('')}
+          <button class="cat-btn ${this.activeCategory === 'meta' ? 'active' : ''}" data-cat="meta">
+            <span class="cat-icon">${this.categories.meta.icon}</span>
+            <span class="cat-name">${this.categories.meta.name}</span>
+          </button>
+          <button class="cat-btn ${this.activeCategory === 'heading' ? 'active' : ''}" data-cat="heading">
+            <span class="cat-icon">${this.categories.heading.icon}</span>
+            <span class="cat-name">${this.categories.heading.name}</span>
+          </button>
+          <button class="cat-btn ${this.activeCategory === 'image' ? 'active' : ''}" data-cat="image">
+            <span class="cat-icon">${this.categories.image.icon}</span>
+            <span class="cat-name">${this.categories.image.name}</span>
+          </button>
+          <button class="cat-btn ${this.activeCategory === 'link' ? 'active' : ''}" data-cat="link">
+            <span class="cat-icon">${this.categories.link.icon}</span>
+            <span class="cat-name">${this.categories.link.name}</span>
+          </button>
+          <button class="cat-btn ${this.activeCategory === 'social' ? 'active' : ''}" data-cat="social">
+            <span class="cat-icon">${this.categories.social.icon}</span>
+            <span class="cat-name">${this.categories.social.name}</span>
+          </button>
+          <button class="cat-btn ${this.activeCategory === 'content' ? 'active' : ''}" data-cat="content">
+            <span class="cat-icon">${this.categories.content.icon}</span>
+            <span class="cat-name">${this.categories.content.name}</span>
+          </button>
+          <button class="cat-btn ${this.activeCategory === 'semantic' ? 'active' : ''}" data-cat="semantic">
+            <span class="cat-icon">${this.categories.semantic.icon}</span>
+            <span class="cat-name">${this.categories.semantic.name}</span>
+          </button>
+          <button class="cat-btn ${this.activeCategory === 'accessibility' ? 'active' : ''}" data-cat="accessibility">
+            <span class="cat-icon">${this.categories.accessibility.icon}</span>
+            <span class="cat-name">${this.categories.accessibility.name}</span>
+          </button>
+          <button class="cat-btn ${this.activeCategory === 'schema' ? 'active' : ''}" data-cat="schema">
+            <span class="cat-icon">${this.categories.schema.icon}</span>
+            <span class="cat-name">${this.categories.schema.name}</span>
+          </button>
+          <button class="cat-btn ${this.activeCategory === 'technical' ? 'active' : ''}" data-cat="technical">
+            <span class="cat-icon">${this.categories.technical.icon}</span>
+            <span class="cat-name">${this.categories.technical.name}</span>
+          </button>
+          <button class="cat-btn ${this.activeCategory === 'geo' ? 'active' : ''}" data-cat="geo">
+            <span class="cat-icon">${this.categories.geo.icon}</span>
+            <span class="cat-name">${this.categories.geo.name}</span>
+          </button>
         </nav>
       `;
       
@@ -855,13 +893,61 @@
               <span class="cat-icon">📊</span>
               <span class="cat-name">전체</span>
             </button>
-            ${Object.entries(this.categories).map(([key, cat]) => `
-              <button class="cat-btn ${this.activeCategory === key ? 'active' : ''}" data-cat="${key}">
-                <span class="cat-icon">${cat.icon}</span>
-                <span class="cat-name">${cat.name}</span>
-                ${this.renderSmartBadge(cat.badgeInfo)}
-              </button>
-            `).join('')}
+            <button class="cat-btn ${this.activeCategory === 'meta' ? 'active' : ''}" data-cat="meta">
+              <span class="cat-icon">${this.categories.meta.icon}</span>
+              <span class="cat-name">${this.categories.meta.name}</span>
+              ${this.renderSmartBadge(this.categories.meta.badgeInfo)}
+            </button>
+            <button class="cat-btn ${this.activeCategory === 'heading' ? 'active' : ''}" data-cat="heading">
+              <span class="cat-icon">${this.categories.heading.icon}</span>
+              <span class="cat-name">${this.categories.heading.name}</span>
+              ${this.renderSmartBadge(this.categories.heading.badgeInfo)}
+            </button>
+            <button class="cat-btn ${this.activeCategory === 'image' ? 'active' : ''}" data-cat="image">
+              <span class="cat-icon">${this.categories.image.icon}</span>
+              <span class="cat-name">${this.categories.image.name}</span>
+              ${this.renderSmartBadge(this.categories.image.badgeInfo)}
+            </button>
+            <button class="cat-btn ${this.activeCategory === 'link' ? 'active' : ''}" data-cat="link">
+              <span class="cat-icon">${this.categories.link.icon}</span>
+              <span class="cat-name">${this.categories.link.name}</span>
+              ${this.renderSmartBadge(this.categories.link.badgeInfo)}
+            </button>
+            <button class="cat-btn ${this.activeCategory === 'social' ? 'active' : ''}" data-cat="social">
+              <span class="cat-icon">${this.categories.social.icon}</span>
+              <span class="cat-name">${this.categories.social.name}</span>
+              ${this.renderSmartBadge(this.categories.social.badgeInfo)}
+            </button>
+            <button class="cat-btn ${this.activeCategory === 'content' ? 'active' : ''}" data-cat="content">
+              <span class="cat-icon">${this.categories.content.icon}</span>
+              <span class="cat-name">${this.categories.content.name}</span>
+              ${this.renderSmartBadge(this.categories.content.badgeInfo)}
+            </button>
+            <button class="cat-btn ${this.activeCategory === 'semantic' ? 'active' : ''}" data-cat="semantic">
+              <span class="cat-icon">${this.categories.semantic.icon}</span>
+              <span class="cat-name">${this.categories.semantic.name}</span>
+              ${this.renderSmartBadge(this.categories.semantic.badgeInfo)}
+            </button>
+            <button class="cat-btn ${this.activeCategory === 'accessibility' ? 'active' : ''}" data-cat="accessibility">
+              <span class="cat-icon">${this.categories.accessibility.icon}</span>
+              <span class="cat-name">${this.categories.accessibility.name}</span>
+              ${this.renderSmartBadge(this.categories.accessibility.badgeInfo)}
+            </button>
+            <button class="cat-btn ${this.activeCategory === 'schema' ? 'active' : ''}" data-cat="schema">
+              <span class="cat-icon">${this.categories.schema.icon}</span>
+              <span class="cat-name">${this.categories.schema.name}</span>
+              ${this.renderSmartBadge(this.categories.schema.badgeInfo)}
+            </button>
+            <button class="cat-btn ${this.activeCategory === 'technical' ? 'active' : ''}" data-cat="technical">
+              <span class="cat-icon">${this.categories.technical.icon}</span>
+              <span class="cat-name">${this.categories.technical.name}</span>
+              ${this.renderSmartBadge(this.categories.technical.badgeInfo)}
+            </button>
+            <button class="cat-btn ${this.activeCategory === 'geo' ? 'active' : ''}" data-cat="geo">
+              <span class="cat-icon">${this.categories.geo.icon}</span>
+              <span class="cat-name">${this.categories.geo.name}</span>
+              ${this.renderSmartBadge(this.categories.geo.badgeInfo)}
+            </button>
           </nav>
 
           <!-- 콘텐츠 영역 -->

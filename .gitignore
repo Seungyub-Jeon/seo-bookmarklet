@@ -18,6 +18,14 @@ Thumbs.db
 test*.html
 test*.js
 
+# Cleanup and backup files
+archive/
+backup_*/
+CLEANUP*.md
+
+# Demo files
+demo-*.html
+
 # Cache files
 clear-cache.js
 
