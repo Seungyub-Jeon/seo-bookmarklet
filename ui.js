@@ -816,6 +816,12 @@
               </svg>
               Refresh
             </button>
+            <button class="action-btn contact" onclick="window.ZuppUI.showContact()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+              </svg>
+              문의하기
+            </button>
           </div>
           <div class="footer-meta">
             <span>By SOYOYU</span>
@@ -979,6 +985,12 @@
                   <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
                 </svg>
                 Refresh
+              </button>
+              <button class="action-btn contact" onclick="window.ZuppUI.showContact()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                </svg>
+                문의하기
               </button>
             </div>
             <div class="footer-branding">
@@ -5436,6 +5448,373 @@ server {
       });
       
       return summary;
+    }
+    
+    /**
+     * 문의 시스템 표시
+     */
+    showContact() {
+      // 간단한 문의 폼 직접 생성
+      this.createContactForm();
+    }
+    
+    /**
+     * 문의 폼 생성 및 표시
+     */
+    createContactForm() {
+      // 이미 열려있으면 무시
+      if (document.querySelector('.zupp-contact-modal')) return;
+      
+      const modal = document.createElement('div');
+      modal.className = 'zupp-contact-modal';
+      modal.innerHTML = `
+        <div class="zupp-contact-backdrop">
+          <div class="zupp-contact-content">
+            <div class="zupp-contact-header">
+              <h2>📝 문의하기</h2>
+              <button type="button" class="zupp-contact-close" aria-label="닫기">×</button>
+            </div>
+            
+            <form id="zuppContactForm" class="zupp-contact-form">
+              <div class="zupp-form-group">
+                <label for="contactName">이름 <span style="color: #ef4444;">*</span></label>
+                <input type="text" id="contactName" name="name" required placeholder="홍길동">
+              </div>
+              
+              <div class="zupp-form-group">
+                <label for="contactEmail">이메일 <span style="color: #ef4444;">*</span></label>
+                <input type="email" id="contactEmail" name="email" required placeholder="example@email.com">
+              </div>
+              
+              <div class="zupp-form-group">
+                <label for="contactPhone">전화번호</label>
+                <input type="tel" id="contactPhone" name="phone" placeholder="010-1234-5678 (선택)">
+              </div>
+              
+              <div class="zupp-form-group">
+                <label for="contactType">문의 유형</label>
+                <select id="contactType" name="type">
+                  <option value="일반문의">일반 문의</option>
+                  <option value="기능문의">기능 문의</option>
+                  <option value="버그신고">버그 신고</option>
+                  <option value="제휴문의">제휴 문의</option>
+                  <option value="기타">기타</option>
+                </select>
+              </div>
+              
+              <div class="zupp-form-group">
+                <label for="contactMessage">문의 내용 <span style="color: #ef4444;">*</span></label>
+                <textarea id="contactMessage" name="message" required rows="4" 
+                         placeholder="문의 내용을 상세히 적어주세요."></textarea>
+              </div>
+              
+              <div class="zupp-form-actions">
+                <button type="button" class="zupp-btn-cancel">취소</button>
+                <button type="submit" class="zupp-btn-submit">
+                  <span class="btn-text">문의 전송</span>
+                  <span class="btn-loading" style="display: none;">전송 중...</span>
+                </button>
+              </div>
+              
+              <div class="zupp-contact-message" id="contactMessage" style="display: none;"></div>
+            </form>
+          </div>
+        </div>
+      `;
+      
+      // 스타일 추가
+      if (!document.querySelector('#zupp-contact-styles')) {
+        const style = document.createElement('style');
+        style.id = 'zupp-contact-styles';
+        style.textContent = `
+          .zupp-contact-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 999999;
+            animation: fadeIn 0.3s ease;
+          }
+          
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          
+          .zupp-contact-backdrop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+          }
+          
+          .zupp-contact-content {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+          }
+          
+          @keyframes slideUp {
+            from {
+              transform: translateY(20px);
+              opacity: 0;
+            }
+            to {
+              transform: translateY(0);
+              opacity: 1;
+            }
+          }
+          
+          .zupp-contact-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 24px 16px;
+            border-bottom: 1px solid #e5e7eb;
+          }
+          
+          .zupp-contact-header h2 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 600;
+            color: #111827;
+          }
+          
+          .zupp-contact-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #6b7280;
+            cursor: pointer;
+            padding: 4px;
+            line-height: 1;
+            transition: color 0.2s;
+          }
+          
+          .zupp-contact-close:hover {
+            color: #111827;
+          }
+          
+          .zupp-contact-form {
+            padding: 24px;
+          }
+          
+          .zupp-form-group {
+            margin-bottom: 20px;
+          }
+          
+          .zupp-form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #374151;
+            font-size: 14px;
+          }
+          
+          .zupp-form-group input,
+          .zupp-form-group select,
+          .zupp-form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+          }
+          
+          .zupp-form-group input:focus,
+          .zupp-form-group select:focus,
+          .zupp-form-group textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+          }
+          
+          .zupp-form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+          }
+          
+          .zupp-form-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+          }
+          
+          .zupp-btn-cancel,
+          .zupp-btn-submit {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+          }
+          
+          .zupp-btn-cancel {
+            background: #f3f4f6;
+            color: #374151;
+          }
+          
+          .zupp-btn-cancel:hover {
+            background: #e5e7eb;
+          }
+          
+          .zupp-btn-submit {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+          }
+          
+          .zupp-btn-submit:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+          }
+          
+          .zupp-btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+          }
+          
+          .zupp-contact-message {
+            margin-top: 16px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+          }
+          
+          .zupp-contact-message.success {
+            background: #f0fdf4;
+            border: 1px solid #10b981;
+            color: #065f46;
+          }
+          
+          .zupp-contact-message.error {
+            background: #fef2f2;
+            border: 1px solid #ef4444;
+            color: #991b1b;
+          }
+          
+          @media (max-width: 600px) {
+            .zupp-contact-backdrop {
+              padding: 10px;
+            }
+            
+            .zupp-form-actions {
+              flex-direction: column;
+            }
+            
+            .zupp-btn-cancel,
+            .zupp-btn-submit {
+              width: 100%;
+            }
+          }
+        `;
+        document.head.appendChild(style);
+      }
+      
+      document.body.appendChild(modal);
+      
+      // 이벤트 리스너 추가
+      const closeBtn = modal.querySelector('.zupp-contact-close');
+      const cancelBtn = modal.querySelector('.zupp-btn-cancel');
+      const backdrop = modal.querySelector('.zupp-contact-backdrop');
+      const form = modal.querySelector('#zuppContactForm');
+      
+      const closeModal = () => {
+        modal.remove();
+      };
+      
+      closeBtn.addEventListener('click', closeModal);
+      cancelBtn.addEventListener('click', closeModal);
+      backdrop.addEventListener('click', (e) => {
+        if (e.target === backdrop) closeModal();
+      });
+      
+      // ESC 키로 닫기
+      const handleKeydown = (e) => {
+        if (e.key === 'Escape') {
+          closeModal();
+          document.removeEventListener('keydown', handleKeydown);
+        }
+      };
+      document.addEventListener('keydown', handleKeydown);
+      
+      // 폼 제출 처리
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const submitBtn = form.querySelector('.zupp-btn-submit');
+        const btnText = submitBtn.querySelector('.btn-text');
+        const btnLoading = submitBtn.querySelector('.btn-loading');
+        const messageEl = form.querySelector('.zupp-contact-message');
+        
+        // 버튼 로딩 상태
+        submitBtn.disabled = true;
+        btnText.style.display = 'none';
+        btnLoading.style.display = 'inline';
+        
+        try {
+          // 폼 데이터 수집
+          const formData = new FormData(form);
+          const data = {};
+          for (let [key, value] of formData.entries()) {
+            data[key] = value.trim();
+          }
+          
+          // 메타데이터 추가
+          data.source = 'zupp-analyzer';
+          data.url = window.location.href;
+          data.timestamp = new Date().toISOString();
+          
+          // Google Apps Script로 전송
+          const response = await fetch('https://script.google.com/macros/s/AKfycbzr0IqTpXB80JPvfAbui1he86c6xNrDAY9wuioCmGdrAlCkqCNjPaCkNWds7rHpE3AMmQ/exec', {
+            method: 'POST',
+            mode: 'no-cors', // CORS 우회
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+          });
+          
+          // no-cors 모드에서는 응답을 읽을 수 없으므로 성공으로 간주
+          messageEl.textContent = '✅ 문의가 성공적으로 전송되었습니다. 빠른 시일 내에 답변드리겠습니다.';
+          messageEl.className = 'zupp-contact-message success';
+          messageEl.style.display = 'block';
+          
+          // console.log('✅ 문의 전송 성공');
+          
+          // 3초 후 자동 닫기
+          setTimeout(closeModal, 3000);
+          
+        } catch (error) {
+          // console.error('❌ 문의 전송 실패:', error);
+          messageEl.textContent = '❌ 전송에 실패했습니다. 다시 시도해주세요.';
+          messageEl.className = 'zupp-contact-message error';
+          messageEl.style.display = 'block';
+        }
+        
+        // 버튼 상태 복원
+        submitBtn.disabled = false;
+        btnText.style.display = 'inline';
+        btnLoading.style.display = 'none';
+      });
     }
   }
 

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>통합 문의 시스템 데모</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .demo-container {
+            text-align: center;
+            max-width: 800px;
+            padding: 40px 20px;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+        }
+        
+        .demo-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 3rem;
+        }
+        
+        .demo-btn {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: block;
+        }
+        
+        .demo-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .demo-btn h3 {
+            margin-bottom: 8px;
+            font-size: 18px;
+        }
+        
+        .demo-btn p {
+            opacity: 0.8;
+            font-size: 14px;
+        }
+        
+        .status {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 2rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .status h3 {
+            margin-bottom: 15px;
+            color: #10b981;
+        }
+        
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .status-ok {
+            color: #10b981;
+        }
+        
+        .status-error {
+            color: #ef4444;
+        }
+        
+        .status-pending {
+            color: #f59e0b;
+        }
+        
+        .info-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 2rem;
+            text-align: left;
+        }
+        
+        .info-box h3 {
+            margin-bottom: 15px;
+        }
+        
+        .info-box code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Courier New', monospace;
+        }
+        
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .demo-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1>🚀 통합 문의 시스템</h1>
+        <p class="subtitle">줍줍 분석기와 홈페이지에서 공통으로 사용되는 문의 시스템</p>
+        
+        <div class="demo-buttons">
+            <button class="demo-btn" onclick="testContactSystem()">
+                <h3>📝 문의 폼 테스트</h3>
+                <p>통합 문의 시스템 실행</p>
+            </button>
+            
+            <button class="demo-btn" onclick="testEmailFallback()">
+                <h3>📧 이메일 폴백 테스트</h3>
+                <p>시스템 오류 시 이메일 전송</p>
+            </button>
+            
+            <button class="demo-btn" onclick="openGoogleSheet()">
+                <h3>📊 구글 시트 확인</h3>
+                <p>수집된 문의 데이터 보기</p>
+            </button>
+            
+            <a href="contact-integration-guide.md" class="demo-btn" target="_blank">
+                <h3>📖 통합 가이드</h3>
+                <p>홈페이지 적용 방법</p>
+            </a>
+        </div>
+        
+        <div class="status">
+            <h3>🔍 시스템 상태</h3>
+            <div class="status-item">
+                <span>ContactSystem 로드</span>
+                <span id="contactSystemStatus" class="status-pending">확인 중...</span>
+            </div>
+            <div class="status-item">
+                <span>Google Apps Script API</span>
+                <span id="apiStatus" class="status-pending">설정 필요</span>
+            </div>
+            <div class="status-item">
+                <span>구글 시트 연결</span>
+                <span id="sheetStatus" class="status-pending">설정 필요</span>
+            </div>
+        </div>
+        
+        <div class="info-box">
+            <h3>⚡ 빠른 설정</h3>
+            <p><strong>1.</strong> <code>google-apps-script.js</code>를 Google Apps Script에 배포</p>
+            <p><strong>2.</strong> <code>contact-system.js</code>에서 <code>apiUrl</code> 설정</p>
+            <p><strong>3.</strong> 구글 시트 ID 확인 및 권한 설정</p>
+            <p><strong>4.</strong> 테스트 후 홈페이지에 통합</p>
+        </div>
+    </div>
+    
+    <!-- ContactSystem 로드 -->
+    <script src="contact-system.js"></script>
+    
+    <script>
+        // 시스템 상태 확인
+        window.addEventListener('load', () => {
+            checkSystemStatus();
+        });
+        
+        function checkSystemStatus() {
+            // ContactSystem 로드 상태 확인
+            if (typeof ContactSystem !== 'undefined') {
+                document.getElementById('contactSystemStatus').textContent = '✅ 로드됨';
+                document.getElementById('contactSystemStatus').className = 'status-ok';
+            } else {
+                document.getElementById('contactSystemStatus').textContent = '❌ 로드 실패';
+                document.getElementById('contactSystemStatus').className = 'status-error';
+            }
+            
+            // API 상태는 사용자가 직접 설정해야 함
+            updateStatus('apiStatus', '⚠️ 설정 필요', 'status-pending');
+            updateStatus('sheetStatus', '⚠️ 설정 필요', 'status-pending');
+        }
+        
+        function updateStatus(id, text, className) {
+            const el = document.getElementById(id);
+            el.textContent = text;
+            el.className = className;
+        }
+        
+        // 문의 시스템 테스트
+        function testContactSystem() {
+            if (typeof ContactSystem === 'undefined') {
+                alert('❌ ContactSystem이 로드되지 않았습니다.\\n\\n' +
+                      'contact-system.js 파일을 확인해주세요.');
+                return;
+            }
+            
+            const contactSystem = new ContactSystem({
+                // Google Apps Script URL 설정 완료
+                apiUrl: 'https://script.google.com/macros/s/AKfycbzr0IqTpXB80JPvfAbui1he86c6xNrDAY9wuioCmGdrAlCkqCNjPaCkNWds7rHpE3AMmQ/exec',
+                source: 'demo-page',
+                theme: 'modern',
+                onSuccess: (data, result) => {
+                    console.log('✅ 테스트 성공:', result);
+                    updateStatus('apiStatus', '✅ 연결됨', 'status-ok');
+                    updateStatus('sheetStatus', '✅ 저장됨', 'status-ok');
+                },
+                onError: (error) => {
+                    console.error('❌ 테스트 실패:', error);
+                    updateStatus('apiStatus', '❌ 연결 실패', 'status-error');
+                }
+            });
+            
+            contactSystem.show();
+        }
+        
+        // 이메일 폴백 테스트
+        function testEmailFallback() {
+            const subject = encodeURIComponent('통합 문의 시스템 테스트');
+            const body = encodeURIComponent(`
+안녕하세요,
+
+통합 문의 시스템 이메일 폴백 테스트입니다.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+시스템 정보:
+• 테스트 페이지: ${window.location.href}
+• 브라우저: ${navigator.userAgent}
+• 시간: ${new Date().toLocaleString('ko-KR')}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            `);
+            
+            window.open(`mailto:yubsdesign@gmail.com?subject=${subject}&body=${body}`, '_blank');
+        }
+        
+        // 구글 시트 열기 (실제 URL로 변경 필요)
+        function openGoogleSheet() {
+            alert('구글 시트 URL을 설정해주세요.\\n\\n' +
+                  'google-apps-script.js에서 SPREADSHEET_ID를 설정한 후\\n' +
+                  '해당 시트의 URL로 연결됩니다.');
+                  
+            // 실제 사용 시 이렇게 설정:
+            // window.open('https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit', '_blank');
+        }
+        
+        // 개발자 도구용 헬퍼 함수
+        window.debugContactSystem = function() {
+            console.group('🔍 ContactSystem Debug Info');
+            console.log('ContactSystem available:', typeof ContactSystem !== 'undefined');
+            console.log('Current URL:', window.location.href);
+            console.log('User Agent:', navigator.userAgent);
+            console.log('Local Storage:', localStorage);
+            console.log('Session Storage:', sessionStorage);
+            console.groupEnd();
+        };
+        
+        console.log('🚀 통합 문의 시스템 데모 로드 완료');
+        console.log('💡 디버그 정보: window.debugContactSystem() 실행');
+    </script>
+</body>
+</html>
