@@ -1,0 +1,56 @@
+name: zupp-seo-analyzer
+region: sgp
+features:
+  - buildpack-stack=ubuntu-22
+
+static_sites:
+  - name: zupp-web
+    # GitHub 리포지토리 정보
+    github:
+      repo: YOUR_GITHUB_USERNAME/seo-bookmarklet
+      branch: main
+      deploy_on_push: true
+    
+    # 빌드 설정
+    build_command: |
+      echo "Building Zupp SEO Analyzer..."
+      # 파일 최적화
+      mkdir -p dist
+      cp index.html dist/
+      cp -r *.js dist/
+      cp -r *.css dist/
+      cp -r demo dist/
+      cp -r docs dist/
+      echo "Build complete!"
+    
+    # 출력 디렉토리
+    output_dir: dist
+    
+    # 라우팅 규칙
+    routes:
+      - path: /
+        preserve_path_prefix: false
+    
+    # 환경 변수 (필요시)
+    envs:
+      - key: NODE_ENV
+        value: production
+    
+    # 캐싱 설정
+    cors:
+      allow_origins:
+        - prefix: https://
+      allow_methods:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - OPTIONS
+      allow_headers:
+        - "*"
+    
+    # 에러 페이지
+    error_document: index.html
+    
+    # 인덱스 문서
+    index_document: index.html

@@ -1,0 +1,44 @@
+{
+  "spec": {
+    "name": "zupp-seo-analyzer",
+    "region": "sgp",
+    "static_sites": [
+      {
+        "name": "zupp-web",
+        "build_command": "npm run build",
+        "environment_slug": "html",
+        "github": {
+          "repo": "YOUR_GITHUB_USERNAME/seo-bookmarklet",
+          "branch": "main",
+          "deploy_on_push": true
+        },
+        "routes": [
+          {
+            "path": "/"
+          }
+        ],
+        "source_dir": "/",
+        "output_dir": "dist",
+        "index_document": "index.html",
+        "error_document": "index.html",
+        "cors": {
+          "allow_origins": [
+            {
+              "prefix": "https://"
+            }
+          ],
+          "allow_methods": [
+            "GET",
+            "POST",
+            "PUT",
+            "DELETE",
+            "OPTIONS"
+          ],
+          "allow_headers": [
+            "*"
+          ]
+        }
+      }
+    ]
+  }
+}

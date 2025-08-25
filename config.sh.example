@@ -1,0 +1,55 @@
+#!/bin/bash
+# 배포 환경 설정 파일
+# 이 파일을 config.sh로 복사하고 실제 값으로 수정하세요
+# cp config.sh.example config.sh
+
+# 서버 정보
+SSH_HOST="ns1"
+REMOTE_PATH="/var/www/zup.ideachefs.com"
+
+# URL 설정
+DEV_URL="http://localhost:8000"
+PROD_URL="https://zup.ideachefs.com"
+
+# 배포 옵션
+EXCLUDE_PATTERNS=(
+    ".git"
+    ".gitignore"
+    "node_modules"
+    "test*"
+    "backup*"
+    "*.example"
+    "config.sh"
+    "deploy.sh"
+    ".do"
+    "scripts/build.js"
+    "package.json"
+    "start-server.sh"
+)
+
+# 배포할 파일 목록 (순서 중요)
+DEPLOY_FILES=(
+    "index.html"
+    "ui.js"
+    "ui.css"
+    "zupp.js"
+    "zupp-bookmarklet.js"
+    "analyzers.js"
+    "analyzers-geo.js"
+    "analyzers-technical.js"
+    "analyzers-extended.js"
+    "contact-system.js"
+)
+
+# 선택적 디렉토리 (필요시 주석 해제)
+# DEPLOY_DIRS=(
+#     "demo"
+#     "docs"
+# )
+
+# 색상 코드 (터미널 출력용)
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color

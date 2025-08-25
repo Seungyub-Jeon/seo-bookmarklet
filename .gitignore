@@ -40,3 +40,9 @@ npm-debug.log*
 
 # Dependencies (if added later)
 node_modules/
+
+# Deployment config (contains server info)
+config.sh
+
+# Deployment temp files
+.deploy_temp_*

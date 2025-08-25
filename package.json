@@ -1,0 +1,21 @@
+{
+  "name": "zupp-seo-analyzer",
+  "version": "1.0.0",
+  "description": "AI 시대를 위한 차세대 SEO/GEO 분석 도구",
+  "scripts": {
+    "build": "node scripts/build.js",
+    "serve": "python3 -m http.server 8000",
+    "deploy": "doctl apps create --spec .do/deploy.json",
+    "update": "doctl apps update $APP_ID --spec .do/deploy.json"
+  },
+  "keywords": [
+    "seo",
+    "geo",
+    "analyzer",
+    "bookmarklet",
+    "ai"
+  ],
+  "author": "Zupp Team",
+  "license": "MIT",
+  "homepage": "https://zupp-seo-analyzer.ondigitalocean.app"
+}
