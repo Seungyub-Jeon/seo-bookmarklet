@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>줍줍 로고 디자인 데모</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-500: #5e6ad2;
+            --primary-600: #4c5bd4;
+            --primary-700: #3b4ec9;
+            --bg-primary: #08090a;
+            --bg-surface: #17181a;
+            --text-primary: #f7f8f8;
+            --text-secondary: #8a8f98;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            padding: 40px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 40px;
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .logo-card {
+            background: var(--bg-surface);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .logo-card h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: var(--text-secondary);
+        }
+
+        .logo-display {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 120px;
+            margin-bottom: 24px;
+        }
+
+        .size-variations {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            align-items: center;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* 로고 스타일 1: 미니멀 한 글자 */
+        .logo-minimal {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 24px;
+            color: white;
+            letter-spacing: -1px;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(94, 106, 210, 0.3);
+        }
+
+        .logo-minimal.small {
+            width: 32px;
+            height: 32px;
+            font-size: 16px;
+            border-radius: 8px;
+        }
+
+        .logo-minimal.large {
+            width: 64px;
+            height: 64px;
+            font-size: 32px;
+            border-radius: 12px;
+        }
+
+        /* 로고 스타일 2: 풀 텍스트 */
+        .logo-full {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-weight: 700;
+            font-size: 24px;
+            color: white;
+            letter-spacing: -1px;
+            box-shadow: 0 4px 12px rgba(94, 106, 210, 0.3);
+        }
+
+        .logo-full.small {
+            padding: 8px 16px;
+            font-size: 16px;
+            border-radius: 8px;
+        }
+
+        .logo-full.large {
+            padding: 16px 32px;
+            font-size: 32px;
+            border-radius: 16px;
+        }
+
+        /* 로고 스타일 3: 아이콘 + 텍스트 */
+        .logo-combo {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-combo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(94, 106, 210, 0.3);
+        }
+
+        .logo-combo-text {
+            font-weight: 700;
+            font-size: 28px;
+            letter-spacing: -1.5px;
+            background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-combo.small .logo-combo-icon {
+            width: 32px;
+            height: 32px;
+            font-size: 16px;
+            border-radius: 8px;
+        }
+
+        .logo-combo.small .logo-combo-text {
+            font-size: 20px;
+        }
+
+        .logo-combo.large .logo-combo-icon {
+            width: 64px;
+            height: 64px;
+            font-size: 32px;
+            border-radius: 12px;
+        }
+
+        .logo-combo.large .logo-combo-text {
+            font-size: 36px;
+        }
+
+        /* SVG 버전 */
+        .svg-container {
+            background: var(--bg-surface);
+            border-radius: 16px;
+            padding: 40px;
+            margin-top: 40px;
+        }
+
+        .svg-display {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 24px;
+        }
+
+        .svg-item {
+            text-align: center;
+        }
+
+        .svg-item p {
+            margin-top: 12px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* 애니메이션 */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .logo-minimal:hover,
+        .logo-full:hover,
+        .logo-combo-icon:hover {
+            animation: pulse 0.5s ease;
+        }
+
+        /* 코드 블록 */
+        .code-block {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 12px;
+            color: #8a8f98;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 줍줍 로고 디자인 데모</h1>
+
+        <div class="logo-grid">
+            <!-- 옵션 1: 미니멀 한 글자 -->
+            <div class="logo-card">
+                <h2>옵션 1: 미니멀 (한 글자)</h2>
+                <div class="logo-display">
+                    <div class="logo-minimal">줍</div>
+                </div>
+                <div class="size-variations">
+                    <div class="logo-minimal small">줍</div>
+                    <div class="logo-minimal">줍</div>
+                    <div class="logo-minimal large">줍</div>
+                </div>
+                <div class="code-block">
+                    &lt;div class="logo-minimal"&gt;줍&lt;/div&gt;
+                </div>
+            </div>
+
+            <!-- 옵션 2: 풀 텍스트 -->
+            <div class="logo-card">
+                <h2>옵션 2: 풀 텍스트</h2>
+                <div class="logo-display">
+                    <div class="logo-full">줍줍</div>
+                </div>
+                <div class="size-variations">
+                    <div class="logo-full small">줍줍</div>
+                    <div class="logo-full">줍줍</div>
+                    <div class="logo-full large">줍줍</div>
+                </div>
+                <div class="code-block">
+                    &lt;div class="logo-full"&gt;줍줍&lt;/div&gt;
+                </div>
+            </div>
+
+            <!-- 옵션 3: 아이콘 + 텍스트 -->
+            <div class="logo-card">
+                <h2>옵션 3: 아이콘 + 텍스트</h2>
+                <div class="logo-display">
+                    <div class="logo-combo">
+                        <div class="logo-combo-icon">🔍</div>
+                        <div class="logo-combo-text">줍줍</div>
+                    </div>
+                </div>
+                <div class="size-variations">
+                    <div class="logo-combo small">
+                        <div class="logo-combo-icon">🔍</div>
+                        <div class="logo-combo-text">줍줍</div>
+                    </div>
+                    <div class="logo-combo">
+                        <div class="logo-combo-icon">🔍</div>
+                        <div class="logo-combo-text">줍줍</div>
+                    </div>
+                    <div class="logo-combo large">
+                        <div class="logo-combo-icon">🔍</div>
+                        <div class="logo-combo-text">줍줍</div>
+                    </div>
+                </div>
+                <div class="code-block">
+                    &lt;div class="logo-combo"&gt;<br>
+                    &nbsp;&nbsp;&lt;div class="logo-combo-icon"&gt;🔍&lt;/div&gt;<br>
+                    &nbsp;&nbsp;&lt;div class="logo-combo-text"&gt;줍줍&lt;/div&gt;<br>
+                    &lt;/div&gt;
+                </div>
+            </div>
+        </div>
+
+        <!-- SVG 버전 -->
+        <div class="svg-container">
+            <h2 style="text-align: center; margin-bottom: 24px;">SVG 버전</h2>
+            
+            <div class="svg-display">
+                <!-- SVG 옵션 1: 미니멀 -->
+                <div class="svg-item">
+                    <svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#5e6ad2;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#3b4ec9;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <rect width="48" height="48" rx="10" fill="url(#grad1)"/>
+                        <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" 
+                              fill="white" font-family="Inter, sans-serif" font-size="24" font-weight="700">줍</text>
+                    </svg>
+                    <p>SVG 미니멀</p>
+                </div>
+
+                <!-- SVG 옵션 2: 풀 텍스트 -->
+                <div class="svg-item">
+                    <svg width="120" height="48" viewBox="0 0 120 48" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#5e6ad2;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#3b4ec9;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <rect width="120" height="48" rx="12" fill="url(#grad2)"/>
+                        <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" 
+                              fill="white" font-family="Inter, sans-serif" font-size="24" font-weight="700" letter-spacing="-1">줍줍</text>
+                    </svg>
+                    <p>SVG 풀 텍스트</p>
+                </div>
+
+                <!-- SVG 옵션 3: 조합형 -->
+                <div class="svg-item">
+                    <svg width="160" height="48" viewBox="0 0 160 48" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#5e6ad2;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#3b4ec9;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <!-- 아이콘 박스 -->
+                        <rect width="48" height="48" rx="10" fill="url(#grad3)"/>
+                        <text x="24" y="24" dominant-baseline="middle" text-anchor="middle" 
+                              fill="white" font-size="24">🔍</text>
+                        <!-- 텍스트 -->
+                        <text x="64" y="24" dominant-baseline="middle" text-anchor="start" 
+                              fill="url(#grad3)" font-family="Inter, sans-serif" font-size="28" font-weight="700" letter-spacing="-1.5">줍줍</text>
+                    </svg>
+                    <p>SVG 조합형</p>
+                </div>
+            </div>
+
+            <div class="code-block" style="margin-top: 32px;">
+                // SVG 파일로 저장하여 사용<br>
+                &lt;img src="logo.svg" alt="줍줍 로고" width="48" height="48"&gt;<br><br>
+                // 또는 인라인 SVG로 직접 사용<br>
+                &lt;svg&gt;...&lt;/svg&gt;
+            </div>
+        </div>
+
+        <!-- 사용 예시 -->
+        <div class="svg-container" style="margin-top: 40px;">
+            <h2 style="text-align: center; margin-bottom: 24px;">사용 예시</h2>
+            
+            <div style="display: flex; gap: 40px; justify-content: center; flex-wrap: wrap;">
+                <!-- 네비게이션 예시 -->
+                <div style="background: rgba(10, 10, 10, 0.8); padding: 16px 24px; border-radius: 8px; display: flex; align-items: center; gap: 12px;">
+                    <div class="logo-minimal small">줍</div>
+                    <span style="font-weight: 600; font-size: 18px;">줍줍 SEO 분석기</span>
+                </div>
+
+                <!-- 파비콘 예시 -->
+                <div style="text-align: center;">
+                    <div style="background: white; padding: 8px; border-radius: 8px; display: inline-block;">
+                        <svg width="16" height="16" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="grad4" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#5e6ad2;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#3b4ec9;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            <rect width="48" height="48" rx="10" fill="url(#grad4)"/>
+                            <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" 
+                                  fill="white" font-family="Inter, sans-serif" font-size="24" font-weight="700">줍</text>
+                        </svg>
+                    </div>
+                    <p style="margin-top: 8px; font-size: 12px; color: var(--text-secondary);">파비콘 (16x16)</p>
+                </div>
+
+                <!-- 앱 아이콘 예시 -->
+                <div style="text-align: center;">
+                    <div class="logo-minimal large">줍</div>
+                    <p style="margin-top: 8px; font-size: 12px; color: var(--text-secondary);">앱 아이콘 (64x64)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

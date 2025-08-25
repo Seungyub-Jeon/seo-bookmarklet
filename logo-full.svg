@@ -1,0 +1,15 @@
+<svg width="120" height="48" viewBox="0 0 120 48" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="zuppFullGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#5e6ad2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3b4ec9;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadowFull" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+  <rect width="120" height="48" rx="12" fill="url(#zuppFullGradient)" filter="url(#shadowFull)"/>
+  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" 
+        fill="white" font-family="Inter, -apple-system, system-ui, sans-serif" 
+        font-size="24" font-weight="700" letter-spacing="-1">줍줍</text>
+</svg>

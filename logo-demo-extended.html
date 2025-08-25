@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>줍줍 로고 디자인 확장판</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* 기본 색상 */
+            --primary-500: #5e6ad2;
+            --primary-600: #4c5bd4;
+            --primary-700: #3b4ec9;
+            
+            /* 다양한 색상 팔레트 */
+            --purple-gradient: linear-gradient(135deg, #667eea, #764ba2);
+            --pink-gradient: linear-gradient(135deg, #f093fb, #f5576c);
+            --orange-gradient: linear-gradient(135deg, #fa709a, #fee140);
+            --green-gradient: linear-gradient(135deg, #00d26a, #00a854);
+            --blue-gradient: linear-gradient(135deg, #5e6ad2, #3b4ec9);
+            --cyan-gradient: linear-gradient(135deg, #00c9ff, #92fe9d);
+            --red-gradient: linear-gradient(135deg, #fc466b, #3f5efb);
+            --dark-gradient: linear-gradient(135deg, #434343, #000000);
+            --gold-gradient: linear-gradient(135deg, #ffd700, #ffb347);
+            
+            /* 단색 배경 */
+            --solid-black: #000000;
+            --solid-white: #ffffff;
+            --solid-navy: #1a1f36;
+            --solid-purple: #7c3aed;
+            --solid-green: #10b981;
+            --solid-orange: #f97316;
+            --solid-pink: #ec4899;
+            --solid-blue: #3b82f6;
+            
+            --bg-primary: #08090a;
+            --bg-surface: #17181a;
+            --text-primary: #f7f8f8;
+            --text-secondary: #8a8f98;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 48px;
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 32px;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        /* 색상 그리드 섹션 */
+        .section {
+            margin-bottom: 60px;
+            background: var(--bg-surface);
+            border-radius: 20px;
+            padding: 40px;
+        }
+
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 24px;
+        }
+
+        .logo-item {
+            text-align: center;
+        }
+
+        .logo-box {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 32px;
+            color: white;
+            letter-spacing: -1.5px;
+            margin-bottom: 12px;
+            transition: transform 0.2s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-box:hover {
+            transform: scale(1.05);
+        }
+
+        .logo-box.gradient-1 { background: var(--blue-gradient); }
+        .logo-box.gradient-2 { background: var(--purple-gradient); }
+        .logo-box.gradient-3 { background: var(--pink-gradient); }
+        .logo-box.gradient-4 { background: var(--orange-gradient); }
+        .logo-box.gradient-5 { background: var(--green-gradient); }
+        .logo-box.gradient-6 { background: var(--cyan-gradient); }
+        .logo-box.gradient-7 { background: var(--red-gradient); }
+        .logo-box.gradient-8 { background: var(--dark-gradient); }
+        .logo-box.gradient-9 { background: var(--gold-gradient); }
+
+        .logo-box.solid-1 { background: var(--solid-black); }
+        .logo-box.solid-2 { background: var(--solid-navy); }
+        .logo-box.solid-3 { background: var(--solid-purple); }
+        .logo-box.solid-4 { background: var(--solid-green); }
+        .logo-box.solid-5 { background: var(--solid-orange); }
+        .logo-box.solid-6 { background: var(--solid-pink); }
+        .logo-box.solid-7 { background: var(--solid-blue); }
+        .logo-box.solid-8 { 
+            background: var(--solid-white); 
+            color: #333;
+            border: 2px solid #e5e7eb;
+        }
+
+        .color-name {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .color-code {
+            font-size: 10px;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            opacity: 0.6;
+        }
+
+        /* 개발자 스타일 텍스트 로고 */
+        .dev-style-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+        }
+
+        .dev-logo {
+            background: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .dev-logo:hover {
+            background: #252525;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+        }
+
+        .dev-text {
+            font-family: 'JetBrains Mono', 'Monaco', monospace;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        /* 다양한 코드 스타일 */
+        .code-style-1 { /* JavaScript 주석 */
+            color: #6a994e;
+        }
+
+        .code-style-2 { /* 중괄호 */
+            color: #f72585;
+        }
+
+        .code-style-2 .bracket { 
+            color: #ffd60a;
+        }
+
+        .code-style-3 { /* HTML 태그 */
+            color: #4cc9f0;
+        }
+
+        .code-style-3 .tag {
+            color: #f72585;
+        }
+
+        .code-style-4 { /* 함수 */
+            color: #4cc9f0;
+        }
+
+        .code-style-4 .params {
+            color: #ffd60a;
+        }
+
+        .code-style-5 { /* 배열 */
+            color: #b5179e;
+        }
+
+        .code-style-5 .bracket {
+            color: #7209b7;
+        }
+
+        .code-style-6 { /* 백틱 */
+            color: #00d26a;
+        }
+
+        .code-style-7 { /* 클래스 */
+            color: #ffd60a;
+        }
+
+        .code-style-8 { /* 변수 */
+            color: #4cc9f0;
+        }
+
+        .code-style-8 .keyword {
+            color: #f72585;
+        }
+
+        .code-style-9 { /* JSON */
+            color: #4cc9f0;
+        }
+
+        .code-style-9 .quotes {
+            color: #6a994e;
+        }
+
+        .dev-description {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* 조합 스타일 */
+        .combo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .combo-item {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .combo-item:hover {
+            background: rgba(255,255,255,0.05);
+            transform: translateY(-2px);
+        }
+
+        .combo-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 800;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .combo-text {
+            flex: 1;
+        }
+
+        .combo-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .combo-subtitle {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* 미니 로고 그리드 */
+        .mini-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 32px;
+        }
+
+        .mini-logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 800;
+            color: white;
+            transition: transform 0.2s ease;
+        }
+
+        .mini-logo:hover {
+            transform: scale(1.2);
+        }
+
+        /* 복사 버튼 */
+        .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0,0,0,0.5);
+            border: none;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .logo-box:hover .copy-btn,
+        .dev-logo:hover .copy-btn {
+            opacity: 1;
+        }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .color-grid {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            }
+            
+            .dev-style-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .combo-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 줍줍 로고 디자인 확장판</h1>
+
+        <!-- 그라디언트 색상 -->
+        <div class="section">
+            <h2>🌈 그라디언트 배경</h2>
+            <div class="color-grid">
+                <div class="logo-item">
+                    <div class="logo-box gradient-1">줍</div>
+                    <div class="color-name">Blue Ocean</div>
+                    <div class="color-code">#5e6ad2 → #3b4ec9</div>
+                </div>
+                <div class="logo-item">
+                    <div class="logo-box gradient-2">줍</div>
+                    <div class="color-name">Purple Dream</div>
+                    <div class="color-code">#667eea → #764ba2</div>
+                </div>
+                <div class="logo-item">
+                    <div class="logo-box gradient-3">줍</div>
+                    <div class="color-name">Pink Sunset</div>
+                    <div class="color-code">#f093fb → #f5576c</div>
+                </div>
+                <div class="logo-item">
+                    <div class="logo-box gradient-4">줍</div>
+                    <div class="color-name">Orange Glow</div>
+                    <div class="color-code">#fa709a → #fee140</div>
+                </div>
+                <div class="logo-item">
+                    <div class="logo-box gradient-5">줍</div>
+                    <div class="color-name">Green Energy</div>
+                    <div class="color-code">#00d26a → #00a854</div>
+                </div>
+                <div class="logo-item">
+                    <div class="logo-box gradient-6">줍</div>
+                    <div class="color-name">Cyan Wave</div>
+                    <div class="color-code">#00c9ff → #92fe9d</div>
+                </div>
+                <div class="logo-item">
+                    <div class="logo-box gradient-7">줍</div>
+                    <div class="color-name">Red Fusion</div>
+                    <div class="color-code">#fc466b → #3f5efb</div>
+                </div>
+                <div class="logo-item">
+                    <div class="logo-box gradient-8">줍</div>
+                    <div class="color-name">Dark Mode</div>
+                    <div class="color-code">#434343 → #000000</div>
+                </div>
+                <div class="logo-item">
+                    <div class="logo-box gradient-9">줍</div>
+                    <div class="color-name">Gold Rush</div>
+                    <div class="color-code">#ffd700 → #ffb347</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 단색 배경 -->
+        <div class="section">
+            <h2>🎯 솔리드 컬러</h2>
+            <div class="color-grid">
+                <div class="logo-item">
+                    <div class="logo-box solid-1">줍</div>
+                    <div class="color-name">Pure Black</div>
+                    <div class="color-code">#000000</div>
+                </div>
+                <div class="logo-item">
+                    <div class="logo-box solid-2">줍</div>
+                    <div class="color-name">Navy</div>
+                    <div class="color-code">#1a1f36</div>
+                </div>
+                <div class="logo-item">
+                    <div class="logo-box solid-3">줍</div>
+                    <div class="color-name">Purple</div>
+                    <div class="color-code">#7c3aed</div>
+                </div>
+                <div class="logo-item">
+                    <div class="logo-box solid-4">줍</div>
+                    <div class="color-name">Green</div>
+                    <div class="color-code">#10b981</div>
+                </div>
+                <div class="logo-item">
+                    <div class="logo-box solid-5">줍</div>
+                    <div class="color-name">Orange</div>
+                    <div class="color-code">#f97316</div>
+                </div>
+                <div class="logo-item">
+                    <div class="logo-box solid-6">줍</div>
+                    <div class="color-name">Pink</div>
+                    <div class="color-code">#ec4899</div>
+                </div>
+                <div class="logo-item">
+                    <div class="logo-box solid-7">줍</div>
+                    <div class="color-name">Blue</div>
+                    <div class="color-code">#3b82f6</div>
+                </div>
+                <div class="logo-item">
+                    <div class="logo-box solid-8">줍</div>
+                    <div class="color-name">White</div>
+                    <div class="color-code">#ffffff</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 개발자 스타일 텍스트 로고 -->
+        <div class="section">
+            <h2>💻 개발자 스타일 텍스트 로고</h2>
+            <div class="dev-style-grid">
+                <div class="dev-logo">
+                    <div class="dev-text code-style-1">/* 줍줍 */</div>
+                    <div class="dev-description">JavaScript 주석 스타일</div>
+                </div>
+                <div class="dev-logo">
+                    <div class="dev-text code-style-2">
+                        <span class="bracket">{</span> 줍줍 <span class="bracket">}</span>
+                    </div>
+                    <div class="dev-description">중괄호 오브젝트 스타일</div>
+                </div>
+                <div class="dev-logo">
+                    <div class="dev-text code-style-3">
+                        <span class="tag">&lt;</span>줍줍<span class="tag">/&gt;</span>
+                    </div>
+                    <div class="dev-description">HTML/JSX 태그 스타일</div>
+                </div>
+                <div class="dev-logo">
+                    <div class="dev-text code-style-4">
+                        줍줍<span class="params">()</span>
+                    </div>
+                    <div class="dev-description">함수 호출 스타일</div>
+                </div>
+                <div class="dev-logo">
+                    <div class="dev-text code-style-5">
+                        <span class="bracket">[</span> 줍줍 <span class="bracket">]</span>
+                    </div>
+                    <div class="dev-description">배열 스타일</div>
+                </div>
+                <div class="dev-logo">
+                    <div class="dev-text code-style-6">
+                        `줍줍`
+                    </div>
+                    <div class="dev-description">템플릿 리터럴 스타일</div>
+                </div>
+                <div class="dev-logo">
+                    <div class="dev-text code-style-7">
+                        .줍줍
+                    </div>
+                    <div class="dev-description">CSS 클래스 스타일</div>
+                </div>
+                <div class="dev-logo">
+                    <div class="dev-text code-style-8">
+                        <span class="keyword">const</span> 줍줍
+                    </div>
+                    <div class="dev-description">변수 선언 스타일</div>
+                </div>
+                <div class="dev-logo">
+                    <div class="dev-text code-style-9">
+                        <span class="quotes">"</span>줍줍<span class="quotes">"</span>
+                    </div>
+                    <div class="dev-description">문자열 스타일</div>
+                </div>
+                <div class="dev-logo">
+                    <div class="dev-text code-style-1">// 줍줍</div>
+                    <div class="dev-description">한 줄 주석 스타일</div>
+                </div>
+                <div class="dev-logo">
+                    <div class="dev-text code-style-3">#줍줍</div>
+                    <div class="dev-description">해시태그/ID 스타일</div>
+                </div>
+                <div class="dev-logo">
+                    <div class="dev-text code-style-4">@줍줍</div>
+                    <div class="dev-description">데코레이터/멘션 스타일</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 조합 스타일 -->
+        <div class="section">
+            <h2>🔀 조합 스타일</h2>
+            <div class="combo-grid">
+                <div class="combo-item">
+                    <div class="combo-icon gradient-1">줍</div>
+                    <div class="combo-text">
+                        <div class="combo-title code-style-2">{ 줍줍 }</div>
+                        <div class="combo-subtitle">오브젝트 + 그라디언트</div>
+                    </div>
+                </div>
+                <div class="combo-item">
+                    <div class="combo-icon gradient-2">줍</div>
+                    <div class="combo-text">
+                        <div class="combo-title code-style-1">/* 줍줍 */</div>
+                        <div class="combo-subtitle">주석 + 퍼플</div>
+                    </div>
+                </div>
+                <div class="combo-item">
+                    <div class="combo-icon gradient-5">줍</div>
+                    <div class="combo-text">
+                        <div class="combo-title code-style-3">&lt;줍줍/&gt;</div>
+                        <div class="combo-subtitle">태그 + 그린</div>
+                    </div>
+                </div>
+                <div class="combo-item">
+                    <div class="combo-icon gradient-4">줍</div>
+                    <div class="combo-text">
+                        <div class="combo-title code-style-4">줍줍()</div>
+                        <div class="combo-subtitle">함수 + 오렌지</div>
+                    </div>
+                </div>
+                <div class="combo-item">
+                    <div class="combo-icon gradient-6">줍</div>
+                    <div class="combo-text">
+                        <div class="combo-title code-style-5">[ 줍줍 ]</div>
+                        <div class="combo-subtitle">배열 + 시안</div>
+                    </div>
+                </div>
+                <div class="combo-item">
+                    <div class="combo-icon gradient-3">줍</div>
+                    <div class="combo-text">
+                        <div class="combo-title code-style-6">`줍줍`</div>
+                        <div class="combo-subtitle">템플릿 + 핑크</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 미니 로고 모음 -->
+        <div class="section">
+            <h2>🎪 미니 로고 팔레트</h2>
+            <div class="mini-grid">
+                <div class="mini-logo gradient-1">줍</div>
+                <div class="mini-logo gradient-2">줍</div>
+                <div class="mini-logo gradient-3">줍</div>
+                <div class="mini-logo gradient-4">줍</div>
+                <div class="mini-logo gradient-5">줍</div>
+                <div class="mini-logo gradient-6">줍</div>
+                <div class="mini-logo gradient-7">줍</div>
+                <div class="mini-logo gradient-8">줍</div>
+                <div class="mini-logo gradient-9">줍</div>
+                <div class="mini-logo solid-1">줍</div>
+                <div class="mini-logo solid-2">줍</div>
+                <div class="mini-logo solid-3">줍</div>
+                <div class="mini-logo solid-4">줍</div>
+                <div class="mini-logo solid-5">줍</div>
+                <div class="mini-logo solid-6">줍</div>
+                <div class="mini-logo solid-7">줍</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 클릭하면 색상 코드 복사
+        document.querySelectorAll('.logo-box, .dev-logo').forEach(item => {
+            item.addEventListener('click', function() {
+                const colorCode = this.querySelector('.color-code')?.textContent || 
+                                this.querySelector('.dev-text')?.textContent ||
+                                '줍줍';
+                navigator.clipboard.writeText(colorCode);
+                
+                // 복사 완료 애니메이션
+                const original = this.style.transform;
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = original;
+                }, 100);
+            });
+        });
+    </script>
+</body>
+</html>

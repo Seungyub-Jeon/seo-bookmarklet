@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>줍줍 로고 생성기</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* 색상 팔레트 */
+            --primary-gradient: linear-gradient(135deg, #5e6ad2, #3b4ec9);
+            --purple-gradient: linear-gradient(135deg, #667eea, #764ba2);
+            --pink-gradient: linear-gradient(135deg, #f093fb, #f5576c);
+            --orange-gradient: linear-gradient(135deg, #fa709a, #fee140);
+            --green-gradient: linear-gradient(135deg, #00d26a, #00a854);
+            --cyan-gradient: linear-gradient(135deg, #00c9ff, #92fe9d);
+            --red-gradient: linear-gradient(135deg, #fc466b, #3f5efb);
+            --dark-gradient: linear-gradient(135deg, #434343, #000000);
+            --gold-gradient: linear-gradient(135deg, #ffd700, #ffb347);
+            --sunset-gradient: linear-gradient(135deg, #ff6b6b, #ffd93d);
+            --ocean-gradient: linear-gradient(135deg, #1e3c72, #2a5298);
+            --forest-gradient: linear-gradient(135deg, #134e5e, #71b280);
+            --fire-gradient: linear-gradient(135deg, #ff0844, #ffb199);
+            --ice-gradient: linear-gradient(135deg, #a8edea, #fed6e3);
+            --galaxy-gradient: linear-gradient(135deg, #654ea3, #eaafc8);
+            --neon-gradient: linear-gradient(135deg, #00ffff, #ff00ff);
+            
+            --bg-primary: #08090a;
+            --bg-surface: #17181a;
+            --text-primary: #f7f8f8;
+            --text-secondary: #8a8f98;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            text-align: center;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 48px;
+        }
+
+        /* 에디터 섹션 */
+        .editor-section {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 32px;
+            margin-bottom: 48px;
+        }
+
+        @media (max-width: 968px) {
+            .editor-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 컨트롤 패널 */
+        .control-panel {
+            background: var(--bg-surface);
+            border-radius: 20px;
+            padding: 32px;
+        }
+
+        .control-group {
+            margin-bottom: 24px;
+        }
+
+        .control-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .text-input:focus {
+            outline: none;
+            background: rgba(255,255,255,0.08);
+            border-color: var(--primary-500);
+        }
+
+        .style-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 4px;
+        }
+        
+        .style-grid::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .style-grid::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.02);
+            border-radius: 3px;
+        }
+        
+        .style-grid::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+        }
+        
+        .style-grid::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .style-btn {
+            padding: 6px 4px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'JetBrains Mono', monospace;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .style-btn:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--text-primary);
+        }
+
+        .style-btn.active {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+        }
+
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 6px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 4px;
+        }
+        
+        .color-grid::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .color-grid::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.02);
+            border-radius: 3px;
+        }
+        
+        .color-grid::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+        }
+        
+        .color-grid::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .color-btn {
+            width: 100%;
+            aspect-ratio: 1;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .color-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .color-btn.active {
+            border-color: white;
+            box-shadow: 0 0 0 2px rgba(255,255,255,0.2);
+        }
+
+        .size-slider {
+            width: 100%;
+            margin: 12px 0;
+        }
+
+        .size-value {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        /* 미리보기 영역 */
+        .preview-area {
+            background: var(--bg-surface);
+            border-radius: 20px;
+            padding: 48px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+        }
+
+        .logo-preview {
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 100%;
+        }
+
+        #logoCanvas {
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .random-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+        
+        .random-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+        }
+        
+        .random-btn:active {
+            transform: translateY(0);
+        }
+
+        .download-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .download-btn {
+            padding: 12px 24px;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(94, 106, 210, 0.4);
+        }
+
+        .download-btn:active {
+            transform: translateY(0);
+        }
+
+        /* 템플릿 갤러리 */
+        .template-section {
+            background: var(--bg-surface);
+            border-radius: 20px;
+            padding: 32px;
+        }
+
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .template-item {
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .template-item:hover {
+            transform: translateY(-4px);
+        }
+
+        .template-preview {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .template-name {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        /* 옵션 체크박스 */
+        .option-group {
+            display: flex;
+            gap: 16px;
+            margin-top: 12px;
+        }
+
+        .option-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .option-checkbox input {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .option-checkbox label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        /* 로딩 스피너 */
+        .loading {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* 토스트 메시지 */
+        .toast {
+            position: fixed;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #10b981;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 줍줍 로고 생성기</h1>
+        <p class="subtitle">원하는 스타일을 선택하고 이미지로 다운로드하세요</p>
+
+        <div class="editor-section">
+            <!-- 컨트롤 패널 -->
+            <div class="control-panel">
+                <div class="control-group">
+                    <label class="control-label">텍스트</label>
+                    <input type="text" class="text-input" id="logoText" value="줍줍" maxlength="10">
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">스타일</label>
+                    <div class="style-grid">
+                        <button class="style-btn active" data-style="normal">줍줍</button>
+                        <button class="style-btn" data-style="comment">/* 줍줍 */</button>
+                        <button class="style-btn" data-style="object">{ 줍줍 }</button>
+                        <button class="style-btn" data-style="tag">&lt;줍줍/&gt;</button>
+                        <button class="style-btn" data-style="function">줍줍()</button>
+                        <button class="style-btn" data-style="array">[ 줍줍 ]</button>
+                        <button class="style-btn" data-style="template">`줍줍`</button>
+                        <button class="style-btn" data-style="class">.줍줍</button>
+                        <button class="style-btn" data-style="string">"줍줍"</button>
+                        <button class="style-btn" data-style="variable">$줍줍</button>
+                        <button class="style-btn" data-style="id">#줍줍</button>
+                        <button class="style-btn" data-style="arrow">=&gt; 줍줍</button>
+                        <button class="style-btn" data-style="jsx">&lt;줍줍 /&gt;</button>
+                        <button class="style-btn" data-style="decorator">@줍줍</button>
+                        <button class="style-btn" data-style="generic">&lt;줍줍&gt;</button>
+                        <button class="style-btn" data-style="regex">/줍줍/</button>
+                        <button class="style-btn" data-style="import">import 줍줍</button>
+                        <button class="style-btn" data-style="export">export 줍줍</button>
+                        <button class="style-btn" data-style="async">async 줍줍</button>
+                        <button class="style-btn" data-style="await">await 줍줍</button>
+                        <button class="style-btn" data-style="const">const 줍줍</button>
+                        <button class="style-btn" data-style="method">줍줍.map()</button>
+                        <button class="style-btn" data-style="pipe">| 줍줍</button>
+                        <button class="style-btn" data-style="null">줍줍 ?? </button>
+                        <button class="style-btn" data-style="spread">...줍줍</button>
+                        <button class="style-btn" data-style="optional">줍줍?</button>
+                        <button class="style-btn" data-style="terminal">$ 줍줍</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">배경 색상</label>
+                    <div class="color-grid">
+                        <button class="color-btn active" data-color="gradient1" style="background: linear-gradient(135deg, #5e6ad2, #3b4ec9)"></button>
+                        <button class="color-btn" data-color="gradient2" style="background: linear-gradient(135deg, #667eea, #764ba2)"></button>
+                        <button class="color-btn" data-color="gradient3" style="background: linear-gradient(135deg, #f093fb, #f5576c)"></button>
+                        <button class="color-btn" data-color="gradient4" style="background: linear-gradient(135deg, #fa709a, #fee140)"></button>
+                        <button class="color-btn" data-color="gradient5" style="background: linear-gradient(135deg, #00d26a, #00a854)"></button>
+                        <button class="color-btn" data-color="gradient6" style="background: linear-gradient(135deg, #00c9ff, #92fe9d)"></button>
+                        <button class="color-btn" data-color="gradient7" style="background: linear-gradient(135deg, #fc466b, #3f5efb)"></button>
+                        <button class="color-btn" data-color="gradient8" style="background: linear-gradient(135deg, #434343, #000000)"></button>
+                        <button class="color-btn" data-color="gradient9" style="background: linear-gradient(135deg, #ffd700, #ffb347)"></button>
+                        <button class="color-btn" data-color="gradient10" style="background: linear-gradient(135deg, #ff6b6b, #ffd93d)"></button>
+                        <button class="color-btn" data-color="gradient11" style="background: linear-gradient(135deg, #1e3c72, #2a5298)"></button>
+                        <button class="color-btn" data-color="gradient12" style="background: linear-gradient(135deg, #134e5e, #71b280)"></button>
+                        <button class="color-btn" data-color="gradient13" style="background: linear-gradient(135deg, #ff0844, #ffb199)"></button>
+                        <button class="color-btn" data-color="gradient14" style="background: linear-gradient(135deg, #a8edea, #fed6e3)"></button>
+                        <button class="color-btn" data-color="gradient15" style="background: linear-gradient(135deg, #654ea3, #eaafc8)"></button>
+                        <button class="color-btn" data-color="gradient16" style="background: linear-gradient(135deg, #00ffff, #ff00ff)"></button>
+                        <button class="color-btn" data-color="solid1" style="background: #000000"></button>
+                        <button class="color-btn" data-color="solid2" style="background: #1a1f36"></button>
+                        <button class="color-btn" data-color="solid3" style="background: #7c3aed"></button>
+                        <button class="color-btn" data-color="solid4" style="background: #10b981"></button>
+                        <button class="color-btn" data-color="solid5" style="background: #f97316"></button>
+                        <button class="color-btn" data-color="solid6" style="background: #ec4899"></button>
+                        <button class="color-btn" data-color="solid7" style="background: #3b82f6"></button>
+                        <button class="color-btn" data-color="solid8" style="background: #ef4444"></button>
+                        <button class="color-btn" data-color="solid9" style="background: #8b5cf6"></button>
+                        <button class="color-btn" data-color="solid10" style="background: #14b8a6"></button>
+                        <button class="color-btn" data-color="solid11" style="background: #f59e0b"></button>
+                        <button class="color-btn" data-color="solid12" style="background: #6366f1"></button>
+                        <button class="color-btn" data-color="solid13" style="background: #84cc16"></button>
+                        <button class="color-btn" data-color="solid14" style="background: #ffffff"></button>
+                        <button class="color-btn" data-color="transparent" style="background: repeating-linear-gradient(45deg, #606dbc, #606dbc 10px, #465298 10px, #465298 20px)"></button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">박스 크기</label>
+                    <input type="range" class="size-slider" id="logoSize" min="128" max="512" value="256" step="32">
+                    <div class="size-value">
+                        <span>크기:</span>
+                        <span id="sizeDisplay">256 x 256</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">글씨 크기</label>
+                    <input type="range" class="size-slider" id="fontSize" min="50" max="200" value="100" step="10">
+                    <div class="size-value">
+                        <span>크기:</span>
+                        <span id="fontSizeDisplay">100%</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">옵션</label>
+                    <div class="option-group">
+                        <div class="option-checkbox">
+                            <input type="checkbox" id="roundedCorners" checked>
+                            <label for="roundedCorners">둥근 모서리</label>
+                        </div>
+                        <div class="option-checkbox">
+                            <input type="checkbox" id="addShadow" checked>
+                            <label for="addShadow">그림자</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 미리보기 영역 -->
+            <div class="preview-area">
+                <button class="random-btn" onclick="randomizeAll()">
+                    <span>🎲</span>
+                    <span>랜덤 조합 생성</span>
+                </button>
+                <div class="logo-preview">
+                    <canvas id="logoCanvas" width="256" height="256"></canvas>
+                </div>
+                <div class="download-buttons">
+                    <button class="download-btn" onclick="downloadPNG()">
+                        <span>⬇️</span>
+                        <span>PNG 다운로드</span>
+                    </button>
+                    <button class="download-btn" onclick="downloadSVG()">
+                        <span>⬇️</span>
+                        <span>SVG 다운로드</span>
+                    </button>
+                    <button class="download-btn" onclick="copyToClipboard()">
+                        <span>📋</span>
+                        <span>복사</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 템플릿 갤러리 -->
+        <div class="template-section">
+            <h2 style="margin-bottom: 0;">🎯 빠른 템플릿</h2>
+            <div class="template-grid">
+                <div class="template-item" onclick="applyTemplate('default')">
+                    <div class="template-preview" style="background: linear-gradient(135deg, #5e6ad2, #3b4ec9)">줍</div>
+                    <div class="template-name">기본 로고</div>
+                </div>
+                <div class="template-item" onclick="applyTemplate('developer')">
+                    <div class="template-preview" style="background: #000; font-family: 'JetBrains Mono'; font-size: 24px">{줍줍}</div>
+                    <div class="template-name">개발자</div>
+                </div>
+                <div class="template-item" onclick="applyTemplate('purple')">
+                    <div class="template-preview" style="background: linear-gradient(135deg, #667eea, #764ba2)">줍</div>
+                    <div class="template-name">퍼플 드림</div>
+                </div>
+                <div class="template-item" onclick="applyTemplate('green')">
+                    <div class="template-preview" style="background: linear-gradient(135deg, #00d26a, #00a854)">줍</div>
+                    <div class="template-name">그린 에너지</div>
+                </div>
+                <div class="template-item" onclick="applyTemplate('pink')">
+                    <div class="template-preview" style="background: linear-gradient(135deg, #f093fb, #f5576c)">줍</div>
+                    <div class="template-name">핑크 선셋</div>
+                </div>
+                <div class="template-item" onclick="applyTemplate('dark')">
+                    <div class="template-preview" style="background: linear-gradient(135deg, #434343, #000000)">줍</div>
+                    <div class="template-name">다크 모드</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 토스트 메시지 -->
+    <div class="toast" id="toast"></div>
+
+    <!-- 로딩 스피너 -->
+    <div class="loading" id="loading">⏳</div>
+
+    <script>
+        // 전역 변수
+        let currentText = '줍줍';
+        let currentStyle = 'normal';
+        let currentColor = 'gradient1';
+        let currentSize = 256;
+        let currentFontSize = 100; // 글씨 크기 비율 (%)
+        let roundedCorners = true;
+        let addShadow = true;
+
+        // 색상 정의
+        const colors = {
+            gradient1: { type: 'gradient', colors: ['#5e6ad2', '#3b4ec9'] },
+            gradient2: { type: 'gradient', colors: ['#667eea', '#764ba2'] },
+            gradient3: { type: 'gradient', colors: ['#f093fb', '#f5576c'] },
+            gradient4: { type: 'gradient', colors: ['#fa709a', '#fee140'] },
+            gradient5: { type: 'gradient', colors: ['#00d26a', '#00a854'] },
+            gradient6: { type: 'gradient', colors: ['#00c9ff', '#92fe9d'] },
+            gradient7: { type: 'gradient', colors: ['#fc466b', '#3f5efb'] },
+            gradient8: { type: 'gradient', colors: ['#434343', '#000000'] },
+            gradient9: { type: 'gradient', colors: ['#ffd700', '#ffb347'] },
+            gradient10: { type: 'gradient', colors: ['#ff6b6b', '#ffd93d'] },
+            gradient11: { type: 'gradient', colors: ['#1e3c72', '#2a5298'] },
+            gradient12: { type: 'gradient', colors: ['#134e5e', '#71b280'] },
+            gradient13: { type: 'gradient', colors: ['#ff0844', '#ffb199'] },
+            gradient14: { type: 'gradient', colors: ['#a8edea', '#fed6e3'] },
+            gradient15: { type: 'gradient', colors: ['#654ea3', '#eaafc8'] },
+            gradient16: { type: 'gradient', colors: ['#00ffff', '#ff00ff'] },
+            solid1: { type: 'solid', color: '#000000' },
+            solid2: { type: 'solid', color: '#1a1f36' },
+            solid3: { type: 'solid', color: '#7c3aed' },
+            solid4: { type: 'solid', color: '#10b981' },
+            solid5: { type: 'solid', color: '#f97316' },
+            solid6: { type: 'solid', color: '#ec4899' },
+            solid7: { type: 'solid', color: '#3b82f6' },
+            solid8: { type: 'solid', color: '#ef4444' },
+            solid9: { type: 'solid', color: '#8b5cf6' },
+            solid10: { type: 'solid', color: '#14b8a6' },
+            solid11: { type: 'solid', color: '#f59e0b' },
+            solid12: { type: 'solid', color: '#6366f1' },
+            solid13: { type: 'solid', color: '#84cc16' },
+            solid14: { type: 'solid', color: '#ffffff' },
+            transparent: { type: 'transparent' }
+        };
+
+        // 스타일 포맷
+        const styleFormats = {
+            normal: text => text,
+            comment: text => `/* ${text} */`,
+            object: text => `{ ${text} }`,
+            tag: text => `<${text}/>`,
+            function: text => `${text}()`,
+            array: text => `[ ${text} ]`,
+            template: text => `\`${text}\``,
+            class: text => `.${text}`,
+            string: text => `"${text}"`,
+            variable: text => `$${text}`,
+            id: text => `#${text}`,
+            arrow: text => `=> ${text}`,
+            jsx: text => `<${text} />`,
+            decorator: text => `@${text}`,
+            generic: text => `<${text}>`,
+            regex: text => `/${text}/`,
+            import: text => `import ${text}`,
+            export: text => `export ${text}`,
+            async: text => `async ${text}`,
+            await: text => `await ${text}`,
+            const: text => `const ${text}`,
+            method: text => `${text}.map()`,
+            pipe: text => `| ${text}`,
+            null: text => `${text} ?? `,
+            spread: text => `...${text}`,
+            optional: text => `${text}?`,
+            terminal: text => `$ ${text}`
+        };
+
+        // Canvas 초기화
+        const canvas = document.getElementById('logoCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // 이벤트 리스너
+        document.getElementById('logoText').addEventListener('input', (e) => {
+            currentText = e.target.value || '줍줍';
+            renderLogo();
+        });
+
+        document.querySelectorAll('.style-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.style-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentStyle = btn.dataset.style;
+                renderLogo();
+            });
+        });
+
+        document.querySelectorAll('.color-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentColor = btn.dataset.color;
+                renderLogo();
+            });
+        });
+
+        document.getElementById('logoSize').addEventListener('input', (e) => {
+            currentSize = parseInt(e.target.value);
+            document.getElementById('sizeDisplay').textContent = `${currentSize} x ${currentSize}`;
+            canvas.width = currentSize;
+            canvas.height = currentSize;
+            
+            // 큰 크기일 때 캔버스 스타일 조정
+            if (currentSize > 350) {
+                canvas.style.width = '350px';
+                canvas.style.height = '350px';
+            } else {
+                canvas.style.width = '';
+                canvas.style.height = '';
+            }
+            
+            renderLogo();
+        });
+
+        document.getElementById('fontSize').addEventListener('input', (e) => {
+            currentFontSize = parseInt(e.target.value);
+            document.getElementById('fontSizeDisplay').textContent = `${currentFontSize}%`;
+            renderLogo();
+        });
+
+        document.getElementById('roundedCorners').addEventListener('change', (e) => {
+            roundedCorners = e.target.checked;
+            renderLogo();
+        });
+
+        document.getElementById('addShadow').addEventListener('change', (e) => {
+            addShadow = e.target.checked;
+            renderLogo();
+        });
+
+        // 로고 렌더링
+        function renderLogo() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // 그림자
+            if (addShadow) {
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+                ctx.shadowBlur = 20;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 10;
+            }
+
+            // 배경
+            const colorData = colors[currentColor];
+            if (colorData.type === 'gradient') {
+                const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+                gradient.addColorStop(0, colorData.colors[0]);
+                gradient.addColorStop(1, colorData.colors[1]);
+                ctx.fillStyle = gradient;
+            } else if (colorData.type === 'solid') {
+                ctx.fillStyle = colorData.color;
+            } else {
+                ctx.fillStyle = 'transparent';
+            }
+
+            // 배경 그리기
+            if (roundedCorners) {
+                const radius = canvas.width * 0.15;
+                ctx.beginPath();
+                ctx.moveTo(radius, 0);
+                ctx.lineTo(canvas.width - radius, 0);
+                ctx.quadraticCurveTo(canvas.width, 0, canvas.width, radius);
+                ctx.lineTo(canvas.width, canvas.height - radius);
+                ctx.quadraticCurveTo(canvas.width, canvas.height, canvas.width - radius, canvas.height);
+                ctx.lineTo(radius, canvas.height);
+                ctx.quadraticCurveTo(0, canvas.height, 0, canvas.height - radius);
+                ctx.lineTo(0, radius);
+                ctx.quadraticCurveTo(0, 0, radius, 0);
+                ctx.closePath();
+                ctx.fill();
+            } else {
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+
+            // 그림자 리셋
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+
+            // 텍스트
+            const text = styleFormats[currentStyle](currentText);
+            ctx.fillStyle = currentColor === 'solid14' ? '#333' : '#ffffff';
+            
+            // 글씨 크기 계산 (currentFontSize를 비율로 적용)
+            const baseFontSize = currentStyle === 'normal' ? 0.18 : 0.14;
+            const fontSize = canvas.width * baseFontSize * (currentFontSize / 100);
+            const fontWeight = currentStyle === 'normal' ? '900' : '700';
+            const fontFamily = currentStyle === 'normal' ? "'Inter', sans-serif" : "'JetBrains Mono', monospace";
+            
+            ctx.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+        }
+
+        // PNG 다운로드
+        function downloadPNG() {
+            canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `zupp-logo-${currentSize}.png`;
+                a.click();
+                URL.revokeObjectURL(url);
+                showToast('PNG 다운로드 완료!');
+            });
+        }
+
+        // SVG 다운로드
+        function downloadSVG() {
+            const text = styleFormats[currentStyle](currentText);
+            const colorData = colors[currentColor];
+            let fillStyle = '';
+            
+            if (colorData.type === 'gradient') {
+                fillStyle = `url(#gradient)`;
+            } else if (colorData.type === 'solid') {
+                fillStyle = colorData.color;
+            }
+
+            // 글씨 크기 계산 (currentFontSize 비율 적용)
+            const baseFontSize = currentStyle === 'normal' ? 0.18 : 0.14;
+            const fontSize = currentSize * baseFontSize * (currentFontSize / 100);
+
+            const svg = `<svg width="${currentSize}" height="${currentSize}" xmlns="http://www.w3.org/2000/svg">
+                ${colorData.type === 'gradient' ? `
+                <defs>
+                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:${colorData.colors[0]};stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:${colorData.colors[1]};stop-opacity:1" />
+                    </linearGradient>
+                </defs>` : ''}
+                ${roundedCorners ? 
+                    `<rect width="${currentSize}" height="${currentSize}" rx="${currentSize * 0.15}" fill="${fillStyle}"/>` :
+                    `<rect width="${currentSize}" height="${currentSize}" fill="${fillStyle}"/>`
+                }
+                <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" 
+                      fill="${currentColor === 'solid14' ? '#333' : 'white'}" 
+                      font-family="${currentStyle === 'normal' ? 'Inter' : 'JetBrains Mono'}, sans-serif" 
+                      font-size="${fontSize}" 
+                      font-weight="${currentStyle === 'normal' ? '900' : '700'}">${text}</text>
+            </svg>`;
+
+            const blob = new Blob([svg], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `zupp-logo-${currentSize}.svg`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('SVG 다운로드 완료!');
+        }
+
+        // 클립보드 복사
+        function copyToClipboard() {
+            canvas.toBlob((blob) => {
+                const item = new ClipboardItem({ 'image/png': blob });
+                navigator.clipboard.write([item]).then(() => {
+                    showToast('이미지가 클립보드에 복사되었습니다!');
+                });
+            });
+        }
+
+        // 템플릿 적용
+        function applyTemplate(template) {
+            const templates = {
+                default: { text: '줍', style: 'normal', color: 'gradient1', size: 256 },
+                developer: { text: '줍줍', style: 'object', color: 'solid1', size: 256 },
+                purple: { text: '줍', style: 'normal', color: 'gradient2', size: 256 },
+                green: { text: '줍', style: 'normal', color: 'gradient5', size: 256 },
+                pink: { text: '줍', style: 'normal', color: 'gradient3', size: 256 },
+                dark: { text: '줍', style: 'normal', color: 'gradient8', size: 256 }
+            };
+
+            const t = templates[template];
+            if (t) {
+                document.getElementById('logoText').value = t.text;
+                currentText = t.text;
+                
+                document.querySelectorAll('.style-btn').forEach(b => b.classList.remove('active'));
+                document.querySelector(`.style-btn[data-style="${t.style}"]`).classList.add('active');
+                currentStyle = t.style;
+                
+                document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+                document.querySelector(`.color-btn[data-color="${t.color}"]`).classList.add('active');
+                currentColor = t.color;
+                
+                document.getElementById('logoSize').value = t.size;
+                currentSize = t.size;
+                canvas.width = t.size;
+                canvas.height = t.size;
+                document.getElementById('sizeDisplay').textContent = `${t.size} x ${t.size}`;
+                
+                renderLogo();
+            }
+        }
+
+        // 토스트 메시지
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // 랜덤 조합 생성
+        function randomizeAll() {
+            // 랜덤 텍스트 (줍 또는 줍줍)
+            const texts = ['줍', '줍줍', 'zup', 'ZUPP'];
+            const randomText = texts[Math.floor(Math.random() * texts.length)];
+            document.getElementById('logoText').value = randomText;
+            currentText = randomText;
+            
+            // 랜덤 스타일
+            const styleButtons = document.querySelectorAll('.style-btn');
+            const randomStyleIndex = Math.floor(Math.random() * styleButtons.length);
+            document.querySelectorAll('.style-btn').forEach(b => b.classList.remove('active'));
+            styleButtons[randomStyleIndex].classList.add('active');
+            currentStyle = styleButtons[randomStyleIndex].dataset.style;
+            
+            // 랜덤 색상
+            const colorButtons = document.querySelectorAll('.color-btn');
+            const randomColorIndex = Math.floor(Math.random() * colorButtons.length);
+            document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+            colorButtons[randomColorIndex].classList.add('active');
+            currentColor = colorButtons[randomColorIndex].dataset.color;
+            
+            // 랜덤 크기 (128~384)
+            const randomSize = 128 + Math.floor(Math.random() * 8) * 32;
+            document.getElementById('logoSize').value = randomSize;
+            currentSize = randomSize;
+            canvas.width = randomSize;
+            canvas.height = randomSize;
+            document.getElementById('sizeDisplay').textContent = `${randomSize} x ${randomSize}`;
+            
+            // 큰 크기일 때 캔버스 스타일 조정
+            if (randomSize > 350) {
+                canvas.style.width = '350px';
+                canvas.style.height = '350px';
+            } else {
+                canvas.style.width = '';
+                canvas.style.height = '';
+            }
+            
+            // 랜덤 글씨 크기 (70~150)
+            const randomFontSize = 70 + Math.floor(Math.random() * 9) * 10;
+            document.getElementById('fontSize').value = randomFontSize;
+            currentFontSize = randomFontSize;
+            document.getElementById('fontSizeDisplay').textContent = `${randomFontSize}%`;
+            
+            // 랜덤 옵션
+            roundedCorners = Math.random() > 0.3; // 70% 확률로 둥근 모서리
+            addShadow = Math.random() > 0.4; // 60% 확률로 그림자
+            document.getElementById('roundedCorners').checked = roundedCorners;
+            document.getElementById('addShadow').checked = addShadow;
+            
+            // 렌더링
+            renderLogo();
+            
+            // 토스트 메시지
+            showToast('🎲 랜덤 조합이 생성되었습니다!');
+        }
+        
+        // 초기 렌더링
+        renderLogo();
+    </script>
+</body>
+</html>
