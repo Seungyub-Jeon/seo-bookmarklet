@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-zupp is a bookmarklet-based SEO diagnostic tool that analyzes webpage SEO elements with a single click. The tool provides instant feedback on meta tags, page structure, content quality, and other crucial SEO factors.
+줍줍분석기는 bookmarklet-based SEO diagnostic tool that analyzes webpage SEO elements with a single click. The tool provides instant feedback on meta tags, page structure, content quality, and other crucial SEO factors.
 
 ## Architecture
 
@@ -26,7 +26,7 @@ Since this is a bookmarklet project without a build system yet, consider these a
 
 ```bash
 # Create the bookmarklet JavaScript file
-touch zupp.js
+touch 줍줍분석기.js
 
 # Test the bookmarklet locally
 # 1. Open an HTML test page
@@ -97,7 +97,7 @@ Test the bookmarklet on:
 ## Code Structure Recommendation
 
 ```javascript
-// zupp.js structure
+// 줍줍분석기.js structure
 (function() {
   'use strict';
   

@@ -1,5 +1,5 @@
 /**
- * zupp - SEO 북마클릿 도구
+ * 줍줍분석기 - SEO 북마클릿 도구
  * 버전: 1.0.0
  * 설명: 웹페이지의 SEO 요소를 실시간으로 분석하는 북마클릿
  * 타겟: 한국 SEO 마케터, 콘텐츠 크리에이터, 웹 개발자
@@ -500,7 +500,7 @@
     
     // 분석기 등록 함수
     registerAnalyzer(name, AnalyzerClass) {
-      console.log(`[줍줍] Registering analyzer: ${name}`);
+      console.log(`[줍줍분석기] Registering analyzer: ${name}`);
       this.analyzers[name] = AnalyzerClass;
     },
     
@@ -529,7 +529,7 @@
         
         return results;
       } catch (error) {
-        alert('zupp SEO 분석 중 오류가 발생했습니다.');
+        alert('줍줍분석기 SEO 분석 중 오류가 발생했습니다.');
         return null;
       }
     },

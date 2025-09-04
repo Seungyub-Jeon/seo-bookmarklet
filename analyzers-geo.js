@@ -1,5 +1,5 @@
 /**
- * zupp SEO GEO 분석기 모듈  
+ * 줍줍분석기 SEO GEO 분석기 모듈  
  * Sprint 4: AI 검색엔진 최적화
  */
 

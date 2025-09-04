@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>줍줍분석기 사용 로그</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            margin: 20px; 
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { 
+            color: #2c3e50; 
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .stats {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .stats p {
+            margin: 5px 0;
+            font-weight: bold;
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .refresh-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        .refresh-btn:hover {
+            background: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 줍줍분석기 북마클릿 사용 로그</h1>
+        
+        <div class="stats">
+            <p>📊 실시간 사용 현황을 확인할 수 있습니다</p>
+            <p>🔄 새로고침하여 최신 데이터를 확인하세요</p>
+        </div>
+        
+        <button class="refresh-btn" onclick="refreshLogs()">🔄 새로고침</button>
+        
+        <iframe id="logFrame" src="domain-logs.html" frameborder="0">
+            <p>로그를 불러올 수 없습니다. <a href="domain-logs.html">직접 확인하기</a></p>
+        </iframe>
+    </div>
+
+    <script>
+        function refreshLogs() {
+            const frame = document.getElementById('logFrame');
+            frame.src = frame.src + '?t=' + Date.now();
+        }
+        
+        // 30초마다 자동 새로고침
+        setInterval(refreshLogs, 30000);
+    </script>
+</body>
+</html>
