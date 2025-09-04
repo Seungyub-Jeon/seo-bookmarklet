@@ -508,6 +508,9 @@
     async run() {
       
       try {
+        // 도메인 정보 로그 (비동기, 실패해도 분석 계속)
+        this.logDomainUsage();
+        
         // 분석 실행
         const analyzer = new AnalyzerCore();
         const results = await analyzer.analyze();
@@ -528,6 +531,34 @@
       } catch (error) {
         alert('zupp SEO 분석 중 오류가 발생했습니다.');
         return null;
+      }
+    },
+
+    // 도메인 사용 로그 (조용히 실행)
+    logDomainUsage() {
+      try {
+        const domainInfo = {
+          domain: window.location.hostname || '',
+          url: window.location.href || '',
+          title: document.title || '',
+          timestamp: Date.now()
+        };
+
+        // 비동기로 서버에 전송 (실패해도 무시)
+        const logUrl = window.ZuppSEO?.baseUrl ? 
+          window.ZuppSEO.baseUrl + 'log-domain.php' : 
+          'https://zup.ideachefs.com/log-domain.php';
+          
+        fetch(logUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(domainInfo),
+          signal: AbortSignal.timeout(3000) // 3초 타임아웃
+        }).catch(() => {
+          // 조용히 실패 (콘솔에도 로그 안 남김)
+        });
+      } catch (error) {
+        // 조용히 실패
       }
     },
 

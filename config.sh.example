@@ -39,6 +39,9 @@ DEPLOY_FILES=(
     "analyzers-technical.js"
     "analyzers-extended.js"
     "contact-system.js"
+    "log-domain.php"
+    "logs.html"
+    "test-domain-log.html"
 )
 
 # 선택적 디렉토리 (필요시 주석 해제)
